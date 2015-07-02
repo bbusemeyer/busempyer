@@ -114,7 +114,7 @@ def read_cryinp(inpf):
   return res
 
 def read_cryout(inpf):
-  res = {}
+  res = {'dft_energy':None,'dft_moments':None}
   line = 'start'
   spins = []
   while line != '':
