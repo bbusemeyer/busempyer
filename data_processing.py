@@ -136,6 +136,7 @@ def read_dir(froot,gosling='./gosling'):
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
   realk = array([1,3,8,10,27,29,34,36]) - 1
+  oldrealk = array(['k0','k1','k2','k3','k4','k5','k6','k7'])
   ############################################################################
 
   bres = {} # Data that is common to all k-points.
@@ -166,7 +167,7 @@ def read_dir(froot,gosling='./gosling'):
     print "There's no dft in this directory!"
     return {}
 
-  for rk in realk:
+  for rk in oldrealk:
     kroot = froot + '_' + str(rk)
 
     print "  now DMC:",kroot+"..." 

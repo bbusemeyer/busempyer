@@ -34,6 +34,8 @@ def read_cryinp(inpf):
   # Now read in important keyword arguements.
   res['calculation'] = 'hf'
   res['effchg'] = []
+  res['spinlock'] = None
+  res['mixing'] = 0
   res['supercell'] = [1,0,0,0,1,0,0,0,1]
   res['tolinteg'] = [6,6,6,6,12]
   while pos < len(inpl):
