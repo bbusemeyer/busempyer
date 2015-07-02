@@ -179,9 +179,10 @@ def gen_properties(cryinp,natoms,kpath,denom,projs,
   outlines = newklines + bandlines + newklines + doslines + [["END"]]
   return lines2str(outlines)
 
+# TODO: currently must be run in same directory as the d12 file.
 def gen_cry2qwalk(dftfn):
-  loc = getcwd()
-  root = dftfn.replace('.d12','')
+  loc = '/'.join([getcwd()]+dftfn.split('/')[:-1])
+  root = dftfn.split('/')[-1].replace('.d12','')
   propfn = root+'.d3'
   dftdat = read_cryinp(open(dftfn,'r'))
   shrink = dftdat['kdens']
@@ -191,18 +192,18 @@ def gen_cry2qwalk(dftfn):
   proplines.append('0 1')
   proplines.append('67 999')
   proplines.append('END')
-  with open(propfn,'w') as propf:
+  with open('/'.join((loc,propfn)),'w') as propf:
     propf.write('\n'.join(proplines))
   exe = '~/bin/properties < {0}'.format(propfn)
   out = propfn+'.out'
   fc = []
   fc.append('cat {root}.d12.out {root}.d3.out > tmp'.format(root=root))
   fc.append('addline=`grep -n "HAMILTONIAN EIGENVECTORS" tmp | head -1 | cut -d":" -f1`')
-  fc.append('sed "$addline i NEWK EIGENVECTORS" tmp > crystal2qmc.inp')
+  fc.append('sed "$addline i NEWK EIGENVECTORS" tmp > crystal2qmc.in')
   fc.append('rm -f tmp')
   fc.append('~/bin/crystal2qmc -c -o {root} crystal2qmc.inp &>> crystal2qmc.out'.format(root=root))
   gen_qsub(exe,stdout=out,loc=loc,
-           name='cvt_'+root,
+           name=loc,
            time='02:00:00',
            queue='secondary',
            final_commands=fc)
