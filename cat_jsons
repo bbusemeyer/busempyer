@@ -5,7 +5,7 @@ if len(sys.argv) < 2:
   print "Incorrect number of arguements."
   exit()
 
-outfn = raw_input('Output file:')
+outfn = raw_input('Output file: ')
 with open(outfn,'w') as outf:
   outf.write('[\n')
   for jfn in sys.argv[1:-1]:
