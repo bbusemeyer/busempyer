@@ -199,7 +199,7 @@ def read_dir(froot,gosling='./gosling'):
     fmixing, kdens, excited_energy_err, ordering, total_energy_err, 
     excited_energy, ts, nfu, tole, total_energy, se_height, tolinteg, 
     supercell, mixing, kpoint, spinlock, dft_energy, a, c, broyden, 
-    dft_moments, 1rdm, access_root
+    dft_moments, 1rdm, access_root, average, covariance
   """
 
   ############################################################################
@@ -276,9 +276,10 @@ def read_dir(froot,gosling='./gosling'):
       fludat, fluerr = read_number_dens(inpf)
       if fludat==None:
         print "  (Error in number fluctuation output, skipping)"
-      avg, var, cov, avge, vare, cove = moments(fludat,fluerr)
-      ress[rk]['covariance']          =  cov
-      ress[rk]['site_charge']         =  [] # TODO
+      else:
+        avg, var, cov, avge, vare, cove = moments(fludat,fluerr)
+        ress[rk]['average']    = avg
+        ress[rk]['covariance'] = cov
     except IOError:
       print "  (cannot find number fluctuation)"
 
