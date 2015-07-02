@@ -1,0 +1,3011 @@
+ PROCESS           46  OF           48  WORKING
+ PROCESS           45  OF           48  WORKING
+ PROCESS           38  OF           48  WORKING
+ PROCESS           42  OF           48  WORKING
+ PROCESS           41  OF           48  WORKING
+ PROCESS           44  OF           48  WORKING
+ PROCESS           39  OF           48  WORKING
+ PROCESS           30  OF           48  WORKING
+ PROCESS           47  OF           48  WORKING
+ PROCESS           28  OF           48  WORKING
+ PROCESS           25  OF           48  WORKING
+ PROCESS           36  OF           48  WORKING
+ PROCESS           43  OF           48  WORKING
+ PROCESS           40  OF           48  WORKING
+ PROCESS           37  OF           48  WORKING
+ PROCESS           35  OF           48  WORKING
+ PROCESS           20  OF           48  WORKING
+ PROCESS           24  OF           48  WORKING
+ PROCESS           26  OF           48  WORKING
+ PROCESS           32  OF           48  WORKING
+ PROCESS           15  OF           48  WORKING
+ PROCESS           16  OF           48  WORKING
+ PROCESS           13  OF           48  WORKING
+ PROCESS           22  OF           48  WORKING
+ PROCESS           31  OF           48  WORKING
+ PROCESS           19  OF           48  WORKING
+ PROCESS           18  OF           48  WORKING
+ PROCESS           34  OF           48  WORKING
+ PROCESS           23  OF           48  WORKING
+ PROCESS           21  OF           48  WORKING
+ PROCESS           17  OF           48  WORKING
+ PROCESS           14  OF           48  WORKING
+ PROCESS           12  OF           48  WORKING
+ PROCESS           27  OF           48  WORKING
+ PROCESS           11  OF           48  WORKING
+ PROCESS           29  OF           48  WORKING
+ PROCESS           33  OF           48  WORKING
+ PROCESS            7  OF           48  WORKING
+ PROCESS            3  OF           48  WORKING
+ PROCESS            2  OF           48  WORKING
+ PROCESS            9  OF           48  WORKING
+ PROCESS            6  OF           48  WORKING
+ PROCESS            1  OF           48  WORKING
+ PROCESS            0  OF           48  WORKING
+ PROCESS            5  OF           48  WORKING
+ PROCESS            8  OF           48  WORKING
+ PROCESS           10  OF           48  WORKING
+ PROCESS            4  OF           48  WORKING
+
+         
+ *******************************************************************************
+ *                                                                             *
+ *                                CRYSTAL09                                    *
+ *                              public : 1.0                                   *
+ *                      March 5th, 2010 - parallel executable                  *
+ *                                                                             *
+ *                                                                             *
+ *                                                                             *
+ *                              MAIN AUTHORS                                   *
+ *                                                                             *
+ *    R. DOVESI(1,10), V.R. SAUNDERS(2), C. ROETTI(1,10), R. ORLANDO (1,3),    *
+ *  C.M. ZICOVICH-WILSON(1,4), F. PASCALE(5), B. CIVALLERI(1,10), K. DOLL(6),  *
+ *       N.M. HARRISON(2,7), I. J. BUSH(2), Ph. D'ARCO(8), M. LLUNELL(9)       *
+ *                                                                             *
+ * (1) THEORETICAL CHEMISTRY GROUP - UNIVERSITA' DI TORINO - TORINO (ITALY)    *
+ *      http://www.crystal.unito.it                                            *
+ * (2) COMPUTATIONAL SCIENCE & ENGINEERING DEPARTMENT - CCLRC DARESBURY (UK)   *
+ *     http://www.cse.clrc.ac.uk/cmg/CRYSTAL/                                  *
+ * (3) UNIVERSITA' DEL PIEMONTE ORIENTALE - ALESSANDRIA (ITALY)                *
+ * (4) UNIVERSIDAD AUTONOMA DEL ESTADO DE MORELOS - CUERNAVACA (MEXICO)        *
+ * (5) UNIVERSITE' HENRI POINCARE' - NANCY (FRANCE)                            *
+ * (6) MPI FUER FESTKOERPERFORSCHUNG - STUTTGART (GERMANY)                     *
+ * (7) IMPERIAL COLLEGE - LONDON (UK)                                          *
+ * (8) UNIVERSITE' PIERRE ET MARIE CURIE - PARIS (FRANCE)                      *
+ * (9) UNIVERSIDAD DE BARCELONA - BARCELONA (SPAIN)                            *
+ *(10) NIS - NANOSTRUCTURED INTERFACES AND SURFACES - TORINO (ITALY)           *
+ *     http://www.crystal.unito.it                                             *
+ *******************************************************************************
+ EEEEEEEEEE STARTING  DATE 08 11 2014 TIME 01:35:33.5
+ BFD Basis.                                                                      
+
+ CRYSTAL CALCULATION
+ (INPUT ACCORDING TO THE INTERNATIONAL TABLES FOR X-RAY CRYSTALLOGRAPHY)
+ CRYSTAL FAMILY                       :  TETRAGONAL  
+ CRYSTAL CLASS  (GROTH - 1921)        :  DITETRAGONAL DIPYRAMIDAL             
+
+ SPACE GROUP (CENTROSYMMETRIC)        :  P 4/N M M       
+
+ LATTICE PARAMETERS  (ANGSTROMS AND DEGREES) - CONVENTIONAL CELL
+        A           B           C        ALPHA        BETA       GAMMA
+     3.77843     3.77843     5.52159    90.00000    90.00000    90.00000
+
+
+ NUMBER OF IRREDUCIBLE ATOMS IN THE CONVENTIONAL CELL:    3
+
+ INPUT COORDINATES
+
+ ATOM AT. N.              COORDINATES
+   1 226     2.500000000000E-01 -2.500000000000E-01  0.000000000000E+00
+   2 226    -2.500000000000E-01  2.500000000000E-01  0.000000000000E+00
+   3 234     2.500000000000E-01  2.500000000000E-01  2.796117038087E-01
+
+ *******************************************************************************
+
+ << INFORMATION >>: FROM NOW ON, ALL COORDINATES REFER TO THE PRIMITIVE CELL
+
+ *******************************************************************************
+
+ LATTICE PARAMETERS  (ANGSTROMS AND DEGREES) - PRIMITIVE CELL
+       A          B          C         ALPHA     BETA     GAMMA        VOLUME
+    3.77843    3.77843    5.52159    90.00000  90.00000  90.00000     78.829207
+
+ INPUT LIST - ATOM N.   2 NOT IRREDUCIBLE
+
+ COORDINATES OF THE EQUIVALENT ATOMS (FRACTIONAL UNITS)
+
+ N. ATOM EQUIV AT. N.          X                  Y                  Z
+
+   1   1   1  226 FE    2.50000000000E-01 -2.50000000000E-01  0.00000000000E+00
+   2   1   2  226 FE   -2.50000000000E-01  2.50000000000E-01  0.00000000000E+00
+
+
+   3   3   1  234 SE    2.50000000000E-01  2.50000000000E-01  2.79611703809E-01
+   4   3   2  234 SE   -2.50000000000E-01 -2.50000000000E-01 -2.79611703809E-01
+
+ NUMBER OF SYMMETRY OPERATORS         :   16
+ *******************************************************************************
+ * GEOMETRY EDITING - INPUT COORDINATES ARE GIVEN IN ANGSTROM         
+ *******************************************************************************
+
+ GEOMETRY NOW FULLY CONSISTENT WITH THE GROUP
+
+
+ ATOMS TRANSLATED BY (FRACTIONAL)      0.25000      0.25000      0.00000
+ ATOMS TRANSLATED BY (ANGSTROM)         0.94461      0.94461      0.00000
+ NUMBER OF OPERATORS WITH FINITE TRANSLATORS HAS BEEN REDUCED FROM 12 TO  8
+
+ REMOVAL OF SYMMOPS WITH FINITE TRANSLATIONAL COMPONENTS
+ HAS REDUCED THEIR NUMBER FROM 16 TO  8
+
+ *******************************************************************************
+ * SUPERCELL OPTION
+ *******************************************************************************
+
+
+        EXPANSION MATRIX OF PRIMITIVE CELL
+ E1     2.000     0.000     0.000
+ E2     0.000     2.000     0.000
+ E3     0.000     0.000     1.000
+
+ NUMBER OF ATOMS PER SUPERCELL   16
+
+        DIRECT LATTICE VECTORS COMPONENTS (ANGSTROM)
+ B1     7.557     0.000     0.000
+ B2     0.000     7.557     0.000
+ B3     0.000     0.000     5.522
+
+ LATTICE PARAMETERS  (ANGSTROM AND DEGREES)
+       A          B          C         ALPHA     BETA     GAMMA        VOLUME
+    7.55686    7.55686    5.52159    90.00000  90.00000  90.00000    315.316828
+
+
+ **** ATOMS BELONGING TO THE SUPERCELL
+ LABEL AT.NO.      COORDINATES (ANGSTROM AND FRACTIONAL)
+     1   226     1.8892     0.0000     0.0000     0.2500     0.0000     0.0000
+     2   226     1.8892    -3.7784     0.0000     0.2500    -0.5000     0.0000
+     3   226    -1.8892     0.0000     0.0000    -0.2500     0.0000     0.0000
+     4   226    -1.8892    -3.7784     0.0000    -0.2500    -0.5000     0.0000
+     5   226     0.0000     1.8892     0.0000     0.0000     0.2500     0.0000
+     6   226     0.0000    -1.8892     0.0000     0.0000    -0.2500     0.0000
+     7   226    -3.7784     1.8892     0.0000    -0.5000     0.2500     0.0000
+     8   226    -3.7784    -1.8892     0.0000    -0.5000    -0.2500     0.0000
+     9   234     1.8892     1.8892     1.5439     0.2500     0.2500     0.2796
+    10   234     1.8892    -1.8892     1.5439     0.2500    -0.2500     0.2796
+    11   234    -1.8892     1.8892     1.5439    -0.2500     0.2500     0.2796
+    12   234    -1.8892    -1.8892     1.5439    -0.2500    -0.2500     0.2796
+    13   234     0.0000     0.0000    -1.5439     0.0000     0.0000    -0.2796
+    14   234     0.0000    -3.7784    -1.5439     0.0000    -0.5000    -0.2796
+    15   234    -3.7784     0.0000    -1.5439    -0.5000     0.0000    -0.2796
+    16   234    -3.7784    -3.7784    -1.5439    -0.5000    -0.5000    -0.2796
+
+ **************************** SUPERCELL GENERATED ****************************
+ SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+ REDUCTION OF SYMMETRY - ATOMIC LABELS SET TO (ATOM, AT. N., LABEL)
+   1(226) 1;   2(226) 2;   3(226) 3;   4(226) 4;   5(226) 5;   6(226) 6;
+   7(226) 7;   8(226) 8;   9(234) 0;  10(234) 0;  11(234) 0;  12(234) 0;
+  13(234) 0;  14(234) 0;  15(234) 0;  16(234) 0;
+ THE NUMBER OF SYMMETRY OPERATORS HAS BEEN REDUCED FROM  8 TO  1
+ *******************************************************************************
+
+ GCALCO - MAX INDICES DIRECT LATTICE VECTOR    13    13    18
+ NO.OF VECTORS CREATED 6999 STARS  527 RMAX   152.83506 BOHR
+
+ GEOMETRY FOR WAVE FUNCTION - DIMENSIONALITY OF THE SYSTEM    3
+ (NON PERIODIC DIRECTION: LATTICE PARAMETER FORMALLY SET TO 500)
+ *******************************************************************************
+ LATTICE PARAMETERS (ANGSTROMS AND DEGREES) - BOHR = 0.5291772083 ANGSTROM
+ PRIMITIVE CELL - CENTRING CODE 1/1 VOLUME=   315.316828 - DENSITY  5.723 g/cm^3
+         A              B              C           ALPHA      BETA       GAMMA 
+     7.55686302     7.55686302     5.52158865    90.000000  90.000000  90.000000
+ *******************************************************************************
+ ATOMS IN THE ASYMMETRIC UNIT   16 - ATOMS IN THE UNIT CELL:   16
+     ATOM              X/A                 Y/B                 Z/C    
+ *******************************************************************************
+   1 T 226 FE    2.500000000000E-01  0.000000000000E+00  0.000000000000E+00
+   2 T 226 FE1   2.500000000000E-01 -5.000000000000E-01  0.000000000000E+00
+   3 T 226 FE11 -2.500000000000E-01  0.000000000000E+00  0.000000000000E+00
+   4 T 226 FE11 -2.500000000000E-01 -5.000000000000E-01  0.000000000000E+00
+   5 T 226 FE11  5.876634372653E-17  2.500000000000E-01  0.000000000000E+00
+   6 T 226 FE11  5.876634372653E-17 -2.500000000000E-01  0.000000000000E+00
+   7 T 226 FE11 -5.000000000000E-01  2.500000000000E-01  0.000000000000E+00
+   8 T 226 FE11 -5.000000000000E-01 -2.500000000000E-01  0.000000000000E+00
+   9 T 234 SE    2.500000000000E-01  2.500000000000E-01  2.796117038087E-01
+  10 T 234 SE    2.500000000000E-01 -2.500000000000E-01  2.796117038087E-01
+  11 T 234 SE   -2.500000000000E-01  2.500000000000E-01  2.796117038087E-01
+  12 T 234 SE   -2.500000000000E-01 -2.500000000000E-01  2.796117038087E-01
+  13 T 234 SE    5.876634372653E-17  0.000000000000E+00 -2.796117038087E-01
+  14 T 234 SE    5.876634372653E-17 -5.000000000000E-01 -2.796117038087E-01
+  15 T 234 SE   -5.000000000000E-01  0.000000000000E+00 -2.796117038087E-01
+  16 T 234 SE   -5.000000000000E-01 -5.000000000000E-01 -2.796117038087E-01
+
+ T = ATOM BELONGING TO THE ASYMMETRIC UNIT
+
+ ****   1 SYMMOPS - TRANSLATORS IN FRACTIONAL UNITS
+  V INV                   ROTATION MATRICES                       TRANSLATOR
+  1  1  1.00  0.00  0.00  0.00  1.00  0.00  0.00  0.00  1.00    0.00  0.00  0.00
+
+ DIRECT LATTICE VECTORS CARTESIAN COMPONENTS (ANGSTROM)
+          X                    Y                    Z
+   0.755686302208E+01   0.000000000000E+00   0.000000000000E+00
+   0.000000000000E+00   0.755686302208E+01   0.000000000000E+00
+   0.000000000000E+00   0.000000000000E+00   0.552158864864E+01
+
+
+ CARTESIAN COORDINATES - PRIMITIVE CELL
+ *******************************************************************************
+ *      ATOM          X(ANGSTROM)         Y(ANGSTROM)         Z(ANGSTROM)
+ *******************************************************************************
+   1   226 FE    1.889215755521E+00  0.000000000000E+00  0.000000000000E+00
+   2   226 FE1   1.889215755521E+00  3.778431511042E+00  0.000000000000E+00
+   3   226 FE11 -1.889215755521E+00  0.000000000000E+00  0.000000000000E+00
+   4   226 FE11 -1.889215755521E+00  3.778431511042E+00  0.000000000000E+00
+   5   226 FE11  4.440892098501E-16  1.889215755521E+00  0.000000000000E+00
+   6   226 FE11  4.440892098501E-16 -1.889215755521E+00  0.000000000000E+00
+   7   226 FE11  3.778431511042E+00  1.889215755521E+00  0.000000000000E+00
+   8   226 FE11  3.778431511042E+00 -1.889215755521E+00  0.000000000000E+00
+   9   234 SE    1.889215755521E+00  1.889215755521E+00  1.543900809778E+00
+  10   234 SE    1.889215755521E+00 -1.889215755521E+00  1.543900809778E+00
+  11   234 SE   -1.889215755521E+00  1.889215755521E+00  1.543900809778E+00
+  12   234 SE   -1.889215755521E+00 -1.889215755521E+00  1.543900809778E+00
+  13   234 SE    4.440892098501E-16  0.000000000000E+00 -1.543900809778E+00
+  14   234 SE    4.440892098501E-16  3.778431511042E+00 -1.543900809778E+00
+  15   234 SE    3.778431511042E+00  0.000000000000E+00 -1.543900809778E+00
+  16   234 SE    3.778431511042E+00  3.778431511042E+00 -1.543900809778E+00
+
+ *******************************************************************************
+ *** PSEUDOPOTENTIAL INFORMATION ***
+ *******************************************************************************
+
+ ATOMIC NUMBER  26, NUCLEAR CHARGE 16.000, GIVEN IN INPUT       PSEUDOPOTENTIAL
+   TYPE       EXPONENT      COEFF.    N      EXPONENT      COEFF.    N
+  W0 TMS     3.7207560   16.0000000  -1     3.9232130   59.5321010   1
+             3.8959540  -68.7584780   0
+  P0 TMS    10.4234350  112.9256120   0
+  P1 TMS     8.4166410   52.5588280   0
+
+ ATOMIC NUMBER  34, NUCLEAR CHARGE  6.000, GIVEN IN INPUT       PSEUDOPOTENTIAL
+   TYPE       EXPONENT      COEFF.    N      EXPONENT      COEFF.    N
+  W0 TMS     1.7349470    6.0000000  -1     6.9163270   10.4096840   1
+             3.1055170  -17.8319950   0
+  P0 TMS     4.6750340   85.9423800   0
+  P1 TMS     4.3425660   78.8483840   0
+  P2 TMS     2.6190500   30.9215160   0
+
+ *******************************************************************************
+ LOCAL ATOMIC FUNCTIONS BASIS SET
+ *******************************************************************************
+   ATOM  X(AU)  Y(AU)  Z(AU)    NO. TYPE  EXPONENT  S COEF   P COEF   D/F/G COEF
+ *******************************************************************************
+   1 FE  3.570  0.000  0.000
+                                  1 S  
+                                         2.588E+01-1.185E-02 0.000E+00 0.000E+00
+                                         1.404E+01 2.645E-01 0.000E+00 0.000E+00
+                                         9.008E+00-6.506E-01 0.000E+00 0.000E+00
+                                         2.068E+00 6.252E-01 0.000E+00 0.000E+00
+                                         9.935E-01 6.201E-01 0.000E+00 0.000E+00
+                                  2 S  
+                                         2.457E+00 1.000E+00 0.000E+00 0.000E+00
+                                  3 S  
+                                         7.755E-01 1.000E+00 0.000E+00 0.000E+00
+                                  4 S  
+                                         2.059E-01 1.000E+00 0.000E+00 0.000E+00
+                             5-   7 P  
+                                         1.666E+01 0.000E+00 8.178E-03 0.000E+00
+                                         1.045E+01 0.000E+00-7.961E-02 0.000E+00
+                                         4.183E+00 0.000E+00 2.595E-01 0.000E+00
+                                         2.118E+00 0.000E+00 4.452E-01 0.000E+00
+                                         1.064E+00 0.000E+00 4.094E-01 0.000E+00
+                             8-  10 P  
+                                         9.337E-01 0.000E+00 1.000E+00 0.000E+00
+                            11-  13 P  
+                                         2.000E-01 0.000E+00 1.000E+00 0.000E+00
+                            14-  18 D  
+                                         1.023E+01 0.000E+00 0.000E+00 9.622E-02
+                                         4.841E+00 0.000E+00 0.000E+00 3.104E-01
+                                         2.040E+00 0.000E+00 0.000E+00 4.043E-01
+                                         8.406E-01 0.000E+00 0.000E+00 3.990E-01
+                                 19 S  
+                                         1.047E+01-2.291E-01 0.000E+00 0.000E+00
+                                         1.736E+00 7.116E-01 0.000E+00 0.000E+00
+                            20-  24 D  
+                                         8.417E-01 0.000E+00 0.000E+00 1.000E+00
+                            25-  29 D  
+                                         2.611E-01 0.000E+00 0.000E+00 1.000E+00
+                            30-  36 F  
+                                         1.590E+00 0.000E+00 0.000E+00 1.000E+00
+   2 FE  3.570  7.140  0.000
+   3 FE -3.570  0.000  0.000
+   4 FE -3.570  7.140  0.000
+   5 FE  0.000  3.570  0.000
+   6 FE  0.000 -3.570  0.000
+   7 FE  7.140  3.570  0.000
+   8 FE  7.140 -3.570  0.000
+   9 SE  3.570  3.570  2.918
+                                289 S  
+                                         5.000E-01 2.293E+00 0.000E+00 0.000E+00
+                                         1.000E+00-1.977E+00 0.000E+00 0.000E+00
+                                         2.000E+00 7.979E-01 0.000E+00 0.000E+00
+                                         4.000E+00-5.798E-01 0.000E+00 0.000E+00
+                                         8.000E+00 3.166E-01 0.000E+00 0.000E+00
+                                         1.600E+01-1.049E-01 0.000E+00 0.000E+00
+                                         3.200E+01 2.008E-02 0.000E+00 0.000E+00
+                           290- 292 P  
+                                         5.000E-01 0.000E+00 1.588E+00 0.000E+00
+                                         1.000E+00 0.000E+00-9.257E-01 0.000E+00
+                                         2.000E+00 0.000E+00 4.190E-01 0.000E+00
+                                         4.000E+00 0.000E+00-2.994E-01 0.000E+00
+                                         8.000E+00 0.000E+00 1.335E-01 0.000E+00
+                                         1.600E+01 0.000E+00-4.324E-02 0.000E+00
+                                         3.200E+01 0.000E+00 9.016E-03 0.000E+00
+                                293 S  
+                                         1.800E+00 1.000E+00 0.000E+00 0.000E+00
+                                294 S  
+                                         6.103E-01 1.000E+00 0.000E+00 0.000E+00
+                                295 S  
+                                         2.000E-01 1.000E+00 0.000E+00 0.000E+00
+                           296- 298 P  
+                                         1.800E+00 0.000E+00 1.000E+00 0.000E+00
+                           299- 301 P  
+                                         6.000E-01 0.000E+00 1.000E+00 0.000E+00
+                           302- 304 P  
+                                         2.000E-01 0.000E+00 1.000E+00 0.000E+00
+                           305- 309 D  
+                                         1.800E+00 0.000E+00 0.000E+00 1.000E+00
+                           310- 314 D  
+                                         6.000E-01 0.000E+00 0.000E+00 1.000E+00
+                           315- 319 D  
+                                         2.000E-01 0.000E+00 0.000E+00 1.000E+00
+  10 SE  3.570 -3.570  2.918
+  11 SE -3.570  3.570  2.918
+  12 SE -3.570 -3.570  2.918
+  13 SE  0.000  0.000 -2.918
+  14 SE  0.000  7.140 -2.918
+  15 SE  7.140  0.000 -2.918
+  16 SE  7.140  7.140 -2.918
+ INFORMATION **** UHF **** SPIN POLARIZED SOLUTIONS ALLOWED
+ INFORMATION **** READM2 **** NO BIPOLAR EXPANSION
+ SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+ ATOMIC SPINS SET TO (ATOM, AT. N., SPIN)
+   1 226 1   2 226 1   3 226-1   4 226-1   5 226 1   6 226 1   7 226-1   8 226-1
+   9 234 0  10 234 0  11 234 0  12 234 0  13 234 0  14 234 0  15 234 0  16 234 0
+ INFORMATION **** SPINLOCK **** LOCK IN A GIVEN SPIN STATE
+ ALPHA-BETA ELECTRONS LOCKED TO   0 FOR 200 SCF CYCLES
+ INFORMATION **** MAXCYCLE **** MAX NUMBER OF SCF CYCLES SET TO         100
+ INFORMATION **** SAVEWF **** not fully tested
+ INFORMATION **** READM2 **** FULL DIRECT SCF (MONO AND BIEL INT) SELECTED
+ INFORMATION **** TOLDEE **** SCF TOL ON TOTAL ENERGY SET TO          10
+
+ MODIFIED BROYDEN MIXING OF THE FOCK MATRIX
+ WO PARAMETER(D.D. Johnson, PRB38, 12807,(1988)             1.0000E-04
+ % OF FOCK/KS MATRICES MIXING WHEN BROYDEN METHOD IS ON             30
+ NUMBER OF SCF ITERATIONS AFTER WHICH BROYDEN METHOD IS ACTIVE       2
+ INFORMATION **** GUESSP **** SCF GUESS FROM A PREVIOUS RUN DENSITY MATRIX
+ *******************************************************************************
+ N. OF ATOMS PER CELL       16  COULOMB OVERLAP TOL         (T1) 10** -6
+ NUMBER OF SHELLS          184  COULOMB PENETRATION TOL     (T2) 10** -6
+ NUMBER OF AO              536  EXCHANGE OVERLAP TOL        (T3) 10** -6
+ N. OF ELECTRONS PER CELL  176  EXCHANGE PSEUDO OVP (F(G))  (T4) 10** -6
+ CORE ELECTRONS PER CELL     0  EXCHANGE PSEUDO OVP (P(G))  (T5) 10**-12
+ N. OF SYMMETRY OPERATORS    1  POLE ORDER IN MONO ZONE                4
+ *******************************************************************************
+ TYPE OF CALCULATION :  UNRESTRICTED OPEN SHELL
+ KOHN-SHAM HAMILTONIAN
+
+ (EXCHANGE)[CORRELATION] FUNCTIONAL:(PERDEW-BURKE-ERNZERHOF)[PERDEW-BURKE-ERNZERHOF]
+
+
+ HYBRID EXCHANGE - PERCENTAGE OF FOCK EXCHANGE    25.0000
+
+ SPIN POLARIZED DFT SELECTED
+ CORE  PSEUDO POTENTIAL         TOL. ON PSEUDO              (TP) 10**- 6
+
+ CAPPA:IS1  4;IS2  4;IS3  4; K PTS MONK NET   36; SYMMOPS: K SPACE  2;G SPACE  1
+
+ *******************************************************************************
+ MAX NUMBER OF SCF CYCLES     100  CONVERGENCE ON DELTAP        10**-20
+ WEIGHT OF F(I) IN F(I+1)      90% CONVERGENCE ON ENERGY        10**-10
+ SHRINK. FACT.(MONKH.)    4  4  4  NUMBER OF K POINTS IN THE IBZ     36
+ SHRINKING FACTOR(GILAT NET)    8  NUMBER OF K POINTS(GILAT NET)    260
+ *******************************************************************************
+ *** K POINTS COORDINATES (OBLIQUE COORDINATES IN UNITS OF IS =  4)
+   1-R(  0  0  0)   2-C(  1  0  0)   3-R(  2  0  0)   4-C(  0  1  0)
+   5-C(  1  1  0)   6-C(  2  1  0)   7-C(  3  1  0)   8-R(  0  2  0)
+   9-C(  1  2  0)  10-R(  2  2  0)  11-C(  0  0  1)  12-C(  1  0  1)
+  13-C(  2  0  1)  14-C(  3  0  1)  15-C(  0  1  1)  16-C(  1  1  1)
+  17-C(  2  1  1)  18-C(  3  1  1)  19-C(  0  2  1)  20-C(  1  2  1)
+  21-C(  2  2  1)  22-C(  3  2  1)  23-C(  0  3  1)  24-C(  1  3  1)
+  25-C(  2  3  1)  26-C(  3  3  1)  27-R(  0  0  2)  28-C(  1  0  2)
+  29-R(  2  0  2)  30-C(  0  1  2)  31-C(  1  1  2)  32-C(  2  1  2)
+  33-C(  3  1  2)  34-R(  0  2  2)  35-C(  1  2  2)  36-R(  2  2  2)
+
+ DIRECT LATTICE VECTORS COMPON. (A.U.)     RECIP. LATTICE VECTORS COMPON. (A.U.) 
+        X            Y            Z              X            Y            Z
+   14.2804015    0.0000000    0.0000000      0.4399866    0.0000000    0.0000000
+    0.0000000   14.2804015    0.0000000      0.0000000    0.4399866    0.0000000
+    0.0000000    0.0000000   10.4342904      0.0000000    0.0000000    0.6021670
+
+ DISK SPACE FOR EIGENVECTORS (FTN 10)   18386944 REALS
+
+ SYMMETRY ADAPTION OF THE BLOCH FUNCTIONS DISABLED
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT gordsh1     TELAPSE        1.48 TCPU        0.12
+
+ DIMENSIONS  P(G)=  777064 F(G)=  145456 P(G),F(G) (IRR)  391376
+ MAX G-VECTOR INDEX FOR 1- AND 2-ELECTRON INTEGRALS  45
+
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INPUT       TELAPSE        1.57 TCPU        0.22
+
+ NEIGHBORS OF THE NON-EQUIVALENT ATOMS
+
+ N = NUMBER OF NEIGHBORS AT DISTANCE R
+    ATOM  N     R/ANG      R/AU   NEIGHBORS (ATOM LABELS AND CELL INDICES)
+   1 FE   4     2.4398     4.6106   9 SE   0 0 0  10 SE   0 0 0  13 SE   0 0 0
+                                   15 SE   0 0 0
+   1 FE   4     2.6718     5.0489   5 FE   0 0 0   6 FE   0 0 0   7 FE   0 0 0
+                                    8 FE   0 0 0
+   1 FE   4     3.7784     7.1402   2 FE   0 0 0   2 FE   0-1 0   3 FE   0 0 0
+                                    3 FE   1 0 0
+   1 FE   4     4.4035     8.3215   9 SE   0 0-1  10 SE   0 0-1  13 SE   0 0 1
+                                   15 SE   0 0 1
+   1 FE   8     4.4977     8.4994  11 SE   0 0 0  11 SE   1 0 0  12 SE   0 0 0
+                                   12 SE   1 0 0  14 SE   0 0 0  14 SE   0-1 0
+                                   16 SE   0 0 0  16 SE   0-1 0
+   1 FE   4     5.3435    10.0978   4 FE   0 0 0   4 FE   1 0 0   4 FE   0-1 0
+                                    4 FE   1-1 0
+
+   2 FE   4     2.4398     4.6106   9 SE   0 0 0  10 SE   0 1 0  14 SE   0 0 0
+                                   16 SE   0 0 0
+   2 FE   4     2.6718     5.0489   5 FE   0 0 0   6 FE   0 1 0   7 FE   0 0 0
+                                    8 FE   0 1 0
+   2 FE   4     3.7784     7.1402   1 FE   0 0 0   1 FE   0 1 0   4 FE   0 0 0
+                                    4 FE   1 0 0
+   2 FE   4     4.4035     8.3215   9 SE   0 0-1  10 SE   0 1-1  14 SE   0 0 1
+                                   16 SE   0 0 1
+   2 FE   8     4.4977     8.4994  11 SE   0 0 0  11 SE   1 0 0  12 SE   0 1 0
+                                   12 SE   1 1 0  13 SE   0 0 0  13 SE   0 1 0
+                                   15 SE   0 0 0  15 SE   0 1 0
+   2 FE   4     5.3435    10.0978   3 FE   0 0 0   3 FE   1 0 0   3 FE   0 1 0
+                                    3 FE   1 1 0
+
+   3 FE   4     2.4398     4.6106  11 SE   0 0 0  12 SE   0 0 0  13 SE   0 0 0
+                                   15 SE  -1 0 0
+   3 FE   4     2.6718     5.0489   5 FE   0 0 0   6 FE   0 0 0   7 FE  -1 0 0
+                                    8 FE  -1 0 0
+   3 FE   4     3.7784     7.1402   1 FE   0 0 0   1 FE  -1 0 0   4 FE   0 0 0
+                                    4 FE   0-1 0
+   3 FE   4     4.4035     8.3215  11 SE   0 0-1  12 SE   0 0-1  13 SE   0 0 1
+                                   15 SE  -1 0 1
+   3 FE   8     4.4977     8.4994   9 SE   0 0 0   9 SE  -1 0 0  10 SE   0 0 0
+                                   10 SE  -1 0 0  14 SE   0 0 0  14 SE   0-1 0
+                                   16 SE  -1 0 0  16 SE  -1-1 0
+   3 FE   4     5.3435    10.0978   2 FE   0 0 0   2 FE  -1 0 0   2 FE   0-1 0
+                                    2 FE  -1-1 0
+
+   4 FE   4     2.4398     4.6106  11 SE   0 0 0  12 SE   0 1 0  14 SE   0 0 0
+                                   16 SE  -1 0 0
+   4 FE   4     2.6718     5.0489   5 FE   0 0 0   6 FE   0 1 0   7 FE  -1 0 0
+                                    8 FE  -1 1 0
+   4 FE   4     3.7784     7.1402   2 FE   0 0 0   2 FE  -1 0 0   3 FE   0 0 0
+                                    3 FE   0 1 0
+   4 FE   4     4.4035     8.3215  11 SE   0 0-1  12 SE   0 1-1  14 SE   0 0 1
+                                   16 SE  -1 0 1
+   4 FE   8     4.4977     8.4994   9 SE   0 0 0   9 SE  -1 0 0  10 SE   0 1 0
+                                   10 SE  -1 1 0  13 SE   0 0 0  13 SE   0 1 0
+                                   15 SE  -1 0 0  15 SE  -1 1 0
+   4 FE   4     5.3435    10.0978   1 FE   0 0 0   1 FE  -1 0 0   1 FE   0 1 0
+                                    1 FE  -1 1 0
+
+   5 FE   4     2.4398     4.6106   9 SE   0 0 0  11 SE   0 0 0  13 SE   0 0 0
+                                   14 SE   0 0 0
+   5 FE   4     2.6718     5.0489   1 FE   0 0 0   2 FE   0 0 0   3 FE   0 0 0
+                                    4 FE   0 0 0
+   5 FE   4     3.7784     7.1402   6 FE   0 0 0   6 FE   0 1 0   7 FE   0 0 0
+                                    7 FE  -1 0 0
+   5 FE   4     4.4035     8.3215   9 SE   0 0-1  11 SE   0 0-1  13 SE   0 0 1
+                                   14 SE   0 0 1
+   5 FE   8     4.4977     8.4994  10 SE   0 0 0  10 SE   0 1 0  12 SE   0 0 0
+                                   12 SE   0 1 0  15 SE   0 0 0  15 SE  -1 0 0
+                                   16 SE   0 0 0  16 SE  -1 0 0
+   5 FE   4     5.3435    10.0978   8 FE   0 0 0   8 FE  -1 0 0   8 FE   0 1 0
+                                    8 FE  -1 1 0
+
+   6 FE   4     2.4398     4.6106  10 SE   0 0 0  12 SE   0 0 0  13 SE   0 0 0
+                                   14 SE   0-1 0
+   6 FE   4     2.6718     5.0489   1 FE   0 0 0   2 FE   0-1 0   3 FE   0 0 0
+                                    4 FE   0-1 0
+   6 FE   4     3.7784     7.1402   5 FE   0 0 0   5 FE   0-1 0   8 FE   0 0 0
+                                    8 FE  -1 0 0
+   6 FE   4     4.4035     8.3215  10 SE   0 0-1  12 SE   0 0-1  13 SE   0 0 1
+                                   14 SE   0-1 1
+   6 FE   8     4.4977     8.4994   9 SE   0 0 0   9 SE   0-1 0  11 SE   0 0 0
+                                   11 SE   0-1 0  15 SE   0 0 0  15 SE  -1 0 0
+                                   16 SE   0-1 0  16 SE  -1-1 0
+   6 FE   4     5.3435    10.0978   7 FE   0 0 0   7 FE  -1 0 0   7 FE   0-1 0
+                                    7 FE  -1-1 0
+
+   7 FE   4     2.4398     4.6106   9 SE   0 0 0  11 SE   1 0 0  15 SE   0 0 0
+                                   16 SE   0 0 0
+   7 FE   4     2.6718     5.0489   1 FE   0 0 0   2 FE   0 0 0   3 FE   1 0 0
+                                    4 FE   1 0 0
+   7 FE   4     3.7784     7.1402   5 FE   0 0 0   5 FE   1 0 0   8 FE   0 0 0
+                                    8 FE   0 1 0
+   7 FE   4     4.4035     8.3215   9 SE   0 0-1  11 SE   1 0-1  15 SE   0 0 1
+                                   16 SE   0 0 1
+   7 FE   8     4.4977     8.4994  10 SE   0 0 0  10 SE   0 1 0  12 SE   1 0 0
+                                   12 SE   1 1 0  13 SE   0 0 0  13 SE   1 0 0
+                                   14 SE   0 0 0  14 SE   1 0 0
+   7 FE   4     5.3435    10.0978   6 FE   0 0 0   6 FE   1 0 0   6 FE   0 1 0
+                                    6 FE   1 1 0
+
+   8 FE   4     2.4398     4.6106  10 SE   0 0 0  12 SE   1 0 0  15 SE   0 0 0
+                                   16 SE   0-1 0
+   8 FE   4     2.6718     5.0489   1 FE   0 0 0   2 FE   0-1 0   3 FE   1 0 0
+                                    4 FE   1-1 0
+   8 FE   4     3.7784     7.1402   6 FE   0 0 0   6 FE   1 0 0   7 FE   0 0 0
+                                    7 FE   0-1 0
+   8 FE   4     4.4035     8.3215  10 SE   0 0-1  12 SE   1 0-1  15 SE   0 0 1
+                                   16 SE   0-1 1
+   8 FE   8     4.4977     8.4994   9 SE   0 0 0   9 SE   0-1 0  11 SE   1 0 0
+                                   11 SE   1-1 0  13 SE   0 0 0  13 SE   1 0 0
+                                   14 SE   0-1 0  14 SE   1-1 0
+   8 FE   4     5.3435    10.0978   5 FE   0 0 0   5 FE   1 0 0   5 FE   0-1 0
+                                    5 FE   1-1 0
+
+   9 SE   4     2.4398     4.6106   1 FE   0 0 0   2 FE   0 0 0   5 FE   0 0 0
+                                    7 FE   0 0 0
+   9 SE   4     3.6141     6.8296  13 SE   0 0 1  14 SE   0 0 1  15 SE   0 0 1
+                                   16 SE   0 0 1
+   9 SE   4     3.7784     7.1402  10 SE   0 0 0  10 SE   0 1 0  11 SE   0 0 0
+                                   11 SE   1 0 0
+   9 SE   4     4.0832     7.7162  13 SE   0 0 0  14 SE   0 0 0  15 SE   0 0 0
+                                   16 SE   0 0 0
+   9 SE   4     4.4035     8.3215   1 FE   0 0 1   2 FE   0 0 1   5 FE   0 0 1
+                                    7 FE   0 0 1
+   9 SE   8     4.4977     8.4994   3 FE   0 0 0   3 FE   1 0 0   4 FE   0 0 0
+                                    4 FE   1 0 0   6 FE   0 0 0   6 FE   0 1 0
+                                    8 FE   0 0 0   8 FE   0 1 0
+
+  10 SE   4     2.4398     4.6106   1 FE   0 0 0   2 FE   0-1 0   6 FE   0 0 0
+                                    8 FE   0 0 0
+  10 SE   4     3.6141     6.8296  13 SE   0 0 1  14 SE   0-1 1  15 SE   0 0 1
+                                   16 SE   0-1 1
+  10 SE   4     3.7784     7.1402   9 SE   0 0 0   9 SE   0-1 0  12 SE   0 0 0
+                                   12 SE   1 0 0
+  10 SE   4     4.0832     7.7162  13 SE   0 0 0  14 SE   0-1 0  15 SE   0 0 0
+                                   16 SE   0-1 0
+  10 SE   4     4.4035     8.3215   1 FE   0 0 1   2 FE   0-1 1   6 FE   0 0 1
+                                    8 FE   0 0 1
+  10 SE   8     4.4977     8.4994   3 FE   0 0 0   3 FE   1 0 0   4 FE   0-1 0
+                                    4 FE   1-1 0   5 FE   0 0 0   5 FE   0-1 0
+                                    7 FE   0 0 0   7 FE   0-1 0
+
+  11 SE   4     2.4398     4.6106   3 FE   0 0 0   4 FE   0 0 0   5 FE   0 0 0
+                                    7 FE  -1 0 0
+  11 SE   4     3.6141     6.8296  13 SE   0 0 1  14 SE   0 0 1  15 SE  -1 0 1
+                                   16 SE  -1 0 1
+  11 SE   4     3.7784     7.1402   9 SE   0 0 0   9 SE  -1 0 0  12 SE   0 0 0
+                                   12 SE   0 1 0
+  11 SE   4     4.0832     7.7162  13 SE   0 0 0  14 SE   0 0 0  15 SE  -1 0 0
+                                   16 SE  -1 0 0
+  11 SE   4     4.4035     8.3215   3 FE   0 0 1   4 FE   0 0 1   5 FE   0 0 1
+                                    7 FE  -1 0 1
+  11 SE   8     4.4977     8.4994   1 FE   0 0 0   1 FE  -1 0 0   2 FE   0 0 0
+                                    2 FE  -1 0 0   6 FE   0 0 0   6 FE   0 1 0
+                                    8 FE  -1 0 0   8 FE  -1 1 0
+
+  12 SE   4     2.4398     4.6106   3 FE   0 0 0   4 FE   0-1 0   6 FE   0 0 0
+                                    8 FE  -1 0 0
+  12 SE   4     3.6141     6.8296  13 SE   0 0 1  14 SE   0-1 1  15 SE  -1 0 1
+                                   16 SE  -1-1 1
+  12 SE   4     3.7784     7.1402  10 SE   0 0 0  10 SE  -1 0 0  11 SE   0 0 0
+                                   11 SE   0-1 0
+  12 SE   4     4.0832     7.7162  13 SE   0 0 0  14 SE   0-1 0  15 SE  -1 0 0
+                                   16 SE  -1-1 0
+  12 SE   4     4.4035     8.3215   3 FE   0 0 1   4 FE   0-1 1   6 FE   0 0 1
+                                    8 FE  -1 0 1
+  12 SE   8     4.4977     8.4994   1 FE   0 0 0   1 FE  -1 0 0   2 FE   0-1 0
+                                    2 FE  -1-1 0   5 FE   0 0 0   5 FE   0-1 0
+                                    7 FE  -1 0 0   7 FE  -1-1 0
+
+  13 SE   4     2.4398     4.6106   1 FE   0 0 0   3 FE   0 0 0   5 FE   0 0 0
+                                    6 FE   0 0 0
+  13 SE   4     3.6141     6.8296   9 SE   0 0-1  10 SE   0 0-1  11 SE   0 0-1
+                                   12 SE   0 0-1
+  13 SE   4     3.7784     7.1402  14 SE   0 0 0  14 SE   0-1 0  15 SE   0 0 0
+                                   15 SE  -1 0 0
+  13 SE   4     4.0832     7.7162   9 SE   0 0 0  10 SE   0 0 0  11 SE   0 0 0
+                                   12 SE   0 0 0
+  13 SE   4     4.4035     8.3215   1 FE   0 0-1   3 FE   0 0-1   5 FE   0 0-1
+                                    6 FE   0 0-1
+  13 SE   8     4.4977     8.4994   2 FE   0 0 0   2 FE   0-1 0   4 FE   0 0 0
+                                    4 FE   0-1 0   7 FE   0 0 0   7 FE  -1 0 0
+                                    8 FE   0 0 0   8 FE  -1 0 0
+
+  14 SE   4     2.4398     4.6106   2 FE   0 0 0   4 FE   0 0 0   5 FE   0 0 0
+                                    6 FE   0 1 0
+  14 SE   4     3.6141     6.8296   9 SE   0 0-1  10 SE   0 1-1  11 SE   0 0-1
+                                   12 SE   0 1-1
+  14 SE   4     3.7784     7.1402  13 SE   0 0 0  13 SE   0 1 0  16 SE   0 0 0
+                                   16 SE  -1 0 0
+  14 SE   4     4.0832     7.7162   9 SE   0 0 0  10 SE   0 1 0  11 SE   0 0 0
+                                   12 SE   0 1 0
+  14 SE   4     4.4035     8.3215   2 FE   0 0-1   4 FE   0 0-1   5 FE   0 0-1
+                                    6 FE   0 1-1
+  14 SE   8     4.4977     8.4994   1 FE   0 0 0   1 FE   0 1 0   3 FE   0 0 0
+                                    3 FE   0 1 0   7 FE   0 0 0   7 FE  -1 0 0
+                                    8 FE   0 1 0   8 FE  -1 1 0
+
+  15 SE   4     2.4398     4.6106   1 FE   0 0 0   3 FE   1 0 0   7 FE   0 0 0
+                                    8 FE   0 0 0
+  15 SE   4     3.6141     6.8296   9 SE   0 0-1  10 SE   0 0-1  11 SE   1 0-1
+                                   12 SE   1 0-1
+  15 SE   4     3.7784     7.1402  13 SE   0 0 0  13 SE   1 0 0  16 SE   0 0 0
+                                   16 SE   0-1 0
+  15 SE   4     4.0832     7.7162   9 SE   0 0 0  10 SE   0 0 0  11 SE   1 0 0
+                                   12 SE   1 0 0
+  15 SE   4     4.4035     8.3215   1 FE   0 0-1   3 FE   1 0-1   7 FE   0 0-1
+                                    8 FE   0 0-1
+  15 SE   8     4.4977     8.4994   2 FE   0 0 0   2 FE   0-1 0   4 FE   1 0 0
+                                    4 FE   1-1 0   5 FE   0 0 0   5 FE   1 0 0
+                                    6 FE   0 0 0   6 FE   1 0 0
+
+  16 SE   4     2.4398     4.6106   2 FE   0 0 0   4 FE   1 0 0   7 FE   0 0 0
+                                    8 FE   0 1 0
+  16 SE   4     3.6141     6.8296   9 SE   0 0-1  10 SE   0 1-1  11 SE   1 0-1
+                                   12 SE   1 1-1
+  16 SE   4     3.7784     7.1402  14 SE   0 0 0  14 SE   1 0 0  15 SE   0 0 0
+                                   15 SE   0 1 0
+  16 SE   4     4.0832     7.7162   9 SE   0 0 0  10 SE   0 1 0  11 SE   1 0 0
+                                   12 SE   1 1 0
+  16 SE   4     4.4035     8.3215   2 FE   0 0-1   4 FE   1 0-1   7 FE   0 0-1
+                                    8 FE   0 1-1
+  16 SE   8     4.4977     8.4994   1 FE   0 0 0   1 FE   0 1 0   3 FE   1 0 0
+                                    3 FE   1 1 0   5 FE   0 0 0   5 FE   1 0 0
+                                    6 FE   0 1 0   6 FE   1 1 0
+
+
+ SYMMETRY ALLOWED INTERNAL DEGREE(S) OF FREEDOM:  45
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SYMM        TELAPSE        1.58 TCPU        0.22
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT INT_SCREEN  TELAPSE        1.61 TCPU        0.24
+
+ DFT PARAMETERS
+
+     ATOM       ELECTRONS   NET CHARGE   R(ANGSTROM)
+   1 226  FE     16.0000      0.0000     1.26000000
+   9 234  SE      6.0000      0.0000     1.17000000
+
+ SIZE OF GRID=     100640
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MAKE_GRID2  TELAPSE        2.30 TCPU        0.93
+ BECKE WEIGHT FUNCTION
+ RADSAFE =     2.00
+ TOLERANCES - DENSITY:10**- 6; POTENTIAL:10**- 9; GRID WGT:10**-14
+
+ RADIAL INTEGRATION  - INTERVALS (POINTS,UPPER LIMIT):            1( 55,  4.0*R)
+
+ ANGULAR INTEGRATION - INTERVALS (ACCURACY LEVEL [N. POINTS] UPPER LIMIT):
+  1(  1[  38]   0.4)  2(  2[  50]   0.6)  3(  5[ 110]   0.8)  4(  8[ 194]   0.9)
+  5( 11[ 302]   1.1)  6( 13[ 434]   2.3)  7( 11[ 302]   2.4)  8(  8[ 194]   2.6)
+  9(  5[ 110]   2.8) 10(  1[  38]9999.0)
+ EEEEEEEEEE INT_CALC TERMINATION  DATE 08 11 2014 TIME 01:35:34.7
+
+ *******************************************************************************
+ BFD Basis.                                                                      
+ CRYSTAL - SCF - TYPE OF CALCULATION :  UNRESTRICTED OPEN SHELL
+ *******************************************************************************
+
+ CAPPA:IS1  4;IS2  4;IS3  4; K PTS MONK NET   36; SYMMOPS: K SPACE  2;G SPACE  1
+
+
+ INFORMATION FROM INTEGRAL EVALUATION
+
+ RESTART FROM A PREVIOUS DENSITY MATRIX - DEP ACTIVE
+ NUMBER OF COUPLE SETS (NEW, OLD, FOUND):   14456   14456   14456
+ NUMBER OF IRREDUCIBLE G VECTORS        :   47120   47120   47120
+
+ *******************************************************************************
+ LOCAL ATOMIC FUNCTIONS BASIS SET
+ *******************************************************************************
+   ATOM  X(AU)  Y(AU)  Z(AU)    NO. TYPE  EXPONENT  S COEF   P COEF   D/F/G COEF
+ *******************************************************************************
+   1 FE  3.570  0.000  0.000
+                                  1 S  
+                                         2.588E+01-2.357E-01 0.000E+00 0.000E+00
+                                         1.404E+01 3.325E+00 0.000E+00 0.000E+00
+                                         9.008E+00-5.863E+00 0.000E+00 0.000E+00
+                                         2.068E+00 1.869E+00 0.000E+00 0.000E+00
+                                         9.935E-01 1.070E+00 0.000E+00 0.000E+00
+                                  2 S  
+                                         2.457E+00 3.401E+00 0.000E+00 0.000E+00
+                                  3 S  
+                                         7.755E-01 1.432E+00 0.000E+00 0.000E+00
+                                  4 S  
+                                         2.059E-01 5.298E-01 0.000E+00 0.000E+00
+                             5-   7 P  
+                                         1.666E+01 0.000E+00 9.542E-01 0.000E+00
+                                         1.045E+01 0.000E+00-5.186E+00 0.000E+00
+                                         4.183E+00 0.000E+00 5.381E+00 0.000E+00
+                                         2.118E+00 0.000E+00 3.943E+00 0.000E+00
+                                         1.064E+00 0.000E+00 1.535E+00 0.000E+00
+                             8-  10 P  
+                                         9.337E-01 0.000E+00 3.182E+00 0.000E+00
+                            11-  13 P  
+                                         2.000E-01 0.000E+00 4.637E-01 0.000E+00
+                            14-  18 D  
+                                         1.023E+01 0.000E+00 0.000E+00 2.255E+01
+                                         4.841E+00 0.000E+00 0.000E+00 1.963E+01
+                                         2.040E+00 0.000E+00 0.000E+00 5.635E+00
+                                         8.406E-01 0.000E+00 0.000E+00 1.179E+00
+                                 19 S  
+                                         1.047E+01-3.808E+00 0.000E+00 0.000E+00
+                                         1.736E+00 3.073E+00 0.000E+00 0.000E+00
+                            20-  24 D  
+                                         8.417E-01 0.000E+00 0.000E+00 2.961E+00
+                            25-  29 D  
+                                         2.611E-01 0.000E+00 0.000E+00 3.818E-01
+                            30-  36 F  
+                                         1.590E+00 0.000E+00 0.000E+00 1.016E+01
+   2 FE  3.570  7.140  0.000
+   3 FE -3.570  0.000  0.000
+   4 FE -3.570  7.140  0.000
+   5 FE  0.000  3.570  0.000
+   6 FE  0.000 -3.570  0.000
+   7 FE  7.140  3.570  0.000
+   8 FE  7.140 -3.570  0.000
+   9 SE  3.570  3.570  2.918
+                                289 S  
+                                         5.000E-01 2.363E+00 0.000E+00 0.000E+00
+                                         1.000E+00-3.426E+00 0.000E+00 0.000E+00
+                                         2.000E+00 2.326E+00 0.000E+00 0.000E+00
+                                         4.000E+00-2.843E+00 0.000E+00 0.000E+00
+                                         8.000E+00 2.610E+00 0.000E+00 0.000E+00
+                                         1.600E+01-1.455E+00 0.000E+00 0.000E+00
+                                         3.200E+01 4.683E-01 0.000E+00 0.000E+00
+                           290- 292 P  
+                                         5.000E-01 0.000E+00 2.315E+00 0.000E+00
+                                         1.000E+00 0.000E+00-3.209E+00 0.000E+00
+                                         2.000E+00 0.000E+00 3.455E+00 0.000E+00
+                                         4.000E+00 0.000E+00-5.872E+00 0.000E+00
+                                         8.000E+00 0.000E+00 6.225E+00 0.000E+00
+                                         1.600E+01 0.000E+00-4.797E+00 0.000E+00
+                                         3.200E+01 0.000E+00 2.379E+00 0.000E+00
+                                293 S  
+                                         1.800E+00 2.694E+00 0.000E+00 0.000E+00
+                                294 S  
+                                         6.103E-01 1.197E+00 0.000E+00 0.000E+00
+                                295 S  
+                                         2.000E-01 5.184E-01 0.000E+00 0.000E+00
+                           296- 298 P  
+                                         1.800E+00 0.000E+00 7.228E+00 0.000E+00
+                           299- 301 P  
+                                         6.000E-01 0.000E+00 1.831E+00 0.000E+00
+                           302- 304 P  
+                                         2.000E-01 0.000E+00 4.637E-01 0.000E+00
+                           305- 309 D  
+                                         1.800E+00 0.000E+00 0.000E+00 1.120E+01
+                           310- 314 D  
+                                         6.000E-01 0.000E+00 0.000E+00 1.637E+00
+                           315- 319 D  
+                                         2.000E-01 0.000E+00 0.000E+00 2.394E-01
+  10 SE  3.570 -3.570  2.918
+  11 SE -3.570  3.570  2.918
+  12 SE -3.570 -3.570  2.918
+  13 SE  0.000  0.000 -2.918
+  14 SE  0.000  7.140 -2.918
+  15 SE  7.140  0.000 -2.918
+  16 SE  7.140  7.140 -2.918
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SDIK        TELAPSE        3.27 TCPU        1.79
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6122851  15.6131059  15.6126116  15.6128118  15.6127593  15.6126631
+  15.6133774  15.6120520   6.3874735   6.3871125   6.3873700   6.3872112
+   6.3872187   6.3873713   6.3871623   6.3874144
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4915527   3.4888691  -3.4905690  -3.4898292   3.4900529   3.4903594
+  -3.4880881  -3.4923331   0.1441785   0.1426636  -0.1434773  -0.1433748
+   0.1432946   0.1435639  -0.1429502  -0.1439131
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE        3.76 TCPU        2.27
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE       76.74 TCPU       75.23
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      139.61 TCPU      138.08
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116860
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      141.58 TCPU      140.04
+ CYC   0 ETOT(AU) -1.066571978994E+03 DETOT -1.07E+03 tst  0.00E+00 PX  1.00E+00
+ CYCLE  0 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      160.89 TCPU      155.54
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      161.19 TCPU      155.83
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6125585  15.6129678  15.6124658  15.6129119  15.6127868  15.6125319
+  15.6128494  15.6124817   6.3874994   6.3871014   6.3874040   6.3872176
+   6.3872270   6.3873781   6.3871813   6.3874373
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4913965   3.4889364  -3.4906535  -3.4897594   3.4900553   3.4904402
+  -3.4883852  -3.4920801   0.1442362   0.1426253  -0.1434405  -0.1433998
+   0.1433188   0.1435543  -0.1429134  -0.1439311
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      161.22 TCPU      155.86
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      234.99 TCPU      229.61
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      297.59 TCPU      292.19
+ NUMERICALLY INTEGRATED DENSITY     87.9996118457     87.9996116843
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      299.64 TCPU      294.24
+ CYC   1 ETOT(AU) -1.066571978841E+03 DETOT  1.53E-07 tst  0.00E+00 PX  1.28E-04
+ CYCLE  1 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      308.68 TCPU      295.91
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      308.99 TCPU      296.22
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6123891  15.6130446  15.6125439  15.6128541  15.6127879  15.6126088
+  15.6131532  15.6122091   6.3874873   6.3871078   6.3873903   6.3872199
+   6.3872238   6.3873734   6.3871770   6.3874300
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4915099   3.4888894  -3.4906067  -3.4897979   3.4900470   3.4903864
+  -3.4881907  -3.4922616   0.1442151   0.1426397  -0.1434585  -0.1433875
+   0.1433074   0.1435622  -0.1429279  -0.1439264
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      309.02 TCPU      296.25
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      382.51 TCPU      369.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      446.09 TCPU      433.30
+ NUMERICALLY INTEGRATED DENSITY     87.9996118467     87.9996116848
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      448.20 TCPU      435.40
+ CYC   2 ETOT(AU) -1.066571978983E+03 DETOT -1.41E-07 tst  9.46E-10 PX  6.65E-05
+ CYCLE  2 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.784244387242E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      453.70 TCPU      439.79
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      454.00 TCPU      440.09
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120153  15.6133134  15.6127463  15.6126791  15.6126613  15.6127868
+  15.6139716  15.6116122   6.3874526   6.3871099   6.3873416   6.3872058
+   6.3872057   6.3873586   6.3871428   6.3873971
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4917651   3.4886985  -3.4904974  -3.4899271   3.4901197   3.4902610
+  -3.4876452  -3.4926841   0.1441677   0.1426636  -0.1435134  -0.1433666
+   0.1432738   0.1435794  -0.1429684  -0.1439266
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      454.04 TCPU      440.13
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      527.58 TCPU      513.66
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      590.50 TCPU      576.57
+ NUMERICALLY INTEGRATED DENSITY     87.9996118515     87.9996116875
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      592.49 TCPU      578.55
+ CYC   3 ETOT(AU) -1.066571978753E+03 DETOT  2.30E-07 tst  8.56E-09 PX  2.08E-04
+ CYCLE  3 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  2.117617087305E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      604.54 TCPU      587.74
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      604.85 TCPU      588.06
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121557  15.6131894  15.6126880  15.6127778  15.6127208  15.6127310
+  15.6136294  15.6118575   6.3874670   6.3871036   6.3873538   6.3872025
+   6.3872085   6.3873649   6.3871448   6.3874054
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4916834   3.4887721  -3.4905264  -3.4898578   3.4900882   3.4902936
+  -3.4878550  -3.4925381   0.1441981   0.1426430  -0.1434918  -0.1433822
+   0.1432877   0.1435713  -0.1429495  -0.1439366
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      604.88 TCPU      588.09
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      678.53 TCPU      661.68
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      741.70 TCPU      724.84
+ NUMERICALLY INTEGRATED DENSITY     87.9996118505     87.9996116871
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      743.69 TCPU      726.83
+ CYC   4 ETOT(AU) -1.066571978972E+03 DETOT -2.19E-07 tst  5.62E-10 PX  7.75E-05
+ CYCLE  4 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  4.279002108634E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      754.35 TCPU      733.58
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      754.66 TCPU      733.89
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6122316  15.6131727  15.6126317  15.6127792  15.6127242  15.6126816
+  15.6135307  15.6119507   6.3874744   6.3871038   6.3873641   6.3872077
+   6.3872129   6.3873696   6.3871515   6.3874135
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4916374   3.4887773  -3.4905610  -3.4898556   3.4900925   3.4903276
+  -3.4879062  -3.4924796   0.1442118   0.1426356  -0.1434814  -0.1433858
+   0.1432946   0.1435703  -0.1429390  -0.1439386
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      754.69 TCPU      733.92
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      831.23 TCPU      810.45
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE      890.89 TCPU      870.09
+ NUMERICALLY INTEGRATED DENSITY     87.9996118494     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE      892.91 TCPU      872.12
+ CYC   5 ETOT(AU) -1.066571979009E+03 DETOT -3.72E-08 tst  5.51E-11 PX  2.39E-05
+ CYCLE  5 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  6.686424195833E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE      899.12 TCPU      875.15
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE      899.43 TCPU      875.45
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120519  15.6132365  15.6127123  15.6127240  15.6127184  15.6127819
+  15.6137752  15.6116737   6.3874680   6.3871118   6.3873650   6.3872206
+   6.3872147   6.3873647   6.3871637   6.3874175
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4917604   3.4887367  -3.4905085  -3.4898870   3.4900897   3.4902572
+  -3.4877441  -3.4926687   0.1441977   0.1426479  -0.1434944  -0.1433715
+   0.1432851   0.1435799  -0.1429476  -0.1439326
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE      899.46 TCPU      875.49
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE      976.72 TCPU      952.62
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1035.73 TCPU     1011.61
+ NUMERICALLY INTEGRATED DENSITY     87.9996118488     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1037.74 TCPU     1013.61
+ CYC   6 ETOT(AU) -1.066571978874E+03 DETOT  1.35E-07 tst  1.09E-09 PX  6.87E-05
+ CYCLE  6 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  2.802386812034E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1053.25 TCPU     1026.07
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1053.56 TCPU     1026.38
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6119334  15.6132763  15.6127721  15.6126824  15.6127359  15.6128444
+  15.6139713  15.6114784   6.3874580   6.3871267   6.3873509   6.3872207
+   6.3872164   6.3873672   6.3871583   6.3874076
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4918090   3.4887506  -3.4904692  -3.4899132   3.4900580   3.4902270
+  -3.4876788  -3.4927366   0.1441500   0.1426864  -0.1435113  -0.1433504
+   0.1432741   0.1435844  -0.1429726  -0.1439073
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1053.61 TCPU     1026.42
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1126.91 TCPU     1099.71
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1189.79 TCPU     1162.58
+ NUMERICALLY INTEGRATED DENSITY     87.9996118494     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1191.70 TCPU     1164.50
+ CYC   7 ETOT(AU) -1.066571978637E+03 DETOT  2.37E-07 tst  3.44E-09 PX  1.03E-04
+ CYCLE  7 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.858349267648E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1200.91 TCPU     1167.86
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1201.22 TCPU     1168.17
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6117356  15.6133678  15.6128354  15.6126285  15.6127657  15.6129242
+  15.6143036  15.6111825   6.3874508   6.3871248   6.3873361   6.3872220
+   6.3872105   6.3873592   6.3871507   6.3874026
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4919854   3.4886484  -3.4904329  -3.4899487   3.4900516   3.4901540
+  -3.4873882  -3.4930120   0.1441725   0.1426677  -0.1435199  -0.1433504
+   0.1432691   0.1435967  -0.1429667  -0.1439266
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1201.26 TCPU     1168.21
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1278.21 TCPU     1245.06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1337.89 TCPU     1304.71
+ NUMERICALLY INTEGRATED DENSITY     87.9996118503     87.9996116870
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1339.92 TCPU     1306.72
+ CYC   8 ETOT(AU) -1.066571978295E+03 DETOT  3.42E-07 tst  1.36E-08 PX  1.93E-04
+ CYCLE  8 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.302375932535E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1355.10 TCPU     1311.40
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1355.41 TCPU     1311.71
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6117072  15.6133568  15.6128393  15.6126208  15.6127954  15.6129246
+  15.6143392  15.6111704   6.3874379   6.3871319   6.3873342   6.3872253
+   6.3872100   6.3873523   6.3871581   6.3873966
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4919572   3.4887063  -3.4904321  -3.4899547   3.4900088   3.4901713
+  -3.4874492  -3.4929368   0.1441255   0.1427036  -0.1435293  -0.1433363
+   0.1432625   0.1435946  -0.1429903  -0.1439010
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1355.45 TCPU     1311.74
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1432.04 TCPU     1388.24
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1492.38 TCPU     1448.52
+ NUMERICALLY INTEGRATED DENSITY     87.9996118506     87.9996116871
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1494.35 TCPU     1450.49
+ CYC   9 ETOT(AU) -1.066571978163E+03 DETOT  1.32E-07 tst  8.69E-09 PX  1.60E-04
+ CYCLE  9 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.229196697223E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1505.93 TCPU     1454.71
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1506.23 TCPU     1455.01
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6108902  15.6119453  15.6109698  15.6134151  15.6156348  15.6116679
+  15.6139495  15.6137167   6.3874491   6.3868791   6.3873780   6.3872563
+   6.3870977   6.3871525   6.3871684   6.3874295
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4933468   3.4888224  -3.4917457  -3.4896006   3.4884056   3.4904753
+  -3.4862744  -3.4927084   0.1449094   0.1417975  -0.1432485  -0.1438211
+   0.1433854   0.1434962  -0.1426944  -0.1445453
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1506.27 TCPU     1455.05
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1580.02 TCPU     1528.51
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1642.51 TCPU     1590.97
+ NUMERICALLY INTEGRATED DENSITY     87.9996118628     87.9996116902
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1644.48 TCPU     1592.94
+ CYC  10 ETOT(AU) -1.066571975681E+03 DETOT  2.48E-06 tst  2.51E-06 PX  2.66E-03
+ CYCLE 10 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  4.799727526043E+01
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1649.36 TCPU     1596.11
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1649.67 TCPU     1596.41
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121207  15.6135302  15.6127611  15.6129421  15.6124711  15.6125818
+  15.6139349  15.6115164   6.3875277   6.3868994   6.3874227   6.3872147
+   6.3871323   6.3872999   6.3871409   6.3875041
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4924949   3.4877253  -3.4904775  -3.4897777   3.4905913   3.4900512
+  -3.4862764  -3.4941624   0.1448774   0.1420452  -0.1433876  -0.1436283
+   0.1433342   0.1435918  -0.1426266  -0.1443748
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1649.72 TCPU     1596.46
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1727.13 TCPU     1673.66
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1786.34 TCPU     1732.75
+ NUMERICALLY INTEGRATED DENSITY     87.9996118528     87.9996116885
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1788.32 TCPU     1734.72
+ CYC  11 ETOT(AU) -1.066571982073E+03 DETOT -6.39E-06 tst  8.15E-08 PX  7.19E-04
+ CYCLE 11 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  4.149181275339E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1793.89 TCPU     1739.92
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1794.20 TCPU     1740.23
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6119344  15.6133843  15.6126369  15.6128163  15.6126660  15.6128903
+  15.6138904  15.6114787   6.3875815   6.3869396   6.3874226   6.3872087
+   6.3871624   6.3873595   6.3871161   6.3875122
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4926658   3.4878371  -3.4905401  -3.4898393   3.4904713   3.4898404
+  -3.4862601  -3.4941966   0.1449071   0.1420475  -0.1433514  -0.1435980
+   0.1433603   0.1436149  -0.1425978  -0.1443611
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1794.24 TCPU     1740.27
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     1867.88 TCPU     1813.90
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     1932.78 TCPU     1878.79
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116871
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     1934.75 TCPU     1880.76
+ CYC  12 ETOT(AU) -1.066571982494E+03 DETOT -4.21E-07 tst  7.11E-09 PX  1.33E-04
+ CYCLE 12 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  6.666620247063E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     1943.74 TCPU     1888.89
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     1944.05 TCPU     1889.20
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6119278  15.6133741  15.6126427  15.6128184  15.6126712  15.6129043
+  15.6138835  15.6114779   6.3875796   6.3869382   6.3874242   6.3872094
+   6.3871608   6.3873568   6.3871184   6.3875127
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4926690   3.4878476  -3.4905358  -3.4898374   3.4904657   3.4898314
+  -3.4862692  -3.4941934   0.1449050   0.1420496  -0.1433519  -0.1435970
+   0.1433603   0.1436152  -0.1425991  -0.1443600
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     1944.09 TCPU     1889.24
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2017.70 TCPU     1962.84
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2082.16 TCPU     2027.30
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116872
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2084.13 TCPU     2029.26
+ CYC  13 ETOT(AU) -1.066571982448E+03 DETOT  4.63E-08 tst  1.03E-10 PX  1.59E-05
+ CYCLE 13 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  6.436585453834E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2092.85 TCPU     2035.67
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2093.15 TCPU     2035.97
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120162  15.6134809  15.6124219  15.6126410  15.6126719  15.6128477
+  15.6139689  15.6116003   6.3875472   6.3869416   6.3874523   6.3872383
+   6.3871608   6.3873272   6.3871666   6.3875171
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4925273   3.4878673  -3.4906810  -3.4899543   3.4904377   3.4899294
+  -3.4863313  -3.4939382   0.1448470   0.1421305  -0.1433562  -0.1435580
+   0.1433744   0.1436345  -0.1426275  -0.1443017
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2093.19 TCPU     2036.01
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2166.55 TCPU     2109.36
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2231.52 TCPU     2174.32
+ NUMERICALLY INTEGRATED DENSITY     87.9996118466     87.9996116874
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2233.48 TCPU     2176.28
+ CYC  14 ETOT(AU) -1.066571980935E+03 DETOT  1.51E-06 tst  1.53E-07 PX  5.99E-04
+ CYCLE 14 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  4.956143201226E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2242.04 TCPU     2184.34
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2242.35 TCPU     2184.65
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120439  15.6134398  15.6126444  15.6129278  15.6127836  15.6126646
+  15.6136675  15.6113933   6.3875543   6.3870053   6.3874237   6.3872295
+   6.3872003   6.3873701   6.3871542   6.3874976
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923764   3.4880216  -3.4905111  -3.4897399   3.4902902   3.4901087
+  -3.4867778  -3.4938736   0.1447477   0.1422318  -0.1433909  -0.1435381
+   0.1433608   0.1436220  -0.1426923  -0.1442354
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2242.39 TCPU     2184.68
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2315.98 TCPU     2258.25
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2380.94 TCPU     2323.21
+ NUMERICALLY INTEGRATED DENSITY     87.9996118456     87.9996116853
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2382.93 TCPU     2325.20
+ CYC  15 ETOT(AU) -1.066571979432E+03 DETOT  1.50E-06 tst  4.78E-07 PX  1.04E-03
+ CYCLE 15 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  4.520269365060E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2390.13 TCPU     2331.62
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2390.44 TCPU     2331.93
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120074  15.6133323  15.6126159  15.6128019  15.6126941  15.6127529
+  15.6138171  15.6116157   6.3875717   6.3870198   6.3873929   6.3871974
+   6.3872070   6.3873982   6.3871029   6.3874727
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923637   3.4881038  -3.4905570  -3.4898459   3.4903218   3.4900566
+  -3.4867306  -3.4936817   0.1447059   0.1422364  -0.1434194  -0.1435407
+   0.1433475   0.1436126  -0.1427302  -0.1442429
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2390.47 TCPU     2331.96
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2464.12 TCPU     2405.59
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2527.03 TCPU     2468.50
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116854
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2528.98 TCPU     2470.44
+ CYC  16 ETOT(AU) -1.066571979312E+03 DETOT  1.20E-07 tst  6.69E-08 PX  3.70E-04
+ CYCLE 16 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  6.409113801818E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2540.57 TCPU     2473.23
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2540.88 TCPU     2473.54
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6131958  15.6131549  15.6122273  15.6131032  15.6124434  15.6123337
+  15.6122596  15.6130724   6.3876048   6.3869120   6.3874370   6.3871403
+   6.3871496   6.3873876   6.3870718   6.3875065
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4915959   3.4881518  -3.4908032  -3.4896481   3.4905940   3.4903632
+  -3.4876713  -3.4927641   0.1448644   0.1421392  -0.1433113  -0.1436118
+   0.1434224   0.1435727  -0.1426135  -0.1442803
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2540.91 TCPU     2473.57
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2614.39 TCPU     2547.02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2677.40 TCPU     2609.94
+ NUMERICALLY INTEGRATED DENSITY     87.9996118494     87.9996116901
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2679.35 TCPU     2611.89
+ CYC  17 ETOT(AU) -1.066571977603E+03 DETOT  1.71E-06 tst  1.44E-08 PX  3.83E-04
+ CYCLE 17 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.483534720156E+01
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2704.96 TCPU     2621.95
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2705.27 TCPU     2622.26
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6119761  15.6132154  15.6126085  15.6128301  15.6128368  15.6128561
+  15.6137475  15.6116573   6.3875723   6.3869893   6.3873895   6.3871887
+   6.3871693   6.3873863   6.3870861   6.3874906
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4924277   3.4881520  -3.4905641  -3.4898209   3.4902616   3.4899652
+  -3.4867272  -3.4937096   0.1447472   0.1421953  -0.1433884  -0.1435492
+   0.1433590   0.1436079  -0.1426957  -0.1442609
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2705.30 TCPU     2622.30
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2781.80 TCPU     2698.75
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2841.99 TCPU     2758.94
+ NUMERICALLY INTEGRATED DENSITY     87.9996118497     87.9996116875
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2843.95 TCPU     2760.89
+ CYC  18 ETOT(AU) -1.066571979426E+03 DETOT -1.82E-06 tst  2.46E-08 PX  3.33E-04
+ CYCLE 18 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.014718196914E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     2858.65 TCPU     2764.19
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     2858.95 TCPU     2764.50
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120656  15.6133855  15.6126056  15.6128105  15.6126823  15.6127080
+  15.6138050  15.6116265   6.3875732   6.3869973   6.3873901   6.3871949
+   6.3871815   6.3873909   6.3870937   6.3874895
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923572   3.4880199  -3.4905713  -3.4898395   3.4903767   3.4900704
+  -3.4866778  -3.4937372   0.1447473   0.1421928  -0.1433926  -0.1435518
+   0.1433516   0.1436050  -0.1426928  -0.1442578
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     2858.99 TCPU     2764.53
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     2932.47 TCPU     2838.00
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     2997.11 TCPU     2902.64
+ NUMERICALLY INTEGRATED DENSITY     87.9996118489     87.9996116865
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     2999.06 TCPU     2904.58
+ CYC  19 ETOT(AU) -1.066571979451E+03 DETOT -2.53E-08 tst  7.85E-10 PX  4.59E-05
+ CYCLE 19 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.123758398216E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3006.40 TCPU     2908.35
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3006.71 TCPU     2908.66
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120335  15.6133758  15.6126316  15.6128263  15.6126704  15.6127207
+  15.6137928  15.6116016   6.3875779   6.3870048   6.3873915   6.3871991
+   6.3871924   6.3873953   6.3870987   6.3874876
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923894   3.4880164  -3.4905504  -3.4898297   3.4903836   3.4900516
+  -3.4866679  -3.4937756   0.1447508   0.1421825  -0.1433926  -0.1435544
+   0.1433474   0.1436016  -0.1426899  -0.1442628
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3006.74 TCPU     2908.69
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3083.72 TCPU     2985.62
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3143.33 TCPU     3045.21
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116855
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3145.33 TCPU     3047.21
+ CYC  20 ETOT(AU) -1.066571979457E+03 DETOT -5.54E-09 tst  4.07E-10 PX  3.42E-05
+ CYCLE 20 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.046569412331E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3149.89 TCPU     3049.78
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3150.19 TCPU     3050.08
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120334  15.6133756  15.6126113  15.6128149  15.6126846  15.6127196
+  15.6138135  15.6116018   6.3875777   6.3870040   6.3873914   6.3871996
+   6.3871930   6.3873945   6.3870983   6.3874866
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923984   3.4880112  -3.4905625  -3.4898387   3.4903778   3.4900487
+  -3.4866396  -3.4937858   0.1447559   0.1421775  -0.1433889  -0.1435546
+   0.1433489   0.1436018  -0.1426852  -0.1442650
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3150.23 TCPU     3050.12
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3227.07 TCPU     3126.90
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3286.86 TCPU     3186.65
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116856
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3288.78 TCPU     3188.57
+ CYC  21 ETOT(AU) -1.066571979466E+03 DETOT -8.73E-09 tst  1.89E-10 PX  2.32E-05
+ CYCLE 21 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.004473809438E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3293.98 TCPU     3193.09
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3294.29 TCPU     3193.40
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120338  15.6133855  15.6126204  15.6128147  15.6126759  15.6127349
+  15.6138182  15.6115913   6.3875782   6.3869969   6.3873914   6.3871960
+   6.3871883   6.3873927   6.3870942   6.3874875
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4924108   3.4879945  -3.4905550  -3.4898398   3.4903903   3.4900332
+  -3.4866174  -3.4938120   0.1447638   0.1421696  -0.1433854  -0.1435559
+   0.1433492   0.1436013  -0.1426789  -0.1442684
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3294.32 TCPU     3193.43
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3371.27 TCPU     3270.35
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3430.77 TCPU     3329.84
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116861
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3432.79 TCPU     3331.85
+ CYC  22 ETOT(AU) -1.066571979486E+03 DETOT -1.98E-08 tst  4.45E-10 PX  3.72E-05
+ CYCLE 22 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.859147065812E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3437.14 TCPU     3334.74
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3437.45 TCPU     3335.05
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120389  15.6133831  15.6126196  15.6128136  15.6126762  15.6127359
+  15.6138115  15.6115964   6.3875761   6.3869993   6.3873908   6.3871962
+   6.3871893   6.3873921   6.3870956   6.3874855
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923974   3.4880064  -3.4905564  -3.4898392   3.4903847   3.4900387
+  -3.4866387  -3.4937913   0.1447573   0.1421786  -0.1433886  -0.1435534
+   0.1433497   0.1436031  -0.1426840  -0.1442643
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3437.48 TCPU     3335.08
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3511.15 TCPU     3408.72
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3575.70 TCPU     3473.25
+ NUMERICALLY INTEGRATED DENSITY     87.9996118485     87.9996116861
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3577.63 TCPU     3475.18
+ CYC  23 ETOT(AU) -1.066571979470E+03 DETOT  1.53E-08 tst  3.60E-10 PX  3.29E-05
+ CYCLE 23 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.923465166207E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3583.01 TCPU     3477.75
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3583.32 TCPU     3478.06
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6123497  15.6128652  15.6123894  15.6130532  15.6128740  15.6125725
+  15.6129253  15.6126493   6.3876154   6.3869596   6.3874283   6.3871604
+   6.3871720   6.3874054   6.3870764   6.3875038
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921602   3.4883686  -3.4907199  -3.4897004   3.4902240   3.4901403
+  -3.4872804  -3.4930523   0.1447715   0.1421302  -0.1433621  -0.1436140
+   0.1433669   0.1435603  -0.1426915  -0.1443015
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3583.36 TCPU     3478.09
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3659.90 TCPU     3554.62
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3719.98 TCPU     3614.70
+ NUMERICALLY INTEGRATED DENSITY     87.9996118504     87.9996116857
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3721.93 TCPU     3616.64
+ CYC  24 ETOT(AU) -1.066571978852E+03 DETOT  6.18E-07 tst  2.38E-08 PX  3.06E-04
+ CYCLE 24 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.534022573313E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3729.80 TCPU     3618.94
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3730.12 TCPU     3619.25
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120913  15.6133690  15.6126163  15.6128148  15.6126544  15.6127204
+  15.6138073  15.6116004   6.3875790   6.3869967   6.3873953   6.3871913
+   6.3871839   6.3873982   6.3870900   6.3874916
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923420   3.4880348  -3.4905611  -3.4898368   3.4903865   3.4900643
+  -3.4866793  -3.4937493   0.1447379   0.1422006  -0.1433972  -0.1435473
+   0.1433499   0.1436039  -0.1426936  -0.1442550
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3730.15 TCPU     3619.29
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3803.80 TCPU     3692.92
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     3868.52 TCPU     3757.63
+ NUMERICALLY INTEGRATED DENSITY     87.9996118489     87.9996116865
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     3870.53 TCPU     3759.64
+ CYC  25 ETOT(AU) -1.066571979441E+03 DETOT -5.89E-07 tst  1.48E-08 PX  2.49E-04
+ CYCLE 25 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.255251699485E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     3876.18 TCPU     3762.79
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     3876.48 TCPU     3763.10
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120296  15.6133777  15.6126221  15.6128166  15.6126908  15.6127493
+  15.6137866  15.6116029   6.3875753   6.3870003   6.3873924   6.3871941
+   6.3871873   6.3873936   6.3870948   6.3874865
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923845   3.4880367  -3.4905560  -3.4898327   3.4903586   3.4900439
+  -3.4866965  -3.4937434   0.1447376   0.1422017  -0.1433960  -0.1435460
+   0.1433491   0.1436073  -0.1426967  -0.1442520
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     3876.52 TCPU     3763.14
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     3950.08 TCPU     3836.68
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4013.16 TCPU     3899.75
+ NUMERICALLY INTEGRATED DENSITY     87.9996118488     87.9996116865
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4015.07 TCPU     3901.67
+ CYC  26 ETOT(AU) -1.066571979436E+03 DETOT  4.70E-09 tst  3.89E-11 PX  1.57E-05
+ CYCLE 26 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.034663382962E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4021.07 TCPU     3905.39
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4021.38 TCPU     3905.69
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120353  15.6133835  15.6126170  15.6128112  15.6126896  15.6127359
+  15.6137909  15.6116131   6.3875721   6.3870030   6.3873907   6.3871959
+   6.3871889   6.3873920   6.3870970   6.3874838
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923746   3.4880367  -3.4905613  -3.4898363   3.4903572   3.4900561
+  -3.4867017  -3.4937280   0.1447342   0.1422049  -0.1433977  -0.1435454
+   0.1433485   0.1436077  -0.1426992  -0.1442504
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4021.41 TCPU     3905.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4097.79 TCPU     3982.09
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4157.91 TCPU     4042.20
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4159.92 TCPU     4044.21
+ CYC  27 ETOT(AU) -1.066571979431E+03 DETOT  5.45E-09 tst  9.30E-11 PX  1.69E-05
+ CYCLE 27 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.155531002362E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4165.80 TCPU     4047.49
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4166.11 TCPU     4047.80
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120373  15.6133767  15.6126205  15.6128159  15.6126908  15.6127371
+  15.6137865  15.6116115   6.3875712   6.3870039   6.3873905   6.3871961
+   6.3871891   6.3873917   6.3870978   6.3874832
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923694   3.4880450  -3.4905594  -3.4898324   3.4903537   3.4900575
+  -3.4867120  -3.4937227   0.1447312   0.1422080  -0.1433993  -0.1435446
+   0.1433483   0.1436077  -0.1427010  -0.1442493
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4166.14 TCPU     4047.83
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4239.50 TCPU     4121.17
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4302.49 TCPU     4184.15
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116863
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4304.47 TCPU     4186.13
+ CYC  28 ETOT(AU) -1.066571979426E+03 DETOT  4.52E-09 tst  5.75E-11 PX  1.31E-05
+ CYCLE 28 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.218762252481E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4312.50 TCPU     4193.88
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4312.81 TCPU     4194.19
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120482  15.6133641  15.6126101  15.6128122  15.6126889  15.6127384
+  15.6137679  15.6116452   6.3875686   6.3870068   6.3873934   6.3871938
+   6.3871886   6.3873919   6.3871003   6.3874814
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923275   3.4880866  -3.4905724  -3.4898305   3.4903345   3.4900778
+  -3.4867834  -3.4936403   0.1447054   0.1422362  -0.1434100  -0.1435364
+   0.1433474   0.1436111  -0.1427177  -0.1442358
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4312.84 TCPU     4194.23
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4386.37 TCPU     4267.71
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4449.10 TCPU     4330.43
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116863
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4451.14 TCPU     4332.47
+ CYC  29 ETOT(AU) -1.066571979388E+03 DETOT  3.77E-08 tst  4.11E-09 PX  1.14E-04
+ CYCLE 29 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.736708951678E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4457.26 TCPU     4335.91
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4457.57 TCPU     4336.22
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120254  15.6133740  15.6126043  15.6128097  15.6126712  15.6127582
+  15.6138049  15.6116236   6.3875745   6.3870013   6.3873939   6.3871951
+   6.3871889   6.3873924   6.3870979   6.3874849
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923825   3.4880401  -3.4905708  -3.4898392   3.4903694   3.4900388
+  -3.4866888  -3.4937253   0.1447340   0.1422020  -0.1433987  -0.1435460
+   0.1433484   0.1436062  -0.1426991  -0.1442534
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4457.61 TCPU     4336.26
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4534.27 TCPU     4412.87
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4594.10 TCPU     4472.70
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116861
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4596.01 TCPU     4474.61
+ CYC  30 ETOT(AU) -1.066571979431E+03 DETOT -4.23E-08 tst  5.82E-09 PX  1.34E-04
+ CYCLE 30 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.199150211989E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4607.44 TCPU     4481.97
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4607.75 TCPU     4482.28
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6123960  15.6127600  15.6121535  15.6129333  15.6125151  15.6129478
+  15.6132102  15.6127421   6.3875766   6.3870099   6.3874180   6.3871762
+   6.3872012   6.3873890   6.3871111   6.3874601
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4919849   3.4885703  -3.4909154  -3.4897723   3.4903575   3.4899952
+  -3.4873342  -3.4927264   0.1446255   0.1422671  -0.1434395  -0.1435390
+   0.1433620   0.1435725  -0.1427554  -0.1442529
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4607.78 TCPU     4482.32
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4680.97 TCPU     4555.49
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4744.13 TCPU     4618.63
+ NUMERICALLY INTEGRATED DENSITY     87.9996118494     87.9996116844
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4746.05 TCPU     4620.55
+ CYC  31 ETOT(AU) -1.066571978841E+03 DETOT  5.90E-07 tst  1.27E-07 PX  6.20E-04
+ CYCLE 31 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.578314215389E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4750.28 TCPU     4623.84
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4750.58 TCPU     4624.14
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120728  15.6132682  15.6126427  15.6129018  15.6127343  15.6126893
+  15.6136579  15.6116932   6.3875408   6.3870414   6.3873849   6.3872023
+   6.3872011   6.3873864   6.3871220   6.3874609
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921846   3.4882710  -3.4905726  -3.4897500   3.4902129   3.4901863
+  -3.4870891  -3.4933942   0.1445994   0.1423362  -0.1434570  -0.1435059
+   0.1433319   0.1436149  -0.1427793  -0.1441889
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4750.62 TCPU     4624.18
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4827.37 TCPU     4700.83
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     4887.06 TCPU     4760.47
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116855
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     4888.99 TCPU     4762.40
+ CYC  32 ETOT(AU) -1.066571979352E+03 DETOT -5.11E-07 tst  5.08E-09 PX  2.38E-04
+ CYCLE 32 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.890039838042E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     4896.24 TCPU     4768.61
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     4896.55 TCPU     4768.92
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121035  15.6133110  15.6126107  15.6128374  15.6127163  15.6126776
+  15.6136773  15.6117323   6.3875412   6.3870381   6.3873865   6.3872011
+   6.3871990   6.3873865   6.3871201   6.3874615
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921577   3.4882502  -3.4905974  -3.4897917   3.4902260   3.4902054
+  -3.4870827  -3.4933471   0.1445961   0.1423457  -0.1434561  -0.1435002
+   0.1433341   0.1436211  -0.1427804  -0.1441807
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     4896.58 TCPU     4768.95
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     4973.72 TCPU     4846.06
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5032.99 TCPU     4905.32
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5034.93 TCPU     4907.25
+ CYC  33 ETOT(AU) -1.066571979367E+03 DETOT -1.55E-08 tst  4.66E-10 PX  3.59E-05
+ CYCLE 33 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.961160523301E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5039.62 TCPU     4911.07
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5039.93 TCPU     4911.38
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121070  15.6133303  15.6126079  15.6128331  15.6127004  15.6126545
+  15.6137009  15.6117294   6.3875408   6.3870389   6.3873840   6.3872040
+   6.3872015   6.3873859   6.3871206   6.3874607
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921671   3.4882205  -3.4905981  -3.4897991   3.4902465   3.4902111
+  -3.4870417  -3.4933749   0.1446064   0.1423325  -0.1434532  -0.1435061
+   0.1433336   0.1436186  -0.1427753  -0.1441879
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5039.97 TCPU     4911.42
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5116.72 TCPU     4988.12
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5176.43 TCPU     5047.78
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116857
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5178.40 TCPU     5049.73
+ CYC  34 ETOT(AU) -1.066571979351E+03 DETOT  1.63E-08 tst  1.23E-09 PX  5.47E-05
+ CYCLE 34 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.328043201577E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5183.94 TCPU     5052.28
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5184.25 TCPU     5052.59
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120417  15.6133410  15.6126223  15.6127976  15.6127138  15.6127333
+  15.6137382  15.6116765   6.3875480   6.3870317   6.3873816   6.3872072
+   6.3872023   6.3873843   6.3871167   6.3874639
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922827   3.4881527  -3.4905717  -3.4898316   3.4902814   3.4901133
+  -3.4868963  -3.4935272   0.1446617   0.1422818  -0.1434292  -0.1435205
+   0.1433415   0.1436190  -0.1427453  -0.1442123
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5184.28 TCPU     5052.62
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5261.24 TCPU     5129.57
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5320.87 TCPU     5189.19
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5322.91 TCPU     5191.23
+ CYC  35 ETOT(AU) -1.066571979317E+03 DETOT  3.35E-08 tst  3.17E-08 PX  2.75E-04
+ CYCLE 35 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.348190858148E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5328.44 TCPU     5195.16
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5328.74 TCPU     5195.46
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120822  15.6133482  15.6125846  15.6128408  15.6126780  15.6127363
+  15.6137528  15.6116460   6.3875581   6.3870179   6.3873920   6.3871974
+   6.3871941   6.3873893   6.3871089   6.3874735
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922673   3.4881346  -3.4905913  -3.4898065   3.4903172   3.4901052
+  -3.4868653  -3.4935676   0.1446722   0.1422755  -0.1434252  -0.1435242
+   0.1433487   0.1436144  -0.1427361  -0.1442189
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5328.78 TCPU     5195.50
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5402.24 TCPU     5268.94
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5467.77 TCPU     5334.46
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116861
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5469.77 TCPU     5336.46
+ CYC  36 ETOT(AU) -1.066571979310E+03 DETOT  7.78E-09 tst  9.98E-09 PX  1.37E-04
+ CYCLE 36 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.488181742024E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5475.32 TCPU     5341.05
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5475.62 TCPU     5341.36
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120736  15.6133374  15.6125955  15.6128267  15.6126884  15.6127324
+  15.6137421  15.6116737   6.3875592   6.3870167   6.3873952   6.3871941
+   6.3871910   6.3873912   6.3871075   6.3874754
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922565   3.4881571  -3.4905879  -3.4898149   3.4902999   3.4901158
+  -3.4869006  -3.4935221   0.1446598   0.1422860  -0.1434300  -0.1435225
+   0.1433464   0.1436154  -0.1427460  -0.1442130
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5475.66 TCPU     5341.39
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5552.86 TCPU     5418.57
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5611.99 TCPU     5477.69
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5614.00 TCPU     5479.70
+ CYC  37 ETOT(AU) -1.066571979293E+03 DETOT  1.64E-08 tst  8.77E-10 PX  5.14E-05
+ CYCLE 37 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.052742563291E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5617.75 TCPU     5482.78
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5618.08 TCPU     5483.11
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6129403  15.6129988  15.6122893  15.6132525  15.6126320  15.6125083
+  15.6128008  15.6122946   6.3875471   6.3870207   6.3873705   6.3871951
+   6.3872129   6.3873767   6.3871104   6.3874503
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4916914   3.4883754  -3.4907614  -3.4895220   3.4903696   3.4902959
+  -3.4875074  -3.4931053   0.1447332   0.1422641  -0.1433802  -0.1435412
+   0.1434071   0.1435819  -0.1426643  -0.1442370
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5618.11 TCPU     5483.14
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5695.04 TCPU     5560.05
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5756.68 TCPU     5621.63
+ NUMERICALLY INTEGRATED DENSITY     87.9996118476     87.9996116877
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5758.75 TCPU     5623.71
+ CYC  38 ETOT(AU) -1.066571978691E+03 DETOT  6.02E-07 tst  6.97E-09 PX  2.01E-04
+ CYCLE 38 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.473043013278E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5763.00 TCPU     5627.60
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5763.30 TCPU     5627.90
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120263  15.6133023  15.6125801  15.6128083  15.6127967  15.6127620
+  15.6137280  15.6116787   6.3875407   6.3870416   6.3873676   6.3872113
+   6.3872080   6.3873782   6.3871165   6.3874536
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922914   3.4881955  -3.4905980  -3.4898202   3.4902215   3.4901018
+  -3.4869147  -3.4935075   0.1446603   0.1422870  -0.1434244  -0.1435120
+   0.1433469   0.1436208  -0.1427410  -0.1442074
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5763.34 TCPU     5627.94
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5836.99 TCPU     5701.55
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     5899.82 TCPU     5764.36
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     5901.93 TCPU     5766.47
+ CYC  39 ETOT(AU) -1.066571979298E+03 DETOT -6.07E-07 tst  5.99E-09 PX  2.03E-04
+ CYCLE 39 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  8.571024454116E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     5906.65 TCPU     5770.39
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     5906.95 TCPU     5770.70
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120849  15.6133668  15.6125934  15.6128060  15.6126678  15.6127083
+  15.6137471  15.6116977   6.3875506   6.3870295   6.3873818   6.3872026
+   6.3872019   6.3873858   6.3871125   6.3874636
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922423   3.4881408  -3.4905954  -3.4898273   3.4903082   3.4901402
+  -3.4869028  -3.4934977   0.1446546   0.1422841  -0.1434318  -0.1435167
+   0.1433402   0.1436144  -0.1427438  -0.1442094
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     5906.99 TCPU     5770.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     5980.48 TCPU     5844.22
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6043.46 TCPU     5907.19
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6045.48 TCPU     5909.20
+ CYC  40 ETOT(AU) -1.066571979306E+03 DETOT -7.67E-09 tst  1.72E-10 PX  2.87E-05
+ CYCLE 40 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.312235966700E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6051.23 TCPU     5912.19
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6051.55 TCPU     5912.50
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120709  15.6133309  15.6126069  15.6128471  15.6126845  15.6127322
+  15.6137232  15.6116709   6.3875569   6.3870224   6.3873906   6.3871970
+   6.3871961   6.3873892   6.3871104   6.3874709
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922541   3.4881657  -3.4905841  -3.4897978   3.4902930   3.4901223
+  -3.4869221  -3.4935178   0.1446526   0.1422841  -0.1434319  -0.1435164
+   0.1433402   0.1436114  -0.1427428  -0.1442105
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6051.57 TCPU     5912.53
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6128.32 TCPU     5989.26
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6187.93 TCPU     6048.85
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6189.92 TCPU     6050.85
+ CYC  41 ETOT(AU) -1.066571979310E+03 DETOT -4.24E-09 tst  1.36E-10 PX  1.57E-05
+ CYCLE 41 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.610292156266E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6195.43 TCPU     6055.88
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6195.73 TCPU     6056.19
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120775  15.6133338  15.6125874  15.6128334  15.6126928  15.6127268
+  15.6137347  15.6116807   6.3875576   6.3870203   6.3873931   6.3871959
+   6.3871941   6.3873900   6.3871094   6.3874726
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922501   3.4881645  -3.4905977  -3.4898068   3.4902876   3.4901281
+  -3.4869139  -3.4935078   0.1446524   0.1422851  -0.1434303  -0.1435145
+   0.1433413   0.1436122  -0.1427415  -0.1442089
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6195.77 TCPU     6056.22
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6272.77 TCPU     6133.19
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6332.10 TCPU     6192.52
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6334.08 TCPU     6194.50
+ CYC  42 ETOT(AU) -1.066571979314E+03 DETOT -3.49E-09 tst  1.56E-10 PX  1.77E-05
+ CYCLE 42 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.670748155917E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6341.61 TCPU     6196.89
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6341.92 TCPU     6197.20
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120772  15.6133307  15.6125828  15.6128343  15.6126934  15.6127264
+  15.6137391  15.6116826   6.3875579   6.3870204   6.3873930   6.3871961
+   6.3871944   6.3873900   6.3871095   6.3874725
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922505   3.4881659  -3.4906006  -3.4898071   3.4902883   3.4901269
+  -3.4869095  -3.4935080   0.1446532   0.1422845  -0.1434303  -0.1435157
+   0.1433420   0.1436120  -0.1427417  -0.1442102
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6341.96 TCPU     6197.23
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6415.77 TCPU     6271.04
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6480.43 TCPU     6335.68
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6482.39 TCPU     6337.65
+ CYC  43 ETOT(AU) -1.066571979311E+03 DETOT  2.77E-09 tst  1.57E-10 PX  1.69E-05
+ CYCLE 43 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.683491790681E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6490.00 TCPU     6340.04
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6490.31 TCPU     6340.35
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120783  15.6133344  15.6125860  15.6128333  15.6126927  15.6127268
+  15.6137357  15.6116801   6.3875583   6.3870195   6.3873934   6.3871957
+   6.3871939   6.3873900   6.3871092   6.3874729
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922504   3.4881631  -3.4905976  -3.4898078   3.4902905   3.4901257
+  -3.4869101  -3.4935111   0.1446548   0.1422846  -0.1434297  -0.1435166
+   0.1433429   0.1436127  -0.1427417  -0.1442103
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6490.34 TCPU     6340.38
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6567.38 TCPU     6417.40
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6626.50 TCPU     6476.50
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6628.56 TCPU     6478.56
+ CYC  44 ETOT(AU) -1.066571979309E+03 DETOT  1.95E-09 tst  1.99E-10 PX  1.91E-05
+ CYCLE 44 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.717504735663E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6632.68 TCPU     6481.69
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6632.98 TCPU     6482.00
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6125555  15.6128077  15.6124654  15.6128688  15.6128514  15.6125690
+  15.6128702  15.6127115   6.3875899   6.3869863   6.3874061   6.3871705
+   6.3871802   6.3874027   6.3870798   6.3874849
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4919801   3.4884599  -3.4906788  -3.4898074   3.4902162   3.4901916
+  -3.4873948  -3.4929091   0.1447426   0.1421767  -0.1433677  -0.1435861
+   0.1433675   0.1435756  -0.1426962  -0.1442701
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6633.02 TCPU     6482.03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6706.40 TCPU     6555.41
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6769.51 TCPU     6618.51
+ NUMERICALLY INTEGRATED DENSITY     87.9996118498     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6771.48 TCPU     6620.48
+ CYC  45 ETOT(AU) -1.066571978723E+03 DETOT  5.86E-07 tst  5.00E-09 PX  2.49E-04
+ CYCLE 45 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.429645613816E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6775.53 TCPU     6623.56
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6775.84 TCPU     6623.86
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120545  15.6133472  15.6126084  15.6128692  15.6127181  15.6127027
+  15.6137443  15.6116332   6.3875620   6.3870179   6.3873836   6.3871974
+   6.3871950   6.3873903   6.3871021   6.3874740
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923075   3.4881134  -3.4905758  -3.4897878   3.4902987   3.4901143
+  -3.4868373  -3.4936208   0.1446878   0.1422455  -0.1434152  -0.1435297
+   0.1433421   0.1436060  -0.1427199  -0.1442288
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6775.88 TCPU     6623.90
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6849.41 TCPU     6697.40
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     6912.54 TCPU     6760.53
+ NUMERICALLY INTEGRATED DENSITY     87.9996118490     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     6914.48 TCPU     6762.47
+ CYC  46 ETOT(AU) -1.066571979368E+03 DETOT -6.45E-07 tst  1.16E-08 PX  2.36E-04
+ CYCLE 46 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.595590377205E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     6920.63 TCPU     6768.55
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     6920.94 TCPU     6768.85
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120656  15.6133630  15.6125940  15.6128341  15.6126828  15.6127260
+  15.6137633  15.6116467   6.3875641   6.3870148   6.3873874   6.3871960
+   6.3871937   6.3873908   6.3871020   6.3874755
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923047   3.4880984  -3.4905868  -3.4898132   3.4903256   3.4900989
+  -3.4868117  -3.4936142   0.1446908   0.1422438  -0.1434134  -0.1435276
+   0.1433429   0.1436074  -0.1427167  -0.1442288
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     6920.97 TCPU     6768.89
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     6994.72 TCPU     6842.61
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7060.08 TCPU     6907.95
+ NUMERICALLY INTEGRATED DENSITY     87.9996118488     87.9996116863
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7062.16 TCPU     6910.03
+ CYC  47 ETOT(AU) -1.066571979379E+03 DETOT -1.09E-08 tst  1.33E-10 PX  1.90E-05
+ CYCLE 47 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.895749007679E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7067.90 TCPU     6915.71
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7068.21 TCPU     6916.01
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120620  15.6133605  15.6125950  15.6128343  15.6126841  15.6127311
+  15.6137633  15.6116437   6.3875648   6.3870140   6.3873883   6.3871960
+   6.3871935   6.3873909   6.3871022   6.3874762
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923102   3.4880976  -3.4905856  -3.4898131   3.4903260   3.4900937
+  -3.4868069  -3.4936211   0.1446927   0.1422417  -0.1434125  -0.1435279
+   0.1433430   0.1436072  -0.1427152  -0.1442298
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7068.25 TCPU     6916.05
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7141.92 TCPU     6989.72
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7204.86 TCPU     7052.65
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116863
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7206.97 TCPU     7054.75
+ CYC  48 ETOT(AU) -1.066571979383E+03 DETOT -3.45E-09 tst  2.67E-11 PX  9.09E-06
+ CYCLE 48 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.870844820250E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7212.81 TCPU     7058.81
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7213.11 TCPU     7059.12
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120619  15.6133557  15.6125964  15.6128352  15.6126864  15.6127341
+  15.6137590  15.6116471   6.3875636   6.3870156   6.3873872   6.3871959
+   6.3871938   6.3873907   6.3871023   6.3874752
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923040   3.4881074  -3.4905854  -3.4898117   3.4903206   3.4900952
+  -3.4868211  -3.4936078   0.1446881   0.1422470  -0.1434146  -0.1435265
+   0.1433430   0.1436079  -0.1427186  -0.1442274
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7213.15 TCPU     7059.16
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7289.96 TCPU     7135.96
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7349.77 TCPU     7195.75
+ NUMERICALLY INTEGRATED DENSITY     87.9996118488     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7351.78 TCPU     7197.77
+ CYC  49 ETOT(AU) -1.066571979374E+03 DETOT  8.66E-09 tst  1.45E-10 PX  2.08E-05
+ CYCLE 49 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.949187008644E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7358.56 TCPU     7202.34
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7358.87 TCPU     7202.65
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120843  15.6133325  15.6125816  15.6128340  15.6127000  15.6127193
+  15.6137273  15.6116803   6.3875573   6.3870230   6.3873915   6.3871989
+   6.3871957   6.3873890   6.3871117   6.3874736
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922387   3.4881724  -3.4906003  -3.4898063   3.4902832   3.4901343
+  -3.4869277  -3.4934976   0.1446520   0.1422900  -0.1434297  -0.1435156
+   0.1433440   0.1436138  -0.1427440  -0.1442072
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7358.90 TCPU     7202.68
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7435.53 TCPU     7279.28
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7495.13 TCPU     7338.87
+ NUMERICALLY INTEGRATED DENSITY     87.9996118484     87.9996116860
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7497.10 TCPU     7340.84
+ CYC  50 ETOT(AU) -1.066571979300E+03 DETOT  7.42E-08 tst  9.34E-09 PX  1.71E-04
+ CYCLE 50 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.026463531635E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7506.29 TCPU     7346.59
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7506.60 TCPU     7346.90
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120845  15.6133326  15.6125870  15.6128362  15.6126972  15.6127188
+  15.6137236  15.6116865   6.3875561   6.3870224   6.3873908   6.3871978
+   6.3871950   6.3873882   6.3871112   6.3874721
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922343   3.4881762  -3.4905979  -3.4898050   3.4902826   3.4901369
+  -3.4869386  -3.4934868   0.1446482   0.1422934  -0.1434322  -0.1435152
+   0.1433433   0.1436140  -0.1427472  -0.1442058
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7506.63 TCPU     7346.93
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7580.17 TCPU     7420.46
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7643.17 TCPU     7483.45
+ NUMERICALLY INTEGRATED DENSITY     87.9996118485     87.9996116861
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7645.16 TCPU     7485.44
+ CYC  51 ETOT(AU) -1.066571979295E+03 DETOT  5.13E-09 tst  8.47E-11 PX  1.63E-05
+ CYCLE 51 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.019368157369E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7650.33 TCPU     7489.82
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7650.64 TCPU     7490.14
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6124675  15.6129659  15.6126763  15.6128726  15.6127076  15.6126531
+  15.6128289  15.6126555   6.3875845   6.3869583   6.3874030   6.3871402
+   6.3871603   6.3873927   6.3870621   6.3874714
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4920383   3.4883484  -3.4905413  -3.4897988   3.4903101   3.4901389
+  -3.4874309  -3.4929680   0.1447360   0.1421800  -0.1433835  -0.1435863
+   0.1433487   0.1435815  -0.1427109  -0.1442621
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7650.67 TCPU     7490.17
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7724.31 TCPU     7563.79
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7786.84 TCPU     7626.31
+ NUMERICALLY INTEGRATED DENSITY     87.9996118521     87.9996116879
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7788.86 TCPU     7628.34
+ CYC  52 ETOT(AU) -1.066571978839E+03 DETOT  4.55E-07 tst  5.89E-09 PX  2.37E-04
+ CYCLE 52 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.530236526405E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7794.17 TCPU     7630.47
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7794.48 TCPU     7630.78
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120705  15.6133430  15.6125902  15.6128676  15.6127257  15.6126885
+  15.6137809  15.6116605   6.3875597   6.3870065   6.3873841   6.3871866
+   6.3871857   6.3873881   6.3870926   6.3874697
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923047   3.4881090  -3.4905942  -3.4897948   3.4902944   3.4901210
+  -3.4868031  -3.4936100   0.1446874   0.1422406  -0.1434162  -0.1435313
+   0.1433409   0.1436033  -0.1427187  -0.1442330
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7794.51 TCPU     7630.81
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     7871.40 TCPU     7707.66
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     7930.90 TCPU     7767.15
+ NUMERICALLY INTEGRATED DENSITY     87.9996118496     87.9996116867
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     7932.88 TCPU     7769.13
+ CYC  53 ETOT(AU) -1.066571979382E+03 DETOT -5.42E-07 tst  1.26E-08 PX  2.14E-04
+ CYCLE 53 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.038045622663E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     7939.96 TCPU     7772.50
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     7940.27 TCPU     7772.80
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120591  15.6133589  15.6125885  15.6128284  15.6126803  15.6127414
+  15.6137719  15.6116414   6.3875680   6.3870103   6.3873937   6.3871935
+   6.3871916   6.3873937   6.3871007   6.3874785
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923220   3.4880903  -3.4905899  -3.4898163   3.4903296   3.4900840
+  -3.4867885  -3.4936335   0.1446948   0.1422370  -0.1434108  -0.1435259
+   0.1433421   0.1436064  -0.1427107  -0.1442307
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     7940.30 TCPU     7772.84
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8017.38 TCPU     7849.84
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8076.84 TCPU     7909.24
+ NUMERICALLY INTEGRATED DENSITY     87.9996118483     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8078.92 TCPU     7911.33
+ CYC  54 ETOT(AU) -1.066571979390E+03 DETOT -8.42E-09 tst  3.42E-10 PX  3.31E-05
+ CYCLE 54 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.305513840608E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8083.51 TCPU     7914.78
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8083.82 TCPU     7915.09
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120554  15.6133627  15.6125901  15.6128303  15.6126788  15.6127381
+  15.6137733  15.6116349   6.3875692   6.3870101   6.3873942   6.3871949
+   6.3871924   6.3873940   6.3871016   6.3874799
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923305   3.4880811  -3.4905880  -3.4898157   3.4903340   3.4900825
+  -3.4867767  -3.4936489   0.1446993   0.1422313  -0.1434087  -0.1435273
+   0.1433416   0.1436054  -0.1427073  -0.1442332
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8083.86 TCPU     7915.13
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8161.07 TCPU     7992.33
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8222.45 TCPU     8053.71
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8224.50 TCPU     8055.76
+ CYC  55 ETOT(AU) -1.066571979399E+03 DETOT -8.71E-09 tst  1.51E-10 PX  2.18E-05
+ CYCLE 55 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.280433605985E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8229.49 TCPU     8059.23
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8229.80 TCPU     8059.54
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120667  15.6133581  15.6125959  15.6128367  15.6126826  15.6127269
+  15.6137435  15.6116465   6.3875662   6.3870154   6.3873953   6.3871947
+   6.3871938   6.3873952   6.3871045   6.3874781
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922937   3.4881126  -3.4905861  -3.4898072   3.4903160   3.4901059
+  -3.4868456  -3.4935923   0.1446796   0.1422558  -0.1434174  -0.1435221
+   0.1433417   0.1436088  -0.1427222  -0.1442211
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8229.83 TCPU     8059.57
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8306.37 TCPU     8136.10
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8366.37 TCPU     8196.09
+ NUMERICALLY INTEGRATED DENSITY     87.9996118481     87.9996116857
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8368.30 TCPU     8198.02
+ CYC  56 ETOT(AU) -1.066571979357E+03 DETOT  4.20E-08 tst  3.02E-09 PX  9.46E-05
+ CYCLE 56 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.425405175264E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8374.09 TCPU     8202.24
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8374.40 TCPU     8202.55
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120749  15.6133425  15.6125849  15.6128277  15.6126855  15.6127177
+  15.6137345  15.6116786   6.3875616   6.3870218   6.3873963   6.3871974
+   6.3871962   6.3873944   6.3871099   6.3874760
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922550   3.4881541  -3.4905983  -3.4898111   3.4902958   3.4901294
+  -3.4869065  -3.4935150   0.1446553   0.1422818  -0.1434280  -0.1435161
+   0.1433411   0.1436118  -0.1427400  -0.1442092
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8374.43 TCPU     8202.58
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8451.16 TCPU     8279.30
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8511.04 TCPU     8339.18
+ NUMERICALLY INTEGRATED DENSITY     87.9996118480     87.9996116855
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8512.99 TCPU     8341.12
+ CYC  57 ETOT(AU) -1.066571979312E+03 DETOT  4.50E-08 tst  3.80E-09 PX  1.10E-04
+ CYCLE 57 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.559371498646E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8518.50 TCPU     8344.49
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8518.82 TCPU     8344.81
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120758  15.6133360  15.6125883  15.6128323  15.6126899  15.6127213
+  15.6137295  15.6116773   6.3875598   6.3870222   6.3873951   6.3871979
+   6.3871960   6.3873926   6.3871107   6.3874751
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922506   3.4881633  -3.4905965  -3.4898074   3.4902904   3.4901295
+  -3.4869183  -3.4935084   0.1446519   0.1422856  -0.1434296  -0.1435148
+   0.1433411   0.1436122  -0.1427421  -0.1442075
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8518.86 TCPU     8344.85
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8595.75 TCPU     8421.72
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8656.10 TCPU     8482.05
+ NUMERICALLY INTEGRATED DENSITY     87.9996118481     87.9996116857
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8658.09 TCPU     8484.04
+ CYC  58 ETOT(AU) -1.066571979307E+03 DETOT  4.31E-09 tst  8.06E-11 PX  1.56E-05
+ CYCLE 58 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.563989101519E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8663.17 TCPU     8486.30
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8663.49 TCPU     8486.62
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6126143  15.6128283  15.6125453  15.6128752  15.6128715  15.6125809
+  15.6127826  15.6126792   6.3875820   6.3869711   6.3874023   6.3871569
+   6.3871650   6.3873957   6.3870691   6.3874806
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4919427   3.4884564  -3.4906209  -3.4897919   3.4902029   3.4901963
+  -3.4874619  -3.4929257   0.1447491   0.1421868  -0.1433621  -0.1435777
+   0.1433705   0.1435828  -0.1426892  -0.1442582
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8663.52 TCPU     8486.65
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8737.20 TCPU     8560.11
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8800.12 TCPU     8622.90
+ NUMERICALLY INTEGRATED DENSITY     87.9996118510     87.9996116885
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8802.05 TCPU     8624.82
+ CYC  59 ETOT(AU) -1.066571978698E+03 DETOT  6.09E-07 tst  5.78E-09 PX  2.45E-04
+ CYCLE 59 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.390498837963E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8806.26 TCPU     8628.06
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8806.57 TCPU     8628.38
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120682  15.6133629  15.6125779  15.6128545  15.6127253  15.6127043
+  15.6137625  15.6116595   6.3875576   6.3870110   6.3873826   6.3871915
+   6.3871887   6.3873853   6.3870978   6.3874701
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922966   3.4881092  -3.4906011  -3.4897986   3.4902907   3.4901227
+  -3.4868291  -3.4935910   0.1446839   0.1422487  -0.1434145  -0.1435238
+   0.1433422   0.1436070  -0.1427187  -0.1442241
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8806.60 TCPU     8628.41
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     8880.15 TCPU     8701.94
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     8943.17 TCPU     8764.76
+ NUMERICALLY INTEGRATED DENSITY     87.9996118497     87.9996116873
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     8945.22 TCPU     8766.82
+ CYC  60 ETOT(AU) -1.066571979376E+03 DETOT -6.78E-07 tst  1.23E-08 PX  2.23E-04
+ CYCLE 60 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.723970773332E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     8950.07 TCPU     8771.09
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     8950.38 TCPU     8771.39
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120605  15.6133608  15.6125901  15.6128329  15.6126835  15.6127293
+  15.6137603  15.6116552   6.3875649   6.3870140   6.3873902   6.3871949
+   6.3871930   6.3873911   6.3871028   6.3874764
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923040   3.4881037  -3.4905920  -3.4898121   3.4903181   3.4901026
+  -3.4868212  -3.4936005   0.1446852   0.1422450  -0.1434145  -0.1435227
+   0.1433399   0.1436062  -0.1427168  -0.1442250
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     8950.41 TCPU     8771.43
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9023.94 TCPU     8844.94
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9087.30 TCPU     8908.29
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9089.28 TCPU     8910.27
+ CYC  61 ETOT(AU) -1.066571979383E+03 DETOT -6.85E-09 tst  8.95E-11 PX  1.67E-05
+ CYCLE 61 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.002392356150E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9093.48 TCPU     8912.76
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9093.79 TCPU     8913.06
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120543  15.6133596  15.6125862  15.6128321  15.6126857  15.6127274
+  15.6137639  15.6116489   6.3875677   6.3870141   6.3873927   6.3871968
+   6.3871946   6.3873926   6.3871044   6.3874789
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923161   3.4880965  -3.4905934  -3.4898131   3.4903202   3.4900990
+  -3.4868052  -3.4936176   0.1446902   0.1422384  -0.1434118  -0.1435238
+   0.1433397   0.1436051  -0.1427126  -0.1442277
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9093.83 TCPU     8913.10
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9167.42 TCPU     8986.69
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9232.49 TCPU     9051.74
+ NUMERICALLY INTEGRATED DENSITY     87.9996118483     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9234.52 TCPU     9053.77
+ CYC  62 ETOT(AU) -1.066571979391E+03 DETOT -7.95E-09 tst  2.04E-10 PX  2.47E-05
+ CYCLE 62 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  9.889478151599E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9238.93 TCPU     9057.25
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9239.24 TCPU     9057.56
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120535  15.6133524  15.6125826  15.6128308  15.6126913  15.6127258
+  15.6137566  15.6116583   6.3875668   6.3870173   6.3873929   6.3871979
+   6.3871960   6.3873929   6.3871066   6.3874784
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4923044   3.4881132  -3.4905970  -3.4898128   3.4903099   3.4901061
+  -3.4868300  -3.4935909   0.1446819   0.1422478  -0.1434150  -0.1435218
+   0.1433399   0.1436064  -0.1427188  -0.1442233
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9239.27 TCPU     9057.59
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9316.29 TCPU     9134.59
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9376.15 TCPU     9194.44
+ NUMERICALLY INTEGRATED DENSITY     87.9996118482     87.9996116858
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9378.14 TCPU     9196.43
+ CYC  63 ETOT(AU) -1.066571979373E+03 DETOT  1.74E-08 tst  4.93E-10 PX  3.90E-05
+ CYCLE 63 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.005171364325E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9382.29 TCPU     9200.13
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9382.59 TCPU     9200.43
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120812  15.6133432  15.6125857  15.6128403  15.6126901  15.6127066
+  15.6137230  15.6116749   6.3875612   6.3870241   6.3873930   6.3871992
+   6.3871983   6.3873913   6.3871127   6.3874752
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4922456   3.4881575  -3.4905982  -3.4898018   3.4902907   3.4901407
+  -3.4869202  -3.4935122   0.1446544   0.1422817  -0.1434273  -0.1435152
+   0.1433403   0.1436105  -0.1427386  -0.1442081
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9382.63 TCPU     9200.47
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9459.92 TCPU     9277.74
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9519.15 TCPU     9336.96
+ NUMERICALLY INTEGRATED DENSITY     87.9996118481     87.9996116857
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9521.16 TCPU     9338.97
+ CYC  64 ETOT(AU) -1.066571979316E+03 DETOT  5.74E-08 tst  5.69E-09 PX  1.31E-04
+ CYCLE 64 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.038274757696E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9525.81 TCPU     9343.42
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9526.12 TCPU     9343.74
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120907  15.6133222  15.6125791  15.6128335  15.6127059  15.6127099
+  15.6137005  15.6117167   6.3875532   6.3870284   6.3873919   6.3871977
+   6.3871975   6.3873878   6.3871158   6.3874691
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921960   3.4882166  -3.4906083  -3.4898023   3.4902565   3.4901623
+  -3.4870116  -3.4934074   0.1446221   0.1423200  -0.1434412  -0.1435067
+   0.1433411   0.1436166  -0.1427628  -0.1441909
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9526.23 TCPU     9343.84
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9603.35 TCPU     9420.95
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9663.02 TCPU     9480.61
+ NUMERICALLY INTEGRATED DENSITY     87.9996118483     87.9996116859
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9664.95 TCPU     9482.53
+ CYC  65 ETOT(AU) -1.066571979257E+03 DETOT  5.93E-08 tst  7.50E-09 PX  1.53E-04
+ CYCLE 65 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.061205315273E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9668.61 TCPU     9484.79
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9668.92 TCPU     9485.10
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6127307  15.6128913  15.6126858  15.6129874  15.6127261  15.6124844
+  15.6127158  15.6124609   6.3875714   6.3870037   6.3874105   6.3871669
+   6.3871761   6.3874162   6.3870859   6.3874867
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4917431   3.4885160  -3.4905303  -3.4896933   3.4902405   3.4903280
+  -3.4877088  -3.4928862   0.1446594   0.1422924  -0.1434093  -0.1435505
+   0.1433600   0.1435870  -0.1427417  -0.1442064
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9668.95 TCPU     9485.13
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9742.82 TCPU     9558.99
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9806.02 TCPU     9622.18
+ NUMERICALLY INTEGRATED DENSITY     87.9996118492     87.9996116866
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9807.96 TCPU     9624.11
+ CYC  66 ETOT(AU) -1.066571978697E+03 DETOT  5.60E-07 tst  1.79E-08 PX  2.76E-04
+ CYCLE 66 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.563516255053E+02
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9811.37 TCPU     9626.64
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9811.69 TCPU     9626.95
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120990  15.6133030  15.6125495  15.6128389  15.6127464  15.6126811
+  15.6136943  15.6117557   6.3875457   6.3870370   6.3873892   6.3871957
+   6.3871948   6.3873938   6.3871106   6.3874652
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921549   3.4882668  -3.4906354  -3.4897964   3.4902088   3.4902015
+  -3.4870759  -3.4933187   0.1445953   0.1423459  -0.1434492  -0.1434991
+   0.1433404   0.1436173  -0.1427793  -0.1441769
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9811.71 TCPU     9626.98
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE     9889.51 TCPU     9704.52
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE     9948.14 TCPU     9763.07
+ NUMERICALLY INTEGRATED DENSITY     87.9996118489     87.9996116864
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE     9950.19 TCPU     9765.12
+ CYC  67 ETOT(AU) -1.066571979230E+03 DETOT -5.33E-07 tst  6.79E-09 PX  2.21E-04
+ CYCLE 67 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.059817867890E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE     9955.35 TCPU     9768.93
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE     9955.67 TCPU     9769.24
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120953  15.6133076  15.6125818  15.6128328  15.6127141  15.6127139
+  15.6136785  15.6117414   6.3875464   6.3870358   6.3873896   6.3871962
+   6.3871967   6.3873905   6.3871145   6.3874649
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921561   3.4882652  -3.4906130  -3.4897977   3.4902285   3.4901821
+  -3.4870914  -3.4933266   0.1445926   0.1423497  -0.1434520  -0.1434963
+   0.1433384   0.1436191  -0.1427803  -0.1441743
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE     9955.70 TCPU     9769.27
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE    10033.41 TCPU     9846.82
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE    10092.04 TCPU     9905.33
+ NUMERICALLY INTEGRATED DENSITY     87.9996118488     87.9996116863
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE    10094.03 TCPU     9907.32
+ CYC  68 ETOT(AU) -1.066571979230E+03 DETOT  9.05E-10 tst  1.07E-10 PX  1.69E-05
+ CYCLE 68 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.063642631503E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE    10098.50 TCPU     9911.45
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE    10098.81 TCPU     9911.76
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121018  15.6133090  15.6125765  15.6128307  15.6127141  15.6127067
+  15.6136802  15.6117458   6.3875458   6.3870358   6.3873897   6.3871970
+   6.3871975   6.3873884   6.3871168   6.3874642
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921492   3.4882661  -3.4906173  -3.4897989   3.4902273   3.4901888
+  -3.4870939  -3.4933190   0.1445907   0.1423516  -0.1434526  -0.1434955
+   0.1433382   0.1436194  -0.1427809  -0.1441733
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE    10098.84 TCPU     9911.80
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE    10176.03 TCPU     9988.96
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE    10236.99 TCPU    10049.92
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE    10238.97 TCPU    10051.89
+ CYC  69 ETOT(AU) -1.066571979229E+03 DETOT  1.58E-10 tst  1.24E-10 PX  1.62E-05
+ CYCLE 69 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.068913035256E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE    10242.75 TCPU    10055.27
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE    10243.06 TCPU    10055.58
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6121034  15.6133114  15.6125756  15.6128285  15.6127113  15.6127057
+  15.6136828  15.6117463   6.3875459   6.3870357   6.3873896   6.3871970
+   6.3871975   6.3873885   6.3871166   6.3874642
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921491   3.4882633  -3.4906178  -3.4898008   3.4902301   3.4901889
+  -3.4870902  -3.4933203   0.1445916   0.1423508  -0.1434523  -0.1434959
+   0.1433383   0.1436194  -0.1427805  -0.1441737
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE    10243.10 TCPU    10055.62
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE    10317.04 TCPU    10129.49
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE    10379.44 TCPU    10191.89
+ NUMERICALLY INTEGRATED DENSITY     87.9996118487     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE    10381.38 TCPU    10193.83
+ CYC  70 ETOT(AU) -1.066571979229E+03 DETOT -3.25E-11 tst  2.07E-11 PX  6.54E-06
+ CYCLE 70 WAVE FUNCTION SAVED IN FORTRAN UNIT 79
+ MODIFIED BROYDEN: MIX%=  30 W0=  1.000000000000E-04 W=  1.064174231314E+03
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT FDIK        TELAPSE    10386.18 TCPU    10196.39
+
+    ALPHA      ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+
+    BETA       ELECTRONS
+ INSULATING STATE
+ TOP OF VALENCE BANDS -    BAND     88; K    1; EIG -1.0000000E+00 AU
+ BOTTOM OF VIRTUAL BANDS - BAND     89; K    1; EIG  1.0000000E+00 AU
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT PDIG        TELAPSE    10386.49 TCPU    10196.70
+ CHARGE NORMALIZATION FACTOR   1.00000000
+ TOTAL ATOMIC CHARGES:
+  15.6120966  15.6133088  15.6125801  15.6128365  15.6127198  15.6127083
+  15.6136845  15.6117300   6.3875466   6.3870346   6.3873888   6.3871983
+   6.3871989   6.3873850   6.3871191   6.3874641
+ SUMMED SPIN DENSITY           0.00000000
+ TOTAL ATOMIC SPINS  :
+   3.4921643   3.4882556  -3.4906118  -3.4897966   3.4902307   3.4901800
+  -3.4870725  -3.4933488   0.1446000   0.1423432  -0.1434493  -0.1434991
+   0.1433396   0.1436189  -0.1427758  -0.1441784
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MOQGAD      TELAPSE    10386.52 TCPU    10196.73
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT SHELLX      TELAPSE    10463.72 TCPU    10273.87
+ +++ ENERGIES IN A.U. +++
+ ::: EXT EL-POLE                                  -3.3585915663325E+03
+ ::: EXT EL-SPHEROPOLE                             4.3301463692121E+01
+ ::: BIELET ZONE E-E                               3.7895661449856E+03
+ ::: TOTAL E-E                                     4.7427604234519E+02
+ ::: TOTAL E-N + N-E                              -1.5258413230175E+03
+ ::: TOTAL N-N                                    -4.9855927702652E+02
+ ::: KINETIC ENERGY                                5.7884638733620E+02
+ ::: PSEUDO TOTAL   ENERGY                        -9.7127817036264E+02
+ ::: VIRIAL COEFFICIENT                            7.4683854850413E-01
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT MONMO3      TELAPSE    10523.11 TCPU    10333.20
+ NUMERICALLY INTEGRATED DENSITY     87.9996118486     87.9996116862
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT NUMDFT      TELAPSE    10525.05 TCPU    10335.14
+ CYC  71 ETOT(AU) -1.066571979231E+03 DETOT -1.56E-09 tst  2.05E-09 PX  6.54E-06
+
+ == SCF ENDED - CONVERGENCE ON ENERGY      E(AU) -1.0665719792310E+03 CYCLES  71
+
+
+ ENERGY EXPRESSION=HARTREE+FOCK EXCH*0.25000+(PBE    EXCH)*0.75000+PBE    CORR
+
+
+ TOTAL ENERGY(DFT)(AU)( 71) -1.0665719792310E+03 DE-1.6E-09 tester 2.0E-09
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT EDFT        TELAPSE    10525.09 TCPU    10335.18
+ EIGENVECTORS IN FORTRAN UNIT 10
+ TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT END         TELAPSE    10527.46 TCPU    10337.48
+ EEEEEEEEEE TERMINATION  DATE 08 11 2014 TIME 04:30:59.6
+NODE    0 CPU TIME =     10337.475
+NODE    1 CPU TIME =     10350.995
+NODE    2 CPU TIME =     10359.960
+NODE    3 CPU TIME =     10357.584
+NODE    4 CPU TIME =     10347.574
+NODE    5 CPU TIME =     10352.369
+NODE    6 CPU TIME =     10354.999
+NODE    7 CPU TIME =     10332.963
+NODE    8 CPU TIME =     10355.435
+NODE    9 CPU TIME =     10351.396
+NODE   10 CPU TIME =     10397.872
+NODE   11 CPU TIME =     10418.087
+NODE   12 CPU TIME =     10329.353
+NODE   13 CPU TIME =     10337.993
+NODE   14 CPU TIME =     10341.159
+NODE   15 CPU TIME =     10356.826
+NODE   16 CPU TIME =     10348.502
+NODE   17 CPU TIME =     10325.154
+NODE   18 CPU TIME =     10331.553
+NODE   19 CPU TIME =     10341.923
+NODE   20 CPU TIME =     10329.381
+NODE   21 CPU TIME =     10357.611
+NODE   22 CPU TIME =     10351.037
+NODE   23 CPU TIME =     10357.766
+NODE   24 CPU TIME =     10307.241
+NODE   25 CPU TIME =     10320.193
+NODE   26 CPU TIME =     10328.603
+NODE   27 CPU TIME =     10331.329
+NODE   28 CPU TIME =     10316.962
+NODE   29 CPU TIME =     10346.020
+NODE   30 CPU TIME =     10324.005
+NODE   31 CPU TIME =     10316.703
+NODE   32 CPU TIME =     10327.311
+NODE   33 CPU TIME =     10325.927
+NODE   34 CPU TIME =     10359.572
+NODE   35 CPU TIME =     10377.206
+NODE   36 CPU TIME =     10337.021
+NODE   37 CPU TIME =     10339.163
+NODE   38 CPU TIME =     10340.711
+NODE   39 CPU TIME =     10341.844
+NODE   40 CPU TIME =     10322.279
+NODE   41 CPU TIME =     10349.523
+NODE   42 CPU TIME =     10348.806
+NODE   43 CPU TIME =     10329.682
+NODE   44 CPU TIME =     10334.841
+NODE   45 CPU TIME =     10355.200
+NODE   46 CPU TIME =     10354.168
+NODE   47 CPU TIME =     10377.350
+    TOTAL CPU TIME =    496536.628
