@@ -179,7 +179,6 @@ def gen_properties(cryinp,natoms,kpath,denom,projs,
   outlines = newklines + bandlines + newklines + doslines + [["END"]]
   return lines2str(outlines)
 
-# TODO: currently must be run in same directory as the d12 file.
 def gen_cry2qwalk(dftfn):
   loc = getcwd()
   root = dftfn.replace('.d12','')
@@ -199,7 +198,7 @@ def gen_cry2qwalk(dftfn):
   fc = []
   fc.append('cat {root}.d12.out {root}.d3.out > tmp'.format(root=root))
   fc.append('addline=`grep -n "HAMILTONIAN EIGENVECTORS" tmp | head -1 | cut -d":" -f1`')
-  fc.append('sed "$addline i NEWK EIGENVECTORS" tmp > crystal2qmc.in')
+  fc.append('sed "$addline i NEWK EIGENVECTORS" tmp > crystal2qmc.inp')
   fc.append('rm -f tmp')
   fc.append('~/bin/crystal2qmc -c -o {root} crystal2qmc.inp &>> crystal2qmc.out'.format(root=root))
   gen_qsub(exe,stdout=out,loc=loc,
