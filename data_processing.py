@@ -69,13 +69,20 @@ def read_qfile(inpf):
 def convert_to_metadata(froot):
   mconv = {'che':'checkerboard',
            'str':'collinear',
+           'fer':'ferromagnetic',
            'bic':'bicollinear',
            'fst':'collinear, flip 1',
            'dim':'collinar, flip 2',
            'sta':'staggered'}
   basename = froot.split('/')[-1]
-  mag = mconv[basename[:3]]
-  prs = float(basename[3:].translate(None,'_prs'))
+  try:
+    mag = mconv[basename[:3]]
+  except:
+    mag = None
+  try:
+    prs = float(basename[3:].translate(None,'_prs'))
+  except:
+    prs = None
   return {'mag':mag,'prs':prs}
 
 # Use golsing to read out average energy and error.
