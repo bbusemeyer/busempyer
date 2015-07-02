@@ -69,6 +69,7 @@ def read_qfile(inpf):
 def convert_to_metadata(froot):
   mconv = {'che':'checkerboard',
            'str':'collinear',
+           'fer':'ferromagnetic',
            'bic':'bicollinear',
            'fst':'collinear, flip 1',
            'dim':'collinar, flip 2',
