@@ -82,7 +82,7 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np=1,
   header.append('#PBS -j oe')
   header.append('#PBS -m n')
   header.append('#PBS -N %s'%name)
-  header.append('#PBS -o qsub.out')
+  header.append('#PBS -o {0}'.format(loc+'/qsub.out')
   if nn*np > 1:
     exeline = 'mpirun -n %d %s &> %s'%(nn*np, exe, stdout)
   else:
