@@ -94,7 +94,7 @@ def gen_optimize(dftfn):
     optlines = []
     optlines.append('method{ optimize }')
     optlines.append('include %s_0.sys'%root)
-    optlines.append('trialfunc{ %s_0.opt.wfout }'%root)
+    optlines.append('trialfunc{ include %s_0.opt.wfout }'%root)
     optf.write('\n'.join(optlines))
 
   exe = '~/bin/qwalk {0}'.format(opt1fn)
