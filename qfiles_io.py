@@ -116,7 +116,7 @@ def gen_optimize(dftfn):
   fc += ['~/bin/separate_jastrow {root}_0.opt.wfout > {root}_0.opt.jast2'.format(root=root)]
 
   return gen_qsub(exe,stdout=out,loc=loc,
-                  name=loc,
+                  name=loc+' gen_optimize',
                   time='02:00:00',
                   nn=2,np=12,
                   queue='secondary',
