@@ -91,3 +91,4 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np=1,
   outstr = '\n'.join(commands)
   with open(loc+'/qsub.in','w') as qsin:
     qsin.write(outstr)
+  return loc+'/qsub.in'
