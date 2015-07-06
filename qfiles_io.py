@@ -97,12 +97,7 @@ def gen_optimize(dftfn):
     optlines.append('trialfunc{ include %s_0.opt.wfout }'%root)
     optf.write('\n'.join(optlines))
 
-  exe = '~/bin/qwalk {0}'.format(opt1fn)
-  out = opt1fn+'.out'
-  pc = ['module load openmpi/1.4-gcc+ifort']
-  fc = ['cp {root}_0.opt1.wfout {root}_0.opt.wfout'.format(root=root)]
-
-  exe = '~/bin/qwalk $inpfile'.format(optfn)
+  exe = '~/bin/qwalk $inpfile'
   out = optfn+'.out'
   pc =  ['module load openmpi/1.4-gcc+ifort']
   pc += ['if [ -f {root}_0.opt.wfout ]'.format(root=root)]
@@ -122,3 +117,36 @@ def gen_optimize(dftfn):
                   queue='secondary',
                   prep_commands=pc,
                   final_commands=fc)
+
+#TODO add runtime checks for file dependence.
+def gen_dmc(syslist,time=120,nproc=2048):
+  locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
+  roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
+
+  #TODO generalize when not gamma optimization.
+  gamma = 'not found'
+  for root in roots:
+    if '_0' in root:
+      gamma = root
+
+  info = zip(locs,roots)
+  for (loc,root) in info:
+    dmcfn = root+'.dmc'
+    with open('/'.join((loc,dmcfn)),'w') as dmcf:
+      dmclines = []
+      dmclines.append('method{ dmc ')
+      dmclines.append('timestep 0.01')
+      dmclines.append('save_trace %s.dmc.trace'%root)
+      dmclines.append('}')
+      dmclines.append('include %s.sys'%root)
+      dmclines.append('trialfunc{ slater-jastrow ')
+      dmclines.append('wf1{ include %s.slater }'%root)
+      dmclines.append('wf2{ include %s.opt.jast2 }'%gamma)
+      dmclines.append('}')
+      dmcf.write('\n'.join(dmclines))
+
+  qsub  = 'qsub -q prod -A SuperMatSim -t {time} -n {nproc} --mode c32 -o dmc.out '.format(time=time,nproc=nproc)
+  qsub += '~/bin/qwalk '
+  for loc,root in info:
+    qsub += loc+'/'+root+'.dmc '
+  return qsub
