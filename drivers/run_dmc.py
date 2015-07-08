@@ -11,3 +11,4 @@ sysfns = [dftfn.replace('.d12','_%d.sys'%k) for k in kpoints]
 
 qin = gen_dmc(sysfns,time=60*2,nproc=512*4)
 check_output(qin,shell=True)
+#print qin

@@ -126,8 +126,11 @@ def gen_dmc(syslist,time=120,nproc=2048):
   #TODO generalize when not gamma optimization.
   gamma = 'not found'
   for root in roots:
-    if '_0' in root:
+    if root.endswith('_0'):
       gamma = root
+  if gamma == 'not found':
+    print "Can't find gamma point calculation!"
+    exit()
 
   info = zip(locs,roots)
   for (loc,root) in info:
@@ -145,8 +148,15 @@ def gen_dmc(syslist,time=120,nproc=2048):
       dmclines.append('}')
       dmcf.write('\n'.join(dmclines))
 
-  qsub  = 'qsub -q prod -A SuperMatSim -t {time} -n {nproc} --mode c32 -o dmc.out '.format(time=time,nproc=nproc)
-  qsub += '~/bin/qwalk '
+  qsub = []
+  qsub.append('qsub')
+  qsub.append('-q prod')
+  qsub.append('-A SuperMatSim')
+  qsub.append('-t {time}'.format(time=time))
+  qsub.append('-n {nproc}'.format(nproc=nproc))
+  qsub.append('--mode c32')
+  qsub.append('-o {gamma}.dmc.out'.format(gamma='/'.join((loc,gamma))))
+  qsub.append('~/bin/qwalk')
   for loc,root in info:
-    qsub += loc+'/'+root+'.dmc '
-  return qsub
+    qsub.append(loc+'/'+root+'.dmc')
+  return ' '.join(qsub)
