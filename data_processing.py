@@ -56,6 +56,7 @@ def read_dir(froot,gosling='./gosling'):
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
   realk = array([1,3,8,10,27,29,34,36]) - 1
+  realk = array([1,4,17,20,93,96,109,112]) - 1
   oldrealk = array(['k0','k1','k2','k3','k4','k5','k6','k7'])
   ############################################################################
 
