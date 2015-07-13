@@ -203,9 +203,8 @@ def gen_cry2qwalk(dftfn):
   fc.append('sed "$addline i NEWK EIGENVECTORS" tmp > crystal2qmc.inp')
   fc.append('rm -f tmp')
   fc.append('~/bin/crystal2qmc -c -o {root} crystal2qmc.inp &>> crystal2qmc.out'.format(root=root))
-  gen_qsub(exe,stdout=out,loc=loc,
-           name=loc+' gen_cry2qwalk',
-           time='02:00:00',
-           queue='secondary',
-           final_commands=fc)
-
+  return gen_qsub(exe,stdout=out,loc=loc,
+                  name=loc+' gen_cry2qwalk',
+                  time='02:00:00',
+                  queue='secondary',
+                  final_commands=fc)

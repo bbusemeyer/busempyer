@@ -110,7 +110,7 @@ def gen_optimize(dftfn):
   pc += ['else inpfile={0}'.format(opt1fn)]
   pc += ['fi']
   fc = []
-  fc += ['if [ ! -f {root}_0.opt.wfout ]']
+  fc += ['if [ ! -f {root}_0.opt.wfout ]'.format(root=root)]
   fc += ['then cp {root}_0.opt1.wfout {root}_0.opt.wfout'.format(root=root)]
   fc += ['fi']
   fc += ['~/bin/separate_jastrow {root}_0.opt.wfout > {root}_0.opt.jast2'.format(root=root)]
