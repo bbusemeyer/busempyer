@@ -120,34 +120,27 @@ def gen_optimize(dftfn):
                   final_commands=fc)
 
 #TODO add runtime checks for file dependence.
-def gen_dmc(syslist):
-  locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
-  roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
+def gen_dmc(root,ts=0.01,jast=''):
+  """ Generate DMC input file for a specified kpoint root. """
 
-  #TODO generalize when not gamma optimization.
-  gamma = 'not found'
-  for root in roots:
-    if root.endswith('_0'):
-      gamma = root
-  if gamma == 'not found':
-    print "Can't find gamma point calculation!"
-    exit()
+  # If no jast provided, will try to use one named like the dmc run.
+  if jast == '':
+    jast = root + '.opt.jast2'
 
-  info = zip(locs,roots)
-  for (loc,root) in info:
-    dmcfn = root+'.dmc'
-    with open('/'.join((loc,dmcfn)),'w') as dmcf:
-      dmclines = []
-      dmclines.append('method{ dmc ')
-      dmclines.append('timestep 0.01')
-      dmclines.append('save_trace %s.dmc.trace'%root)
-      dmclines.append('}')
-      dmclines.append('include %s.sys'%root)
-      dmclines.append('trialfunc{ slater-jastrow ')
-      dmclines.append('wf1{ include %s.slater }'%root)
-      dmclines.append('wf2{ include %s.opt.jast2 }'%gamma)
-      dmclines.append('}')
-      dmcf.write('\n'.join(dmclines))
+  dmcfn = root+'.dmc'
+  with open(dmcfn,'w') as dmcf:
+    dmclines = []
+    dmclines.append('method{ dmc ')
+    dmclines.append('  timestep %s'%ts)
+    dmclines.append('  save_trace %s.dmc.trace'%root)
+    dmclines.append('}')
+    dmclines.append(' include %s.sys'%root)
+    dmclines.append(' trialfunc{ slater-jastrow ')
+    dmclines.append(' wf1{ include %s.slater }'%root)
+    dmclines.append(' wf2{ include %s }'%jast)
+    dmclines.append('}')
+    dmcf.write('\n'.join(dmclines))
+  return dmcfn
 
 #TODO make general to all systems.
 # Copied from Lucas.
@@ -169,7 +162,7 @@ def gen_basis_orb(sysf,minorbf):
   minorbf.write("COEFFICIENTS\n1.0\n\n")
   return totmonum
 
-def gen_dmc(syslist,gosling='./gosling'):
+def gen_ppr(syslist,gosling='./gosling'):
   locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
   roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
 
