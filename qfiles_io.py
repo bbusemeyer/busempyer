@@ -120,7 +120,7 @@ def gen_optimize(dftfn):
                   final_commands=fc)
 
 #TODO add runtime checks for file dependence.
-def gen_dmc(syslist,time=120,nproc=2048):
+def gen_dmc(syslist):
   locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
   roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
 
@@ -149,19 +149,6 @@ def gen_dmc(syslist,time=120,nproc=2048):
       dmclines.append('}')
       dmcf.write('\n'.join(dmclines))
 
-  qsub = []
-  qsub.append('qsub')
-  qsub.append('-q prod')
-  qsub.append('-A SuperMatSim')
-  qsub.append('-t {time}'.format(time=time))
-  qsub.append('-n {nproc}'.format(nproc=nproc))
-  qsub.append('--mode c32')
-  qsub.append('-o {gamma}.dmc.out'.format(gamma='/'.join((loc,gamma))))
-  qsub.append('~/bin/qwalk')
-  for loc,root in info:
-    qsub.append(loc+'/'+root+'.dmc')
-  return ' '.join(qsub)
-
 #TODO make general to all systems.
 # Copied from Lucas.
 def gen_basis_orb(sysf,minorbf):
@@ -182,7 +169,7 @@ def gen_basis_orb(sysf,minorbf):
   minorbf.write("COEFFICIENTS\n1.0\n\n")
   return totmonum
 
-def gen_ppr(dftfn):
+def gen_dmc(syslist,gosling='./gosling'):
   locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
   roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
 
@@ -194,6 +181,15 @@ def gen_ppr(dftfn):
   if gamma == 'not found':
     print "Can't find gamma point calculation!"
     exit()
+
+  # To generate stat file.
+  egy = read_qenergy(open(root+'.dmc.log','r'),gosling=gosling)
+  with open(root+'.dmc.stat','r') as statf:
+    for line in statf:
+      if 'Threw' in line:
+        nwarm = int(line.split()[4])
+        print 'nwarm',nwarm
+
 
   info = zip(locs,roots)
   qins = []
