@@ -2,6 +2,7 @@ from mython           import Ldict
 from subprocess       import call
 from os               import getcwd
 from mython           import gen_qsub
+import json
 
 # Reads a qwalk input section.
 def read_section(inp,key,pos):
@@ -105,7 +106,7 @@ def gen_optimize(dftfn):
   pc += ['else inpfile={0}'.format(opt1fn)]
   pc += ['fi']
   fc = []
-  fc += ['if [ ! -f {root}_0.opt.wfout ]']
+  fc += ['if [ ! -f {root}_0.opt.wfout ]'.format(root=root)]
   fc += ['then cp {root}_0.opt1.wfout {root}_0.opt.wfout'.format(root=root)]
   fc += ['fi']
   fc += ['~/bin/separate_jastrow {root}_0.opt.wfout > {root}_0.opt.jast2'.format(root=root)]
@@ -160,3 +161,85 @@ def gen_dmc(syslist,time=120,nproc=2048):
   for loc,root in info:
     qsub.append(loc+'/'+root+'.dmc')
   return ' '.join(qsub)
+
+#TODO make general to all systems.
+# Copied from Lucas.
+def gen_basis_orb(sysf,minorbf):
+  basis_numbers={"FE":range(1,11),"SE":range(1,5)}
+
+  totmonum=1
+  atomnum=1
+  for line in sysf:
+    #assume that the ATOM section is all on one line
+    #as is printed out by the converters
+    if "ATOM" in line:
+      spl=line.split()
+      nm=spl[2]
+      for b in basis_numbers[nm]:
+        minorbf.write("%i %i %i 1\n"%(totmonum,b,atomnum))
+        totmonum+=1
+      atomnum+=1
+  minorbf.write("COEFFICIENTS\n1.0\n\n")
+  return totmonum
+
+def gen_ppr(dftfn):
+  locs = ['/'.join([getcwd()]+fn.split('/')[:-1]) for fn in syslist]
+  roots = [fn.split('/')[-1].replace('.sys','') for fn in syslist]
+
+  #TODO generalize when not gamma optimization.
+  gamma = 'not found'
+  for root in roots:
+    if root.endswith('_0'):
+      gamma = root
+  if gamma == 'not found':
+    print "Can't find gamma point calculation!"
+    exit()
+
+  info = zip(locs,roots)
+  qins = []
+  for (loc,root) in info:
+
+    # Output postprocess file.
+    pprfn = root+'.ppr'
+    with open('/'.join((loc,pprfn)),'w') as pprf:
+      pprlines = []
+      pprlines.append('method{ postprocess ')
+      pprlines.append('readconfig %s.dmc.tracele'%root)
+      pprlines.append('nskip %d'%(nwarm*2048))
+      pprlines.append('density { density up   outputfile %s.dmc.up.cube }'%root)
+      pprlines.append('density { density down outputfile %s.dmc.dn.cube }'%root)
+      pprlines.append('density { region_fluctuation }')
+      pprlines.append('}')
+      pprlines.append('include %s.sys'%root)
+      pprlines.append('trialfunc{ slater-jastrow ')
+      pprlines.append('wf1{ include %s.slater }'%root)
+      pprlines.append('wf2{ include %s.opt.jast2 }'%gamma)
+      pprlines.append('}')
+      pprf.write('\n'.join(pprlines))
+
+    # Generate minimum basis.
+    #TODO make general to all systems. Extremely hacky now.
+    with open(root+'.sys','r') as sysf, open(root+'.min.orb','r') as minorbf:
+      nmo = gen_basis_orb(sysf,minorbf)
+    with open('/'.join((loc,root+'.min.basis')),'w') as minbasisf:
+      minbasis = json.load(open('~/tools/mython/minbasis.json','r'))
+      lines = []
+      lines.append('orbitals {')
+      lines.append('cutoff_mo')
+      lines.append('orbfile %s.min.orb'%root)
+      lines.append('nmo %d'%nmo)
+      lines += minbasis['fese']
+      lines.append('}')
+      minbasisf.write('\n'.join(lines))
+
+    exe = '~/bin/qwalk {0}'.format(pprfn)
+    out = pprfn+'.out'
+    pc =  ['module load openmpi/1.4-gcc+ifort']
+
+    qin.append(gen_qsub(exe,stdout=out,loc=loc,
+                        name=loc+' gen_optimize',
+                        time='04:00:00',
+                        nn=2,np=12,
+                        queue='secondary',
+                        prep_commands=pc))
+  return qins
