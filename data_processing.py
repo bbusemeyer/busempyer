@@ -101,7 +101,7 @@ def read_dir(froot,gosling='./gosling'):
     print "There's no dft in this directory!"
     return {}
 
-  for rk in realk:
+  for rk in oldrealk:
     kroot = froot + '_' + str(rk)
 
     print "  now DMC:",kroot+"..." 
