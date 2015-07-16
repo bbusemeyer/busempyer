@@ -93,7 +93,7 @@ def read_dir(froot,gosling='./gosling'):
     for key in ['mixing','broyden','fmixing','tolinteg',
                 'kdens','spinlock','supercell','tole']:
       bres[key] = dftdat[key]
-    bres['nfu'] = int(round(linalg.det(array(bres['supercell']).reshape((3,3)))))
+    bres['nfu'] = int(round(linalg.det(array(bres['supercell']).reshape((3,3))))/2.)
     dftdat = read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']
