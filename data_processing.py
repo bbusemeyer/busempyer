@@ -44,7 +44,7 @@ def read_dir(froot,gosling='./gosling'):
   
   Current dictionary keys:
     fmixing, kdens, excited_energy_err, ordering, total_energy_err, 
-    excited_energy, ts, nfu, tole, total_energy, se_height, tolinteg, 
+    excited_energy, ts, tole, total_energy, se_height, tolinteg, 
     supercell, mixing, kpoint, spinlock, dft_energy, a, c, broyden, 
     dft_moments, 1rdm, access_root, average, covariance
   """
@@ -93,7 +93,6 @@ def read_dir(froot,gosling='./gosling'):
     for key in ['mixing','broyden','fmixing','tolinteg',
                 'kdens','spinlock','supercell','tole']:
       bres[key] = dftdat[key]
-    bres['nfu'] = int(round(linalg.det(array(bres['supercell']).reshape((3,3))))/2.)
     dftdat = read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']

@@ -5,7 +5,7 @@ from mython import gen_qsub
 import sys
 import os
 
-system = ['mira','taub'][1]
+system = ['mira','taub'][0]
 
 if len(sys.argv) != 2:
   print "Input is DFT file name that generates the DMC input." 
@@ -36,12 +36,12 @@ if system == 'mira':
   qsub.append('-t {time}'.format(time=time))
   qsub.append('-n {nproc}'.format(nproc=nproc))
   qsub.append('--mode c32')
-  qsub.append('-o {gamma}.dmc.out'.format(gamma='/'.join((loc,gamma))))
+  qsub.append('-o {gamma}.dmc.out'.format(gamma=gamma))
   qsub.append('~/bin/qwalk')
   qsub += dmcfns
   qin = ' '.join(qsub)
-  #print check_output(qin,shell=True)
-  print qin
+  print check_output(qin,shell=True)
+  #print qin
 elif system == 'taub':
   pc =  ['module load openmpi/1.4-gcc+ifort']
   for dmcfn in dmcfns:
