@@ -34,6 +34,11 @@ for cifname in cifnames:
     cifd['_publ_author_name'][0].split()[0].replace(',','')))]
   outlines+=[' '.join((cifname,'group',
     cifd['_symmetry_space_group_name_H-M'].replace(' ','')))]
+  try: 
+    outlines+=[' '.join((cifname,'pressure',
+      cifd['_cell_measurement_pressure']))]
+  except KeyError:
+    outlines+=[' '.join((cifname,'pressure', '0.0'))]
 
 with open(outfn,'w') as outf:
   outf.write('\n'.join(outlines))
