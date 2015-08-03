@@ -61,11 +61,43 @@ class FitFunc:
     """
     Error from evaluating fitted function at point x.
     """
-    if self.parm==None or self.perr==None: return None
+    if self.parm==None or self.perr==None or self.jac==None: return None
     else:
       return np.dot( self.jac(x,*self.parm).T,
                      np.dot(self.cov,
                             self.jac(x,*self.parm)))**.5
+
+class LinearFit(FitFunc):
+  """
+  FitFunc of form c*x + y0
+  """
+  def __init__(self,pnames=['slope','yint']):
+    def form(x,c,y0):
+      return c*x + y0
+    def jac(x,c,y0):
+      return np.array([x,1.0]).T
+    self.form = form
+    self.jac  = jac
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+class QuadraticFit(FitFunc):
+  """
+  FitFunc of form c*(x - xm)**2 + yc
+  """
+  def __init__(self,pnames=['quadratic','xmin','ycrit']):
+    def form(x,c,xm,yc):
+      return c*(x - xm)**2 + yc
+    def jac(x,c,xm,yc):
+      return np.array([(x-xm)**2,2*c*(x-xm),1]).T
+    self.form = form
+    self.jac  = jac
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
 
 class CubicFit(FitFunc):
   """

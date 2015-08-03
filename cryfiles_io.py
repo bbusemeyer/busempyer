@@ -208,3 +208,10 @@ def gen_cry2qwalk(dftfn):
                   time='02:00:00',
                   queue='secondary',
                   final_commands=fc)
+
+def read_crytrace(inpf):
+  trace = []
+  for line in inpf:
+    if "DETOT" in line:
+      trace.append(line.split()[3])
+  return trace
