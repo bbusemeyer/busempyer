@@ -2,7 +2,7 @@
 from numpy            import array,linalg
 from dm_tools         import read_dm
 from read_numberfluct import read_number_dens,moments
-from cryfiles_io      import read_cryinp, read_cryout
+from cryfiles_io      import read_cryinp, read_cryout, read_crytrace
 from qfiles_io        import read_qfile, read_qenergy
 from os               import getcwd
 import json
@@ -44,7 +44,7 @@ def read_dir(froot,gosling='./gosling'):
   
   Current dictionary keys:
     fmixing, kdens, excited_energy_err, ordering, total_energy_err, 
-    excited_energy, ts, nfu, tole, total_energy, se_height, tolinteg, 
+    excited_energy, ts, tole, total_energy, se_height, tolinteg, 
     supercell, mixing, kpoint, spinlock, dft_energy, a, c, broyden, 
     dft_moments, 1rdm, access_root, average, covariance
   """
@@ -93,7 +93,6 @@ def read_dir(froot,gosling='./gosling'):
     for key in ['mixing','broyden','fmixing','tolinteg',
                 'kdens','spinlock','supercell','tole']:
       bres[key] = dftdat[key]
-    bres['nfu'] = int(round(linalg.det(array(bres['supercell']).reshape((3,3)))))
     dftdat = read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']
@@ -101,7 +100,7 @@ def read_dir(froot,gosling='./gosling'):
     print "There's no dft in this directory!"
     return {}
 
-  for rk in realk:
+  for rk in oldrealk:
     kroot = froot + '_' + str(rk)
 
     print "  now DMC:",kroot+"..." 
@@ -159,3 +158,15 @@ def read_dir(froot,gosling='./gosling'):
     print "  done."; 
 
   return ress
+
+def trace_analysis(dftfns,ids=[]):
+  """
+  Generate a dictionary of energy traces from DFT output, useful for checking
+  how certain parameters affect convergence.
+  """
+  res = {}
+  if ids == []: ids = dftfns
+  for di,dftfn in enumerate(dftfns):
+    with open(dftfn,'r') as dftf:
+      res[ids[di]] = read_crytrace(dftf)
+  return res
