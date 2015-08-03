@@ -47,7 +47,7 @@ elif system == 'taub':
   for dmcfn in dmcfns:
     qin = gen_qsub('~/bin/qwalk {0}'.format(dmcfn),
                    stdout=dmcfn+'.out',
-                   name='/'.join((loc,dmcfn)),
+                   name='/'.join((os.getcwd(),dmcfn)),
                    time='4:00:00',
                    nn=4,np=12,
                    queue='secondary',
