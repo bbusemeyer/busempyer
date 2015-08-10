@@ -35,14 +35,14 @@ class FitFunc:
     self.perr = None
     self.cov  = None
 
-  def fit(self,df,xcol,ycol,ecol,*p0):
+  def fit(self,xvals,yvals,evals,*p0,**kwargs):
     """
-    Use cols from df to fit params with initial values p0
+    Use xvals and yvals +/- evals to fit params with initial values p0.
     """
     fit = curve_fit(self.form,
-      df[xcol],df[ycol],sigma=df[ecol],
+      xvals,yvals,sigma=evals,
       absolute_sigma=True,
-      p0=p0)
+      p0=p0,**kwargs)
     self.parm = np.array(p0)
     self.perr = np.array(p0)
     for pi,p in enumerate(p0):
@@ -54,14 +54,14 @@ class FitFunc:
     """
     Evaluate fitted function at point x.
     """
-    if self.parm == None: return None
+    if self.parm is None: return None
     else:
       return self.form(x,*self.parm)
   def eval_error(self,x):
     """
     Error from evaluating fitted function at point x.
     """
-    if self.parm==None or self.perr==None or self.jac==None: return None
+    if (self.parm is None) or (self.perr is None) or (self.jac is None): return None
     else:
       return np.dot( self.jac(x,*self.parm).T,
                      np.dot(self.cov,
@@ -114,3 +114,40 @@ class CubicFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+class EOSFit(FitFunc):
+  """
+  Anton-Shmidt Equation of state E(V):
+  P(V) = -b(V/V0)^n log(V/V0)
+  => E(V) = bV0/(n+1) (V/V0)^(n+1) (ln(V/V0) - 1/(n+1)) + Einf
+  """
+  def __init__(self,pnames=['bulk_mod','eq_vol','n','Einf'],fixn=None):
+    # Allows to fix n or not.
+    def energy(V,b,V0,n,Einf):
+      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
+    def pressure(V,b,V0,n):
+      return -b*(V/V0)**n  * np.log(V/V0)
+    def energy_n(V,b,V0,Einf):
+      return energy(V,b,V0,fixn,Einf)
+    def pressure_n(V,b,V0):
+      return -b*(V/V0)**fixn  * np.log(V/V0)
+
+    if fixn is None: 
+      self.form = energy
+      self.derv = pressure
+    else:            
+      self.form = energy_n
+      self.derv = pressure_n
+    self.jac  = None # Haven't bothered yet.
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+  def eval_derv(self,x):
+    """
+    Evaluate derivative function at point x.
+    """
+    if self.parm is None: return None
+    else:
+      return self.derv(x,*self.parm[:-1])
