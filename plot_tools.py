@@ -117,27 +117,18 @@ class CubicFit(FitFunc):
 
 class EOSFit(FitFunc):
   """
-  Anton-Shmidt Equation of state E(V):
+  Anton-Shmidt (DOI: 10.1016/S0966-9795(97)00017-4) Equation of state E(V):
   P(V) = -b(V/V0)^n log(V/V0)
   => E(V) = bV0/(n+1) (V/V0)^(n+1) (ln(V/V0) - 1/(n+1)) + Einf
   """
-  def __init__(self,pnames=['bulk_mod','eq_vol','n','Einf'],fixn=None):
-    # Allows to fix n or not.
+  def __init__(self,pnames=["Bulk Modulus","Equillibrium Volume","n","Einf"]):
     def energy(V,b,V0,n,Einf):
       return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
     def pressure(V,b,V0,n):
       return -b*(V/V0)**n  * np.log(V/V0)
-    def energy_n(V,b,V0,Einf):
-      return energy(V,b,V0,fixn,Einf)
-    def pressure_n(V,b,V0):
-      return -b*(V/V0)**fixn  * np.log(V/V0)
 
-    if fixn is None: 
-      self.form = energy
-      self.derv = pressure
-    else:            
-      self.form = energy_n
-      self.derv = pressure_n
+    self.form = energy
+    self.derv = pressure
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
     self.parm = None
@@ -151,3 +142,18 @@ class EOSFit(FitFunc):
     if self.parm is None: return None
     else:
       return self.derv(x,*self.parm[:-1])
+
+class EOSFit_fixV0(EOSFit):
+  def __init__(self,V0,pnames=["Bulk Modulus","n","Einf"]):
+    def energy(V,b,n,Einf):
+      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
+    def pressure(V,b,n):
+      return -b*(V/V0)**n  * np.log(V/V0)
+
+    self.form = energy
+    self.derv = pressure
+    self.jac  = None # Haven't bothered yet.
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
