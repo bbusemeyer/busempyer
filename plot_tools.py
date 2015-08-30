@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
+from pymatgen.io.cifio import CifParser
+import os
 
 def fix_lims(ax_array,factor=0.04):
   """
@@ -24,6 +26,19 @@ def fix_lims(ax_array,factor=0.04):
   for ax in ax_array.flatten():
     if xs != 0: ax.set_xlim(minx-xs,maxx+xs)
     if ys != 0: ax.set_ylim(miny-ys,maxy+ys)
+
+def cif_to_dict(cifstr):
+  """
+  Takes a cif string and parses it into a dictionary.
+
+  Currently acts as a inefficient, but effective wrapper around pymatgen's cif
+  file parser.
+  """
+  with open("tmp",'w') as outf:
+    outf.write(cifstr)
+  cifp = CifParser("tmp").as_dict()
+  os.remove("tmp")
+  return cifp[cifp.keys()[0]]
 
 class FitFunc:
   """
@@ -177,6 +192,21 @@ class EOSFit_fixV0(EOSFit):
     def energy(V,b,n,Einf):
       return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
     def pressure(V,b,n):
+      return -b*(V/V0)**n  * np.log(V/V0)
+
+    self.form = energy
+    self.derv = pressure
+    self.jac  = None # Haven't bothered yet.
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+class EOSFit_fixV0_fixn(EOSFit):
+  def __init__(self,V0,n,pnames=['bulk_mod','Einf']):
+    def energy(V,b,Einf):
+      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
+    def pressure(V,b):
       return -b*(V/V0)**n  * np.log(V/V0)
 
     self.form = energy
