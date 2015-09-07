@@ -3,32 +3,31 @@ from numpy import array,linspace,zeros,ones,cumprod,floor,ceil,dot,cross,sum,nan
 from numpy.linalg import det
 from scipy.interpolate import griddata
 
-def read_cube(filename):
-  f=open(filename, 'r')
+def read_cube(inpf):
   cube={}
-  cube['comment']=f.readline()
-  cube['type']=f.readline()
-  spl=f.readline().split()
+  cube['comment']=inpf.readline()
+  cube['type']=inpf.readline()
+  spl=inpf.readline().split()
   #cube['natoms']=int(spl[0])
   cube['natoms']=map(int,spl)
   cube['origin']=map(float, spl[1:])
   cube['ints']=array([0,0,0])
   cube['latvec']=zeros((3,3))
   for i in range(0,3):
-    spl=f.readline().split()
+    spl=inpf.readline().split()
     cube['ints'][i]=int(spl[0])
     cube['latvec'][i,:]=map(float,spl[1:])
   natoms=cube['natoms'][0]
   cube['atomname']=[]
   cube['atomxyz']=zeros((natoms,3))
   for i in range(0,natoms):
-    spl=f.readline().split()
+    spl=inpf.readline().split()
     cube['atomname'].append(spl[0])
     cube['atomxyz'][i,:]=map(float,spl[2:])
   cube['data']=zeros(cube['ints'])
   vector=[]
   while True:
-    spl=f.readline().split()
+    spl=inpf.readline().split()
     if len(spl) < 1:
       break
     vector.extend(map(float,spl))
@@ -48,29 +47,28 @@ def read_cube(filename):
 
   return cube
 
-def write_cube(cube, filename):
-  f=open(filename,'w')
-  f.write(cube['comment'])
-  f.write(cube['type'])
+def write_cube(cube, outf):
+  outf.write(cube['comment'])
+  outf.write(cube['type'])
   for i in cube['natoms']:
-    f.write(" %i "%i)
+    outf.write(" %i "%i)
   f.write("\n")
   for i in range(0,3):
-    f.write("%i "%cube['ints'][i])
-    f.write(" %g %g %g \n"%(cube['latvec'][i,0],cube['latvec'][i,1],cube['latvec'][i,2]))
+    outf.write("%i "%cube['ints'][i])
+    outf.write(" %g %g %g \n"%(cube['latvec'][i,0],cube['latvec'][i,1],cube['latvec'][i,2]))
   natoms=cube['natoms'][0]
   for i in range(0,natoms):
-    f.write("%s 0.0 "%cube['atomname'][i])
-    f.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
+    outf.write("%s 0.0 "%cube['atomname'][i])
+    outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
   count=0
   for x in range(0,cube['ints'][0]):
     for y in range(0,cube['ints'][1]):
       for z in range(0,cube['ints'][2]):
-        f.write("%g "%cube['data'][x,y,z])
+        outf.write("%g "%cube['data'][x,y,z])
         count+=1
         if count%5==0:
-          f.write('\n')
-  f.write('\n')
+          outf.write('\n')
+  outf.write('\n')
   
 def normalize_abs(cube):
   vol=abs(linalg.det(cube['latvec']))
