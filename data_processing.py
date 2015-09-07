@@ -6,6 +6,7 @@ from cubetools        import read_cube
 from cryfiles_io      import read_cryinp, read_cryout, read_crytrace
 from qfiles_io        import read_qfile, read_qenergy
 from os               import getcwd
+import os
 import json
 
 # Temporary function to convert file names to metadata about the calculations.
@@ -56,8 +57,8 @@ def read_dir(froot,gosling='./gosling'):
   dftoutf   = froot+'.d12.out'
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
-  realk = array([1,3,8,10,27,29,34,36]) - 1
-  realk = array([1,4,17,20,93,96,109,112]) - 1
+  realk1 = array([1,3,8,10,27,29,34,36]) - 1
+  realk2 = array([1,4,17,20,93,96,109,112]) - 1
   oldrealk = array(['k0','k1','k2','k3','k4','k5','k6','k7'])
   ############################################################################
 
@@ -101,7 +102,18 @@ def read_dir(froot,gosling='./gosling'):
     print "There's no dft in this directory!"
     return {}
 
-  for rk in oldrealk:
+  # Determine k-point set and naming convention.
+  if os.path.isfile(froot+'_'+str(oldrealk[0])+'.sys'):
+    realk=oldrealk
+    print "Using old-style kpoint notation."
+  elif os.path.isfile(froot+'_'+str(realk2[-1])+'.sys'):
+    realk=realk2
+    print "Using 6x6x6 kpoint notation."
+  else:
+    realk=realk1
+    print "Using 4x4x4 kpoint notation."
+
+  for rk in realk:
     kroot = froot + '_' + str(rk)
 
     print "  now DMC:",kroot+"..." 
@@ -147,7 +159,7 @@ def read_dir(froot,gosling='./gosling'):
     try:
       inpf = open(kroot+'.ppr.o','r')
       fludat, fluerr = read_number_dens(inpf)
-      if fludat==None:
+      if fludat is None:
         print "  (Error in number fluctuation output, skipping)"
       else:
         avg, var, cov, avge, vare, cove = moments(fludat,fluerr)
@@ -160,7 +172,7 @@ def read_dir(froot,gosling='./gosling'):
     try:
       inpf = open(kroot+'.ordm.o')
       odmdat = read_dm(inpf)
-      if odmdat==None:
+      if odmdat is None:
         print "  (Error in 1-RDM output, skipping)"
       else:
         ress[rk]['1rdm'] = odmdat

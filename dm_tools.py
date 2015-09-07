@@ -62,20 +62,18 @@ def convert(s):
 ################################################################
 
 
-def read_dm(filename):
+def read_dm(inpf):
   """Read in the 1-RDM and/or 1-RDM and diagonals of the 2-RDM, if only 
   the diagonals were calculated"""
-  try:
-    f=open(filename,'r')
-  except IOError:
-    return None
   nmo=0
   while True:
-    line=f.readline()
+    line=inpf.readline()
     if line.find("tbdm")!=-1:
       spl=line.split()
       nmo=int(spl[2])
       break
+    if line=="":
+      return None
   #print "nmo ",nmo
   data={}
   #one-body up, one-body up err,   two-body-uu, two-body-uu err
@@ -83,27 +81,27 @@ def read_dm(filename):
     data[nm]=np.zeros((nmo,nmo))
   
   while True:
-    line=f.readline()
+    line=inpf.readline()
     if line=="":
       break;
     if line.find("tbdm: states") != -1:
       data['states']=np.array(map(int,line.split()[3:-2]))
       #print data['states']
     if line.find("One-body density") != -1:
-      line=f.readline()
+      line=inpf.readline()
       for i in range(0,nmo):
         for j in range(0,nmo):
-          a=f.readline().split()
+          a=inpf.readline().split()
           data['ou'][i,j]=convert(a[2])
           data['oue'][i,j]=convert(a[3])
           data['od'][i,j]=convert(a[4])
           data['ode'][i,j]=convert(a[5])
     if line.find("two-body density") != -1:
-      line=f.readline()
+      line=inpf.readline()
       #print "two-body",line
       for i in range(0,nmo):
         for j in range(0,nmo):
-          a=f.readline().split()
+          a=inpf.readline().split()
           #print i,j,"a ",a
           data['tuu'][i,j]=convert(a[4])
           data['tuue'][i,j]=convert(a[5])
@@ -214,15 +212,15 @@ def analyze_excitations(d):
       occ_down.append(i)
     else:
       unocc_down.append(i)
-  print "occ_up",occ_up
-  print "occ_down",occ_down
+  #print "occ_up",occ_up
+  #print "occ_down",occ_down
   
   threshold=0.001
   nup=0
   for i in occ_up:
     for j in unocc_up:
       if abs(d['ou'][i,j]) > threshold:
-        print 'up ',i,'->',j,d['ou'][i,j]
+        #print 'up ',i,'->',j,d['ou'][i,j]
         #print "exc ", gen_excitation([(i,j)],occ_up), d['ou'][i,j]
         nup+=1
   for i in occ_down:
