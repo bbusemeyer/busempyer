@@ -2,6 +2,7 @@
 from numpy            import array,linalg
 from dm_tools         import read_dm
 from read_numberfluct import read_number_dens,moments
+from cubetools        import read_cube
 from cryfiles_io      import read_cryinp, read_cryout, read_crytrace
 from qfiles_io        import read_qfile, read_qenergy
 from os               import getcwd
@@ -130,6 +131,17 @@ def read_dir(froot,gosling='./gosling'):
       ress[rk]['dmc_excited_energy_err'] =  ogpdat['err']
     except IOError:
       print "  (cannot find excited state energy log file)"
+
+    print "  densities..." 
+    try:
+      inpf = open(kroot+'.dmc.up.cube','r')
+      upcube = read_number_dens(inpf)
+      inpf = open(kroot+'.dmc.dn.cube','r')
+      dncube = read_number_dens(inpf)
+      ress[rk]['updens'] = upcube
+      ress[rk]['dndens'] = dncube
+    except IOError:
+      print "  (cannot find electron density)"
 
     print "  fluctuations..." 
     try:
