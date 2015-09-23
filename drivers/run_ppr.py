@@ -1,14 +1,41 @@
-from qfiles_io import gen_dmc
+from qfiles_io import gen_ppr
 from subprocess import check_output
 from numpy import array
+from mython import gen_qsub
 import sys
+import os
+
+if len(sys.argv) < 2:
+  print "Input is DFT file names that generates the ppr input." 
+  exit()
 
 # Real k-points
-kpoints = array([1,4,17,20,93,96,109,112]) - 1
+kpoints = array([1,3,8,10,27,29,34,36]) - 1 # 2x2x2
+#kpoints = array([1,4,17,20,93,96,109,112]) - 1 # 4x4x4
+#kpoints = array([1,5,30,34,227,231,256,260]) - 1
 
-dftfn = sys.argv[1]
-sysfns = [dftfn.replace('.d12','_%d.sys'%k) for k in kpoints]
+wd = os.getcwd()
+for dftloc in sys.argv[1:]:
+  dftfn  = dftloc.split('/')[-1]
+  roots  = [dftfn.replace('.d12','_{k}'.format(k=k)) for k in kpoints]
+  gamma  = roots[0]
+  loc    = '/'.join(dftloc.split('/')[:-1])
 
-qins = gen_dmc(sysfns,'~/bin/gosling')
-for qin in qins:
-  print check_output(qin,shell=True)
+  os.chdir(wd + '/' + loc)
+
+  pprfns = [gen_ppr(root,gosling="/home/busemey2/bin/gosling",
+                         jast=gamma+'.opt.jast2') for root in roots]
+    
+  pc =  ['module load openmpi/1.4-gcc+ifort']
+  for pprfn in pprfns:
+    qin = gen_qsub('~/bin/qwalk {0}'.format(pprfn),
+                   stdout=pprfn+'.out',
+                   name='/'.join((os.getcwd(),pprfn)),
+                   time='4:00:00',
+                   nn=4,np=12,
+                   queue='secondary',
+                   prep_commands=pc)
+    print check_output('qsub '+qin,shell=True)
+    #print qin
+
+  os.chdir(wd)
