@@ -1,15 +1,5 @@
 #!/usr/bin/python
-<<<<<<< HEAD
 import numpy as np
-=======
-from numpy            import array,linalg
-from dm_tools         import read_dm
-from read_numberfluct import read_number_dens,moments
-from cubetools        import read_cube
-from cryfiles_io      import read_cryinp, read_cryout, read_crytrace
-from qfiles_io        import read_qfile, read_qenergy
-from os               import getcwd
->>>>>>> 347f8307e8a313a9af804ef65d189a2bf78e8340
 import os
 import json
 import cryfiles_io as cio
@@ -164,13 +154,8 @@ def read_dir(froot,gosling='./gosling'):
     print "  fluctuations..." 
     try:
       inpf = open(kroot+'.ppr.o','r')
-<<<<<<< HEAD
       fludat, fluerr = qio.read_number_dens(inpf)
       if fludat==None:
-=======
-      fludat, fluerr = read_number_dens(inpf)
-      if fludat is None:
->>>>>>> 347f8307e8a313a9af804ef65d189a2bf78e8340
         print "  (Error in number fluctuation output, skipping)"
       else:
         avg, var, cov, avge, vare, cove = qio.moments(fludat,fluerr)
@@ -182,13 +167,8 @@ def read_dir(froot,gosling='./gosling'):
     print "  1-RDM..." 
     try:
       inpf = open(kroot+'.ordm.o')
-<<<<<<< HEAD
       odmdat = qio.read_dm(inpf)
       if odmdat==None:
-=======
-      odmdat = read_dm(inpf)
-      if odmdat is None:
->>>>>>> 347f8307e8a313a9af804ef65d189a2bf78e8340
         print "  (Error in 1-RDM output, skipping)"
       else:
         ress[rk]['1rdm'] = odmdat
