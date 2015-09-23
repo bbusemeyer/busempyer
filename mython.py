@@ -71,7 +71,7 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np=1,
   
   Blank strings will generate useful defaults."""
 
-  if stdout=='': stdout='qsub.out'
+  if stdout=='': stdout='stdout'
   if loc=='': loc=getcwd()
   if name=='': name=str(datetime.now()).replace(' ','_')
   header = []

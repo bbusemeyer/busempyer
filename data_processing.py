@@ -1,11 +1,9 @@
 #!/usr/bin/python
-from numpy            import array,linalg
-from dm_tools         import read_dm
-from read_numberfluct import read_number_dens,moments
-from cryfiles_io      import read_cryinp, read_cryout, read_crytrace
-from qfiles_io        import read_qfile, read_qenergy
-from os               import getcwd
+import numpy as np
+import os
 import json
+import cryfiles_io as cio
+import qfiles_io as qio
 
 # Temporary function to convert file names to metadata about the calculations.
 # In the future, an optional metadata file should contain overall qualitiative
@@ -55,15 +53,15 @@ def read_dir(froot,gosling='./gosling'):
   dftoutf   = froot+'.d12.out'
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
-  realk = array([1,3,8,10,27,29,34,36]) - 1
-  realk = array([1,4,17,20,93,96,109,112]) - 1
-  oldrealk = array(['k0','k1','k2','k3','k4','k5','k6','k7'])
+  realk = np.array([1,3,8,10,27,29,34,36]) - 1
+  realk = np.array([1,4,17,20,93,96,109,112]) - 1
+  oldrealk = np.array(['k0','k1','k2','k3','k4','k5','k6','k7'])
   ############################################################################
 
   bres = {} # Data that is common to all k-points.
   ress = {} # Dict of all k-point data in directory.
 
-  bres['access_root'] = getcwd() + '/' + froot
+  bres['access_root'] = os.getcwd() + '/' + froot
 
   print "Working on",froot+"..." 
   try:
@@ -86,14 +84,14 @@ def read_dir(froot,gosling='./gosling'):
   
   print "  DFT params and results..." 
   try:
-    dftdat = read_cryinp(open(dftfile,'r'))
+    dftdat = cio.read_cryinp(open(dftfile,'r'))
     bres['a'] = dftdat['latparms'][0]
     bres['c'] = dftdat['latparms'][1]
     bres['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
     for key in ['mixing','broyden','fmixing','tolinteg',
                 'kdens','spinlock','supercell','tole']:
       bres[key] = dftdat[key]
-    dftdat = read_cryout(open(dftoutf,'r'))
+    dftdat = cio.read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']
   except IOError:
@@ -105,8 +103,8 @@ def read_dir(froot,gosling='./gosling'):
 
     print "  now DMC:",kroot+"..." 
     try:
-      sysdat = read_qfile(open(kroot+'.sys','r'))
-      dmcinp = read_qfile(open(kroot+'.dmc','r'))
+      sysdat = qio.read_qfile(open(kroot+'.sys','r'))
+      dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
       ress[rk] = bres.copy()
       ress[rk]['kpoint'] = sysdat['system']['kpoint']
       ress[rk]['ts'] = dmcinp['method']['timestep']
@@ -117,7 +115,7 @@ def read_dir(froot,gosling='./gosling'):
     print "  energies..." 
     try:
       inpf = open(kroot+'.dmc.log','r')
-      egydat = read_qenergy(inpf,gosling)
+      egydat = qio.read_qenergy(inpf,gosling)
       ress[rk]['dmc_energy']     =  egydat['egy']
       ress[rk]['dmc_energy_err'] =  egydat['err']
     except IOError:
@@ -125,7 +123,7 @@ def read_dir(froot,gosling='./gosling'):
 
     try:
       inpf = open(kroot+'.ogp.log','r')
-      ogpdat = read_qenergy(inpf,gosling)
+      ogpdat = qio.read_qenergy(inpf,gosling)
       ress[rk]['dmc_excited_energy']     =  ogpdat['egy']
       ress[rk]['dmc_excited_energy_err'] =  ogpdat['err']
     except IOError:
@@ -134,11 +132,11 @@ def read_dir(froot,gosling='./gosling'):
     print "  fluctuations..." 
     try:
       inpf = open(kroot+'.ppr.o','r')
-      fludat, fluerr = read_number_dens(inpf)
+      fludat, fluerr = qio.read_number_dens(inpf)
       if fludat==None:
         print "  (Error in number fluctuation output, skipping)"
       else:
-        avg, var, cov, avge, vare, cove = moments(fludat,fluerr)
+        avg, var, cov, avge, vare, cove = qio.moments(fludat,fluerr)
         ress[rk]['average']    = avg
         ress[rk]['covariance'] = cov
     except IOError:
@@ -147,7 +145,7 @@ def read_dir(froot,gosling='./gosling'):
     print "  1-RDM..." 
     try:
       inpf = open(kroot+'.ordm.o')
-      odmdat = read_dm(inpf)
+      odmdat = qio.read_dm(inpf)
       if odmdat==None:
         print "  (Error in 1-RDM output, skipping)"
       else:
@@ -168,5 +166,5 @@ def trace_analysis(dftfns,ids=[]):
   if ids == []: ids = dftfns
   for di,dftfn in enumerate(dftfns):
     with open(dftfn,'r') as dftf:
-      res[ids[di]] = read_crytrace(dftf)
+      res[ids[di]] = cio.read_crytrace(dftf)
   return res
