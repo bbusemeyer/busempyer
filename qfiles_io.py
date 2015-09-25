@@ -291,7 +291,10 @@ def gen_basis_orb(sysf,minorbf):
   return totmonum
 
 # Postprocess (compute density, fluctuations, and 1-RDM).
-def gen_ppr(root,gosling='./gosling',jast=''):
+def gen_ppr(root,
+            gosling='./gosling',
+            jast='',
+            minbasisfn='/home/busemey2/tools/mython/minbasis.json'):
   """ Generate postprocess input file for a specified kpoint root. """
 
   # If no jast provided, will try to use one named like the dmc run.
@@ -307,9 +310,6 @@ def gen_ppr(root,gosling='./gosling',jast=''):
         nwarm = int(line.split()[4])
 
   # Output postprocess file.
-  if not os.path.isfile(root+".dmc.tracele"):
-    sp.call("/home/busemey2/bin/swap_endian %s %s"\
-      %(root+".dmc.trace", root+".dmc.tracele"), shell=True)
 
   with open(pprfn,'w') as pprf:
     pprlines = []
@@ -318,7 +318,7 @@ def gen_ppr(root,gosling='./gosling',jast=''):
     pprlines.append('nskip %d'%(nwarm*2048))
     pprlines.append('density { density up   outputfile %s.dmc.up.cube }'%root)
     pprlines.append('density { density down outputfile %s.dmc.dn.cube }'%root)
-    pprlines.append('density { region_fluctuation }')
+    pprlines.append('average { region_fluctuation }')
     pprlines.append('average { tbdm_basis')
     pprlines.append('mode obdm')
     pprlines.append('include %s'%(root+'.min.basis'))
@@ -335,7 +335,7 @@ def gen_ppr(root,gosling='./gosling',jast=''):
   with open(root+'.sys','r') as sysf, open(root+'.min.orb','w') as minorbf:
     nmo = gen_basis_orb(sysf,minorbf)
   with open(root+'.min.basis','w') as minbasisf:
-    minbasis = json.load(open('/home/busemey2/tools/mython/minbasis.json','r'))
+    minbasis = json.load(open(minbasisfn,'r'))
     lines = []
     lines.append('orbitals {')
     lines.append('cutoff_mo')

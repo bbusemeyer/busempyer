@@ -31,9 +31,9 @@ for dftloc in sys.argv[1:]:
     qin = gen_qsub('~/bin/qwalk {0}'.format(pprfn),
                    stdout=pprfn+'.out',
                    name='/'.join((os.getcwd(),pprfn)),
-                   time='4:00:00',
-                   nn=4,np=12,
-                   queue='secondary',
+                   time='00:05:00',
+                   nn=2,np=12,
+                   queue='test',
                    prep_commands=pc)
     print check_output('qsub '+qin,shell=True)
     #print qin
