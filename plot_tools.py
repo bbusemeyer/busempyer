@@ -159,6 +159,22 @@ class CubicFit(FitFunc):
     self.perr = None
     self.cov  = None
 
+class CubicFit_fixmin(CubicFit):
+  """
+  FitFunc of form a*(x - xm)**3 + b*(x - xm)**2 + yc
+  """
+  def __init__(self,xm,pnames=['cubic','quadratic','ycrit']):
+    def form(x,a,b,yc):
+      return a*(x - xm)**3 + b*(x - xm)**2 + yc
+    def jac(x,a,b,yc):
+      return None
+    self.form = form
+    self.jac  = jac
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
 class EOSFit(FitFunc):
   """
   Anton-Shmidt (DOI: 10.1016/S0966-9795(97)00017-4) Equation of state E(V):
