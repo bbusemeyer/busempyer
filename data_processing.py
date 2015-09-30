@@ -53,9 +53,9 @@ def read_dir(froot,gosling='./gosling'):
   dftoutf   = froot+'.d12.out'
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
-  realk1 = array([1,3,8,10,27,29,34,36]) - 1
-  realk2 = array([1,4,17,20,93,96,109,112]) - 1
-  oldrealk = array(['k0','k1','k2','k3','k4','k5','k6','k7'])
+  realk1 = np.array([1,3,8,10,27,29,34,36]) - 1
+  realk2 = np.array([1,4,17,20,93,96,109,112]) - 1
+  oldrealk = np.array(['k0','k1','k2','k3','k4','k5','k6','k7'])
   ############################################################################
 
   bres = {} # Data that is common to all k-points.
@@ -143,9 +143,9 @@ def read_dir(froot,gosling='./gosling'):
     print "  densities..." 
     try:
       inpf = open(kroot+'.dmc.up.cube','r')
-      upcube = read_number_dens(inpf)
+      upcube = qio.read_number_dens(inpf)
       inpf = open(kroot+'.dmc.dn.cube','r')
-      dncube = read_number_dens(inpf)
+      dncube = qio.read_number_dens(inpf)
       ress[rk]['updens'] = upcube
       ress[rk]['dndens'] = dncube
     except IOError:

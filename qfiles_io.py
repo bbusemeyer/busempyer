@@ -58,6 +58,14 @@ def read_qfile(inpf):
     except ValueError:  pass
   return read_section(inp,inpf.name,0)[0]
 
+def convert(s):
+  return float(s)
+  a=eval(s)
+  m=float(a[0])
+  for i in a:
+    m=max(m,i)
+  return m
+
 def read_dm(inpf):
   """Read in the 1-RDM and/or 1-RDM and diagonals of the 2-RDM, if only 
   the diagonals were calculated"""
