@@ -11,6 +11,7 @@ if len(sys.argv) < 2:
 
 # Real k-points
 kpoints = np.array([1,3,8,10,27,29,34,36]) - 1 # 2x2x2
+#kpoints = array([1,3,8,10,27,29,34,36]) - 1 # 2x2x2
 #kpoints = array([1,4,17,20,93,96,109,112]) - 1 # 4x4x4
 #kpoints = array([1,5,30,34,227,231,256,260]) - 1
 
@@ -26,12 +27,15 @@ for dftloc in sys.argv[1:]:
   pprfns = [gen_ppr(root,gosling="/home/busemey2/bin/gosling",
                          jast=gamma+'.opt.jast2') for root in roots]
     
-  pc =  ['module load openmpi/1.4-gcc+ifort']
+  pc = []
+  pc += ['module load openmpi/1.4-gcc+ifort']
+  pc += ['module load gcc/4.7.1']
+  pc += ['module load intel/11.1']
   for pprfn in pprfns:
     qin = gen_qsub('~/bin/qwalk {0}'.format(pprfn),
                    stdout=pprfn+'.out',
                    name='/'.join((os.getcwd(),pprfn)),
-                   time='00:05:00',
+                   time='00:01:00',
                    nn=2,np=12,
                    queue='test',
                    prep_commands=pc)
