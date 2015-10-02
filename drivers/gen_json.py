@@ -13,7 +13,7 @@ from subprocess import check_output
 files = sys.argv[1:]
 roots = [f.replace('_metadata.json','') for f in files]
 for root in roots:
-  data = read_dir(root,gosling='/home/busemey/bin/gosling')
+  data = read_dir(root,gosling='/home/busemey2/bin/gosling')
   for k in data.keys():
     print "Dumping {0}_{1} to JSON".format(root,k)
     with open('{0}_{1}_datarecord.json'.format(root,k),'w') as outf:

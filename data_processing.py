@@ -4,6 +4,7 @@ import os
 import json
 import cryfiles_io as cio
 import qfiles_io as qio
+import cubetools as ct
 
 # Temporary function to convert file names to metadata about the calculations.
 # In the future, an optional metadata file should contain overall qualitiative
@@ -143,9 +144,9 @@ def read_dir(froot,gosling='./gosling'):
     print "  densities..." 
     try:
       inpf = open(kroot+'.dmc.up.cube','r')
-      upcube = qio.read_number_dens(inpf)
+      upcube = qio.read_cube(inpf)
       inpf = open(kroot+'.dmc.dn.cube','r')
-      dncube = qio.read_number_dens(inpf)
+      dncube = qio.read_cube(inpf)
       ress[rk]['updens'] = upcube
       ress[rk]['dndens'] = dncube
     except IOError:
