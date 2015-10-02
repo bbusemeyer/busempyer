@@ -10,7 +10,7 @@ if len(sys.argv) < 2:
   exit()
 
 # Real k-points
-kpoints = array([1,3,8,10,27,29,34,36]) - 1 # 2x2x2
+kpoints = np.array([1,3,8,10,27,29,34,36]) - 1 # 2x2x2
 #kpoints = array([1,4,17,20,93,96,109,112]) - 1 # 4x4x4
 #kpoints = array([1,5,30,34,227,231,256,260]) - 1
 
