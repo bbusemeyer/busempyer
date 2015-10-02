@@ -144,9 +144,9 @@ def read_dir(froot,gosling='./gosling'):
     print "  densities..." 
     try:
       inpf = open(kroot+'.dmc.up.cube','r')
-      upcube = qio.read_cube(inpf)
+      upcube = ct.read_cube(inpf)
       inpf = open(kroot+'.dmc.dn.cube','r')
-      dncube = qio.read_cube(inpf)
+      dncube = ct.read_cube(inpf)
       ress[rk]['updens'] = upcube
       ress[rk]['dndens'] = dncube
     except IOError:
@@ -156,7 +156,7 @@ def read_dir(froot,gosling='./gosling'):
     try:
       inpf = open(kroot+'.ppr.o','r')
       fludat, fluerr = qio.read_number_dens(inpf)
-      if fludat==None:
+      if fludat is None:
         print "  (Error in number fluctuation output, skipping)"
       else:
         avg, var, cov, avge, vare, cove = qio.moments(fludat,fluerr)
@@ -169,7 +169,7 @@ def read_dir(froot,gosling='./gosling'):
     try:
       inpf = open(kroot+'.ordm.o')
       odmdat = qio.read_dm(inpf)
-      if odmdat==None:
+      if odmdat is None:
         print "  (Error in 1-RDM output, skipping)"
       else:
         ress[rk]['1rdm'] = odmdat
