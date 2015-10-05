@@ -65,7 +65,7 @@ def json_numpy_obj_hook(dct):
     return data.reshape(dct['shape'])
   return dct
 
-def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np=1,
+def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
     queue='batch', prep_commands=[],final_commands=[]):
   """ Generate a qsub file.
   
@@ -76,14 +76,17 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np=1,
   if name=='': name=str(datetime.now()).replace(' ','_')
   header = []
   header.append('#!/bin/bash')
-  header.append('#PBS -l nodes=%d:ppn=%d'%(nn,np))
+  if np=='allprocs': header.append('#PBS -l nodes=%d,flags=allprocs'%nn)
+  else:              header.append('#PBS -l nodes=%d:ppn=%d'%(nn,np))
   header.append('#PBS -q %s'%queue)
   header.append('#PBS -l walltime=%s'%time)
   header.append('#PBS -j oe')
   header.append('#PBS -m n')
   header.append('#PBS -N %s'%name)
   header.append('#PBS -o {0}'.format(loc+'/qsub.out'))
-  if nn*np > 1:
+  if np=='allprocs':
+    exeline = 'mpirun %s &> %s'%(exe, stdout)
+  elif nn*np > 1:
     exeline = 'mpirun -n %d %s &> %s'%(nn*np, exe, stdout)
   else:
     exeline = '%s &> %s'%(exe, stdout)
