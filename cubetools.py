@@ -9,7 +9,7 @@ def read_cube(inpf):
   cube['type']=inpf.readline()
   spl=inpf.readline().split()
   #cube['natoms']=int(spl[0])
-  cube['natoms']=map(int,spl)
+  cube['natoms']=map(int,spl[0])
   cube['origin']=map(float, spl[1:])
   cube['ints']=array([0,0,0])
   cube['latvec']=zeros((3,3))
