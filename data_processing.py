@@ -183,21 +183,21 @@ def read_dir(froot,gosling='./gosling'):
 
   return ress
 
-def read_dir_espresso(froot):
-  espinp = open(froot + ".inp",'r')
-  record = qefiles_io(espinp)
-  espout = open(froot + ".out",'r')
-
-  inpstr = ''
-  for line in espout:
-    inpstr += line
-  inplines = inpstr.split('\n')
-
-  for lidx,line in enumerate(inplines):
-    if '!' in line:
-      #TODO
-
-  return record
+#def read_dir_espresso(froot):
+#  espinp = open(froot + ".inp",'r')
+#  record = qefiles_io(espinp)
+#  espout = open(froot + ".out",'r')
+#
+#  inpstr = ''
+#  for line in espout:
+#    inpstr += line
+#  inplines = inpstr.split('\n')
+#
+#  for lidx,line in enumerate(inplines):
+#    if '!' in line:
+#      #TODO
+#
+#  return record
 
 def trace_analysis(dftfns,ids=[]):
   """
