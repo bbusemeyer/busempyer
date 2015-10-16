@@ -38,7 +38,7 @@ def convert_to_metadata(froot):
 
 # Read a directory which has multiple files with data into a single dictionary
 # with relevant information.
-def read_dir(froot,gosling='./gosling'):
+def read_dir(froot,gosling='./gosling',read_cubes=False):
   """ Reads a CRYSTAL + QWalk directory's data into a dictionary.
   
   Current dictionary keys:
@@ -141,18 +141,19 @@ def read_dir(froot,gosling='./gosling'):
     except IOError:
       print "  (cannot find excited state energy log file)"
 
-    print "  densities..." 
-    try:
-      inpf = open(kroot+'.dmc.up.cube','r')
-      upcube = ct.read_cube(inpf)
-      inpf = open(kroot+'.dmc.dn.cube','r')
-      dncube = ct.read_cube(inpf)
-      ress[rk]['updens'] = upcube
-      ress[rk]['dndens'] = dncube
-    except IOError:
-      print "  (cannot find electron density)"
-    except ValueError:
-      print "  (electron density is corrupted)"
+    if read_cubes:
+      print "  densities..." 
+      try:
+        inpf = open(kroot+'.dmc.up.cube','r')
+        upcube = ct.read_cube(inpf)
+        inpf = open(kroot+'.dmc.dn.cube','r')
+        dncube = ct.read_cube(inpf)
+        ress[rk]['updens'] = upcube
+        ress[rk]['dndens'] = dncube
+      except IOError:
+        print "  (cannot find electron density)"
+      except ValueError:
+        print "  (electron density is corrupted)"
 
     print "  fluctuations..." 
     try:
@@ -182,43 +183,43 @@ def read_dir(froot,gosling='./gosling'):
 
   return ress
 
-def read_dir_espresso(froot):
-  record = {}
-  espinp = open(froot + ".inp",'r')
-  espout = open(froot + ".out",'r')
-
-  inpstr = ''
-  for line in espinp:
-    inpstr += line
-  inplines = inpstr.split('\n')
-
-  for lidx,line in enumerate(inplines):
-    if '=' in line:
-      spl = line.split()
-      if len(spl) < 3: 
-        # Should be "this = that" not this=that or this =that
-        print "Warning: line not formatted right (%s)"%espinp
-      try:
-        if '.' in spl[2]:
-          record[spl[0]] = float(spl[2])
-        else:
-          record[spl[0]] = int(spl[2])
-      except ValueError:
-        record[spl[0]] = spl[2]
-
-    if 'K_POINTS' in line:
-      record['kpoint'] = map(int,inplines[lidx+1].split())
-
-  inpstr = ''
-  for line in espout:
-    inpstr += line
-  inplines = inpstr.split('\n')
-
-  for lidx,line in enumerate(inplines):
-    if '!' in line:
-      #TODO
-
-  return record
+#def read_dir_espresso(froot):
+#  record = {}
+#  espinp = open(froot + ".inp",'r')
+#  espout = open(froot + ".out",'r')
+#
+#  inpstr = ''
+#  for line in espinp:
+#    inpstr += line
+#  inplines = inpstr.split('\n')
+#
+#  for lidx,line in enumerate(inplines):
+#    if '=' in line:
+#      spl = line.split()
+#      if len(spl) < 3: 
+#        # Should be "this = that" not this=that or this =that
+#        print "Warning: line not formatted right (%s)"%espinp
+#      try:
+#        if '.' in spl[2]:
+#          record[spl[0]] = float(spl[2])
+#        else:
+#          record[spl[0]] = int(spl[2])
+#      except ValueError:
+#        record[spl[0]] = spl[2]
+#
+#    if 'K_POINTS' in line:
+#      record['kpoint'] = map(int,inplines[lidx+1].split())
+#
+#  inpstr = ''
+#  for line in espout:
+#    inpstr += line
+#  inplines = inpstr.split('\n')
+#
+#  for lidx,line in enumerate(inplines):
+#    if '!' in line:
+#      #TODO
+#
+#  return record
 
 def trace_analysis(dftfns,ids=[]):
   """
