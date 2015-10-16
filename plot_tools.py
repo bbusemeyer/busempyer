@@ -268,3 +268,24 @@ class MorseFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+class MorseFitpp(FitFunc):
+  """
+  Morse potential for model of bonding.
+  V(r) = Deq(1 - exp(-a(r-req)))^2 + V(req)
+
+  Suggested guesses: 
+  Deq  = max(V) - min(V)
+  req  = argmin(V)
+  a    ~ 0.05
+  Vreq = min(V)
+  """
+  def __init__(self,pnames=['depth','exp_coef','eq_radius','eq_potential']):
+    def pot(r,Deq,a,req,Vreq):
+      return Deq*(1. - np.exp(-a*(r-req)**3))**2 + Vreq
+    self.form = pot
+    self.jac  = None # Haven't bothered yet.
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None

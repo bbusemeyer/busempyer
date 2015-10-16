@@ -2,14 +2,15 @@ import sys
 from numpy import array,linspace,zeros,ones,cumprod,floor,ceil,dot,cross,sum,nan_to_num,errstate
 from numpy.linalg import det
 from scipy.interpolate import griddata
+from scipy.signal import butter, lfilter, freqz
+from copy import deepcopy
 
 def read_cube(inpf):
   cube={}
   cube['comment']=inpf.readline()
   cube['type']=inpf.readline()
   spl=inpf.readline().split()
-  #cube['natoms']=int(spl[0])
-  cube['natoms']=map(int,spl[0])
+  cube['natoms']=int(spl[0])
   cube['origin']=map(float, spl[1:])
   cube['ints']=array([0,0,0])
   cube['latvec']=zeros((3,3))
@@ -17,7 +18,7 @@ def read_cube(inpf):
     spl=inpf.readline().split()
     cube['ints'][i]=int(spl[0])
     cube['latvec'][i,:]=map(float,spl[1:])
-  natoms=cube['natoms'][0]
+  natoms=cube['natoms']
   cube['atomname']=[]
   cube['atomxyz']=zeros((natoms,3))
   for i in range(0,natoms):
@@ -50,13 +51,12 @@ def read_cube(inpf):
 def write_cube(cube, outf):
   outf.write(cube['comment'])
   outf.write(cube['type'])
-  for i in cube['natoms']:
-    outf.write(" %i "%i)
-  f.write("\n")
+  outf.write(' '.join(map(str,[cube['natoms']]+cube['origin'])))
+  outf.write("\n")
   for i in range(0,3):
     outf.write("%i "%cube['ints'][i])
     outf.write(" %g %g %g \n"%(cube['latvec'][i,0],cube['latvec'][i,1],cube['latvec'][i,2]))
-  natoms=cube['natoms'][0]
+  natoms=cube['natoms']
   for i in range(0,natoms):
     outf.write("%s 0.0 "%cube['atomname'][i])
     outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
@@ -75,6 +75,43 @@ def normalize_abs(cube):
   norm=sum(abs(cube['data']))*vol
   cube['data']/=norm
   return cube
+
+# Use low-pass filter to smooth densities.
+# ref: http://stackoverflow.com/questions/25191620/creating-lowpass-filter-in-scipy-understanding-methods-and-units
+def butter_lowpass(cutoff, fs, order=5):
+  nyq = 0.5 * fs
+  normal_cutoff = cutoff / nyq
+  b, a = butter(order, normal_cutoff, btype='low', analog=False)
+  return b, a
+
+def butter_lowpass_filter(data, cutoff, fs, order=5):
+  b, a = butter_lowpass(cutoff, fs, order=order)
+  y = lfilter(b, a, data)
+  return y
+
+# TODO not finished yet.
+def smooth_cube(cube):
+  # Filter requirements.
+  order = 6
+  fs = 30.0       # sample rate, Hz
+  cutoff = 3.667  # desired cutoff frequency of the filter, Hz
+
+  # Get the filter coefficients so we can check its frequency response.
+  b, a = butter_lowpass(cutoff, fs, order)
+
+  return cube
+
+def sub_cubes(poscube,negcube):
+  subcube = deepcopy(poscube)
+  subcube['data'] -= negcube['data']
+  subcube['data'] /= abs(subcube['data']).sum()
+  return subcube
+
+def add_cubes(cube1,cube2):
+  addcube = deepcopy(cube1)
+  addcube['data'] += cube2['data']
+  addcube['data'] /= abs(addcube['data']).sum()
+  return addcube
 
 # Used for interpolation scheme
 def nearest(point,cube):
@@ -173,3 +210,4 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
     print 'Interpolation method is not implemented yet.'
   
   return {'points':(X,Y), 'data':Z, 'acoor':array(acoor), 'adist':array(adist)}
+
