@@ -132,7 +132,8 @@ def read_cryout(inpf):
     if 'SCF ENDED' in line:
       spl = line.split()
       if spl[4] != 'CONVERGENCE':
-        print "Severe warning: DFT SCF not converged!"
+        print "Error: DFT SCF not converged!"
+        return {'dft_energy':None,'dft_moments':None}}
       res['dft_energy'] = float(spl[8])
   if spins != []:
     res['dft_moments'] = spins
