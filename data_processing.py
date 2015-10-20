@@ -182,6 +182,8 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
 
     print "  done."; 
 
+  if ress == {}:
+    ress['dft-only'] = bres
   return ress
 
 #def read_dir_espresso(froot):
