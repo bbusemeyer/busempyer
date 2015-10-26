@@ -3,6 +3,7 @@ import os
 import mython as my
 import subprocess as sub
 from copy import deepcopy
+import shutil as sh
 
 cwd = os.getcwd()
 baselines = open(sys.argv[1],'r').read().split('\n')
@@ -11,6 +12,8 @@ with open("base.d12",'w') as outf:
 
 struct_p = []
 dxs = [-0.3,-0.2,-0.1,0.1,0.2,0.3]
+dxs += [-0.03,0.0,0.03]
+use_fort = "fort.9"
 with open("smooth_pruns.dat",'r') as inpf:
   for line in inpf:
     spl = line.split()
@@ -24,9 +27,9 @@ with open("smooth_pruns.dat",'r') as inpf:
 # qsub options.
 exe = "~/bin/Pcrystal" 
 nn  = 1
-time = "04:00:00"
-queue = "secondary"
-pc = ["module load openmpi/1.4-gcc+ifort","cp XXX INPUT"]
+time = "24:00:00"
+queue = "physics"
+pc = ["module load openmpi/1.4-gcc+ifort","rm INPUT","cp XXX INPUT"]
 fc = ["rm *.pe[0-9]","rm *.pe[0-9][0-9]"]
 
 ################################################################################
@@ -36,9 +39,11 @@ fc = ["rm *.pe[0-9]","rm *.pe[0-9][0-9]"]
 geolist = struct_p
 tmplines  = deepcopy(baselines)
 for gi,geo in enumerate(geolist):
-  name = "geo_long_%d"%gi
+  name = "geo_%d"%gi
   if not os.path.isdir(name):
     os.mkdir(name)
+  if use_fort:
+    sh.copyfile(use_fort,name+'/fort.20')
   os.chdir(name)
   tmplines[4] = " ".join(map(str,geo[:2]))
   se_part = tmplines[7].split(" ")

@@ -8,13 +8,13 @@ import sys
 
 # qsub options.
 exe = "~/bin/Pcrystal" 
-nn  = 1
+nn  = 2
 time = "04:00:00"
 queue = "secondary"
-pc = ["module load openmpi/1.4-gcc+ifort","cp XXX INPUT"]
+pc = ["module load openmpi/1.4-gcc+ifort","rm INPUT","cp XXX INPUT"]
 fc = ["rm *.pe[0-9]","rm *.pe[0-9][0-9]"]
 
-use_fort = "fort.9"
+use_fort = "../fort.9"
 
 inpfns = open(sys.argv[1],'r').readlines()
 inpfs = [open(i[:-1],'r') for i in inpfns]
@@ -38,14 +38,17 @@ for inpf in inpfs:
     while inplines[-i] != "END":
       i += 1
     inplines[-i] = "GUESSP"
-    inplines.append("END")
+    try:
+      inplines[-i+1] = "END"
+    except IndexError:
+      inplines.append("END")
 
   newinpfn = "new."+inpfn
   with open(newinpfn,'w') as outf:
     outf.write("\n".join(inplines))
 
   sh.copyfile(use_fort,"fort.20")
-  pc[-1] = "cp %s.d12 INPUT"%newinpfn
+  pc[-1] = "cp %s INPUT"%newinpfn
   qsub = my.gen_qsub(exe,
     stdout = newinpfn+".out",
     loc = os.getcwd(),
