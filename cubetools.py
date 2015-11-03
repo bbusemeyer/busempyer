@@ -1,8 +1,9 @@
 import sys
 from numpy import array,linspace,zeros,ones,cumprod,floor,ceil,dot,cross,sum,nan_to_num,errstate
+import numpy as np
 from numpy.linalg import det
 from scipy.interpolate import griddata
-from scipy.signal import butter, lfilter, freqz
+from scipy.signal import butter, lfilter
 from copy import deepcopy
 
 def read_cube(inpf):
@@ -69,45 +70,156 @@ def write_cube(cube, outf):
         if count%5==0:
           outf.write('\n')
   outf.write('\n')
+
+def write_xsf(cube,outf):
+  outf.write("CRYSTAL\n")
+  outf.write("PRIMVEC\n")
+  natoms=cube['natoms']
+  for i in range(0,3):
+    npts=cube['ints'][i]
+    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0],npts*cube['latvec'][i,1],npts*cube['latvec'][i,2]))
+  outf.write("PRIMCOORD\n")
+  outf.write("%i 1\n"%natoms)
+  for i in range(0,natoms):
+    outf.write("%s "%cube['atomname'][i])
+    outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
+  outf.write("BEGIN_BLOCK_DATAGRID_3D\n cube_file_conversion \n")
+  outf.write("BEGIN_DATAGRID_3D\n")
+  outf.write("%i %i %i\n"%(cube['ints'][0],cube['ints'][1],cube['ints'][2]))
+  outf.write("0.0 0.0 0.0\n")
+  for i in range(0,3):
+    npts=cube['ints'][i]
+    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0],npts*cube['latvec'][i,1],npts*cube['latvec'][i,2]))
   
-def normalize_abs(cube):
-  vol=abs(linalg.det(cube['latvec']))
+  count=0
+  for z in range(0,cube['ints'][2]):
+    for y in range(0,cube['ints'][1]):
+      for x in range(0,cube['ints'][0]):
+        outf.write("%g "%cube['data'][x,y,z])
+        count+=1
+        if count%5==0:
+          outf.write('\n')
+  outf.write('\n')
+  outf.write("END_DATAGRID_3D\n")
+  outf.write("END_BLOCK_DATAGRID_3D\n")
+  
+def integrate(cube):
+  """Numerically integrate the density.
+  
+  Appoximates integral by simple sum."""
+  vol=abs(det(cube['latvec']))
+  return sum(cube['data'])*vol
+
+def integrate_abs(cube):
+  """Numerically integrate the absolute value of the density.
+  
+  Appoximates integral by simple sum."""
+  vol=abs(det(cube['latvec']))
+  return sum(abs(cube['data']))*vol
+
+
+def normalize_abs(cube,Nelec=1):
+  """Normalize the density so the integral over all space yeilds Nelec.
+  
+  Appoximates integral by simple sum."""
+  vol=abs(det(cube['latvec']))
   norm=sum(abs(cube['data']))*vol
-  cube['data']/=norm
-  return cube
+  cube['data']*=(float(Nelec)/norm)
 
-# Use low-pass filter to smooth densities.
-# ref: http://stackoverflow.com/questions/25191620/creating-lowpass-filter-in-scipy-understanding-methods-and-units
-def butter_lowpass(cutoff, fs, order=5):
-  nyq = 0.5 * fs
-  normal_cutoff = cutoff / nyq
-  b, a = butter(order, normal_cutoff, btype='low', analog=False)
-  return b, a
+def freq_cutoff(cube,freq_cutoff=0.90):
+  """ Cutoff frequencies of the signal with size freq_cutoff * the
+  maximum or higher, in place."""
+  # Frequency distribution is fastest in middle, slowest at end, and positive in
+  # first half.
+  max_val = cube['data'].max()
 
-def butter_lowpass_filter(data, cutoff, fs, order=5):
-  b, a = butter_lowpass(cutoff, fs, order=order)
-  y = lfilter(b, a, data)
-  return y
+  fft = np.fft.fftn(cube['data'])
+  endfreqs = np.array([int(round(s*freq_cutoff/2.)) for s in fft.shape])
 
-# TODO not finished yet.
-def smooth_cube(cube):
-  # Filter requirements.
-  order = 6
-  fs = 30.0       # sample rate, Hz
-  cutoff = 3.667  # desired cutoff frequency of the filter, Hz
+  print "Cutting off ",
+  for si,s in enumerate(fft.shape): print "%d "%(s - 2*int(round(endfreqs[si]))),
+  print "frequencies, out of ",
+  print "%d %d %d"%fft.shape
 
-  # Get the filter coefficients so we can check its frequency response.
-  b, a = butter_lowpass(cutoff, fs, order)
+  for dim in range(fft.ndim):
+    fft = fft.swapaxes(dim,fft.ndim-1)
+    for d1 in fft:
+      for d2 in d1:
+        d2[endfreqs[dim]:-endfreqs[dim]+1] = 0.2*d2[endfreqs[dim]:-endfreqs[dim]+1]
+    fft = fft.swapaxes(dim,fft.ndim-1)
+  cube['data'] = np.fft.ifftn(fft)
+  if abs(cube['data'].imag).max() > 1e-16:
+    print "Warning, inverting FFT may not be completely real!"
+  cube['data'] = cube['data'].real
+  cube['data'] *= (max_val / cube['data'].max())
 
-  return cube
+def butter_cutoff(cube,crit_freq=1,order=4):
+  """
+  Simple wrapper for scipy routines to perform Butterworth low pass filter.
+  
+  crit_freq = point where gain drops to 1/sqrt(2) of passband. 1 is defined as
+  the Nyquist frequency.
+  order = Order of Butterworth function, which controls steepness.
+  """
+  b,a = butter(order, crit_freq)
+  cube['data'] = lfilter(b,a,cube['data'])
+  #cube['data'] = lfilter(b,a,cube['data'],0)
+  #cube['data'] = lfilter(b,a,cube['data'],1)
+  #cube['data'] = lfilter(b,a,cube['data'],2)
 
-def sub_cubes(poscube,negcube):
+def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
+  """ Average each point in the cube file with blob_range neighbors in each
+  direction, weighted by a Gaussian with SD sigma."""
+
+  nd = nbr_dist
+  total_steps = 0.
+  for ii in range(-nd,nd+1):
+    for jj in range(-(nd-abs(ii)),(nd-abs(ii))+1):
+      for kk in range(-(nd-abs(ii)-abs(jj)),(nd-abs(ii)-abs(jj))+1):
+        total_steps += 1
+  total_steps *= repeat
+  done_steps = 0.
+
+  for iteration in range(repeat):
+    new = np.zeros(cube['data'].shape)
+    def wf(x):
+      return np.exp(-x**2/(2*sigma**2))
+
+    for ii in range(-nd,nd+1):
+      wi = wf(ii)
+      for jj in range(-(nd-abs(ii)),(nd-abs(ii))+1):
+        wj = wf(jj)
+        for kk in range(-(nd-abs(ii)-abs(jj)),(nd-abs(ii)-abs(jj))+1):
+          wk = wf(kk)
+          print "Finished {0:5.2f}%. ".format(100 * (done_steps/total_steps))
+          for i in range(cube['data'].shape[0]):
+            ip = (i+ii)%cube['data'].shape[0]
+            for j in range(cube['data'].shape[1]):
+              jp = (j+jj)%cube['data'].shape[1]
+              for k in range(cube['data'].shape[2]):
+                kp = (k+kk)%cube['data'].shape[2]
+                new[i,j,k] += cube['data'][ip,jp,kp]*wi*wj*wk
+          done_steps += 1
+    cube['data'] = new
+
+def sub_cubes(poscube,negcube,Npos=1,Nneg=1):
+  """Subtract two cube files.
+
+  Will normalize first, which requres Nup and Ndn arguments if the number of
+  electrons in the two cubes differs."""
+  normalize_abs(poscube,Npos)
+  normalize_abs(negcube,Nneg)
   subcube = deepcopy(poscube)
   subcube['data'] -= negcube['data']
-  subcube['data'] /= abs(subcube['data']).sum()
   return subcube
 
-def add_cubes(cube1,cube2):
+def add_cubes(cube1,cube2,N1=1,N2=1):
+  """Add two cube files.
+
+  Will normalize first, which requres N1 and N2 arguments if the number of
+  electrons in the two cubes differs."""
+  normalize_abs(cube1,N1)
+  normalize_abs(cube2,N2)
   addcube = deepcopy(cube1)
   addcube['data'] += cube2['data']
   addcube['data'] /= abs(addcube['data']).sum()
@@ -115,12 +227,16 @@ def add_cubes(cube1,cube2):
 
 # Used for interpolation scheme
 def nearest(point,cube):
+  """Find the value in the cube file located closest to point."""
   a = array([ dot(cube['latvec'][i],point)/dot(cube['latvec'][i],cube['latvec'][i])
               for i in range(3) ]).round()
   #print a % cube['ints']
   return cube['data'][tuple(map(int,a % cube['ints']))]
 
+# Used for interpolation scheme
 def linear(point,cube):
+  """Compute the linear extrapolation to the point using closest available
+  points."""
   latvec = cube['latvec'] 
   ints = cube['ints']
   # point in the basis of latvec.
@@ -143,11 +259,11 @@ def linear(point,cube):
         wght[i,j,k] = vols[1-i,1-j,1-k]/tvol
   return sum(wght*vals)
 
-# Interpolate cube in plane defined by three points, pos, with res points, using
-# method to interpolate, and ensuring atrad radius around each atom is included.
-# By design, tries to put the longer axis on the x axis. To change this, you'd
-# need to switch pvm and pvo.
 def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
+  """Interpolate cube in plane defined by three points, pos, with res points, using
+  method to interpolate, and ensuring atrad radius around each atom is included.
+  By design, tries to put the longer axis on the x axis. To change this, you'd
+  need to switch pvm and pvo."""
   latvec = cube['latvec']
   ints = cube['ints']
   
@@ -210,4 +326,3 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
     print 'Interpolation method is not implemented yet.'
   
   return {'points':(X,Y), 'data':Z, 'acoor':array(acoor), 'adist':array(adist)}
-
