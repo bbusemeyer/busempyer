@@ -144,8 +144,13 @@ def gen_properties(cryinp,natoms,kpath,denom,projs,
                    npoly=25,):
   """ User-friendly properties input generator, for bandstructure and DOS.
 
-      Factor "denom" out of kpath to make it integer.
       TODO: negative DOSS projections (onto atoms)
+      Factor "denom" out of kpath to make it integer.
+      projs = projections onto certain orbitals. See CRYSTAL manual "DOSS" and "NPROJ"
+      above = number of bands above Ef
+      below = number of bands below Ef
+      ..res.. = resolution controls.
+      npoly = number of polynomials < 25 used for expanding DOS.
   """
   inp = read_cryinp(cryinp)
   shrink = inp['kdens']
