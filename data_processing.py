@@ -39,7 +39,7 @@ def convert_to_metadata(froot):
 
 # Read a directory which has multiple files with data into a single dictionary
 # with relevant information.
-def read_dir(froot,gosling='./gosling'):
+def read_dir(froot,gosling='./gosling',read_cubes=False):
   """ Reads a CRYSTAL + QWalk directory's data into a dictionary.
   
   Current dictionary keys:
@@ -142,18 +142,19 @@ def read_dir(froot,gosling='./gosling'):
     except IOError:
       print "  (cannot find excited state energy log file)"
 
-    print "  densities..." 
-    try:
-      inpf = open(kroot+'.dmc.up.cube','r')
-      upcube = ct.read_cube(inpf)
-      inpf = open(kroot+'.dmc.dn.cube','r')
-      dncube = ct.read_cube(inpf)
-      ress[rk]['updens'] = upcube
-      ress[rk]['dndens'] = dncube
-    except IOError:
-      print "  (cannot find electron density)"
-    except ValueError:
-      print "  (electron density is corrupted)"
+    if read_cubes:
+      print "  densities..." 
+      try:
+        inpf = open(kroot+'.dmc.up.cube','r')
+        upcube = ct.read_cube(inpf)
+        inpf = open(kroot+'.dmc.dn.cube','r')
+        dncube = ct.read_cube(inpf)
+        ress[rk]['updens'] = upcube
+        ress[rk]['dndens'] = dncube
+      except IOError:
+        print "  (cannot find electron density)"
+      except ValueError:
+        print "  (electron density is corrupted)"
 
     print "  fluctuations..." 
     try:
@@ -181,6 +182,8 @@ def read_dir(froot,gosling='./gosling'):
 
     print "  done."; 
 
+  if ress == {}:
+    ress['dft-only'] = bres
   return ress
 
 #def read_dir_espresso(froot):

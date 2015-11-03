@@ -1,7 +1,8 @@
 #!/usr/bin/python
 from numpy  import array,dot
 from mython import lines2str,gen_qsub
-from os import getcwd
+import os
+import shutil as sh
 
 # Reads a CRYSTAL input file. Can easily be modified to get more information.
 def read_cryinp(inpf):
@@ -131,7 +132,8 @@ def read_cryout(inpf):
     if 'SCF ENDED' in line:
       spl = line.split()
       if spl[4] != 'CONVERGENCE':
-        print "Severe warning: DFT SCF not converged!"
+        print "read_cryout() error: DFT SCF not converged! Returning None."
+        return {'dft_energy':None,'dft_moments':None}
       res['dft_energy'] = float(spl[8])
   if spins != []:
     res['dft_moments'] = spins
@@ -187,7 +189,7 @@ def gen_properties(cryinp,natoms,kpath,denom,projs,
   return lines2str(outlines)
 
 def gen_cry2qwalk(dftfn):
-  loc = '/'.join([getcwd()]+dftfn.split('/')[:-1])
+  loc = '/'.join([os.getcwd()]+dftfn.split('/')[:-1])
   root = dftfn.split('/')[-1].replace('.d12','')
   propfn = root+'.d3'
   dftdat = read_cryinp(open(dftfn,'r'))
@@ -220,3 +222,4 @@ def read_crytrace(inpf):
     if "DETOT" in line:
       trace.append(line.split()[3])
   return trace
+
