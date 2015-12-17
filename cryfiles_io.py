@@ -4,6 +4,12 @@ from mython import lines2str,gen_qsub
 import os
 import shutil as sh
 
+def read_basis_element(lines,pos):
+  cur = pos+1
+  pseudo_header = lines[cur]
+  npseudo = sum(map(int,pseudo_header[1:]))
+  
+
 # Reads a CRYSTAL input file. Can easily be modified to get more information.
 def read_cryinp(inpf):
   inpstr = ''
@@ -26,6 +32,10 @@ def read_cryinp(inpf):
     res['atypes'].append(int(line[0]))
     res['apos'].append(map(float,line[1:]))
     pos += 1
+
+  basis_poss = [line for line in lines if "INPUT" in line]
+  for basis_pos in basis_poss:
+    print read_basis_element(lines,basis_pos)
 
   # Rest of input not position based, and may not be separated correctly by
   # newlines. TODO: this might be true of geometry as well.

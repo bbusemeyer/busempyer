@@ -15,10 +15,10 @@ def submit_job(base,lines,cwd):
   pc = ["module load openmpi/1.4-gcc+ifort"]
   qin = gen_qsub("~/bin/pw.x < %s.inp"%(base),
     stdout="%s.out"%(base),
-    queue="batch",
+    queue="physics",
     name="%s/%s.out"%(cwd,base),
     time="72:00:00",
-    nn=1,np=8,
+    nn=1,
     prep_commands=pc)
   print sp.check_output("qsub %s"%qin,shell=True)
   os.chdir(cwd)
@@ -48,7 +48,7 @@ changes = {
   #  ("Si","Si.pbe-n-rrkjus_psl.0.1.UPF"),
   #  ("Si","Si.rel-pbe-n-rrkjus_psl.0.1.UPF"),
   #  ("Si","Si.pz-vbc.UPF")
-  "nqx":[1,2,3]
+  "nqx":[1]
 }
 
 # Now's the part where you mess with something.
