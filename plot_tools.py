@@ -12,7 +12,8 @@ def fix_lims(ax_array,factor=0.04):
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
-      if type(line.get_xdata()) is type([]): continue
+      if type(line.get_xdata()) is type([]):
+        continue
       if line.get_xdata().max() > maxx:
         maxx = line.get_xdata().max()
       if line.get_ydata().max() > maxy:
@@ -26,6 +27,8 @@ def fix_lims(ax_array,factor=0.04):
   for ax in ax_array.flatten():
     if xs != 0: ax.set_xlim(minx-xs,maxx+xs)
     if ys != 0: ax.set_ylim(miny-ys,maxy+ys)
+
+def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 
 def cif_to_dict(cifstr):
   """
@@ -127,6 +130,22 @@ class LinearFit(FitFunc):
     self.perr = None
     self.cov  = None
 
+class LinearFit_xcross(FitFunc):
+  """
+  FitFunc of form c*(x - x0)
+  """
+  def __init__(self,pnames=['slope','xint']):
+    def form(x,c,x0):
+      return c*(x - x0)
+    def jac(x,c,y0):
+      return np.array([x,-c]).T
+    self.form = form
+    self.jac  = jac
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
 class QuadraticFit(FitFunc):
   """
   FitFunc of form c*(x - xm)**2 + yc
@@ -159,13 +178,29 @@ class CubicFit(FitFunc):
     self.perr = None
     self.cov  = None
 
-class CubicFit_fixmin(CubicFit):
+class CubicFit_fixmin(FitFunc):
   """
   FitFunc of form a*(x - xm)**3 + b*(x - xm)**2 + yc
   """
   def __init__(self,xm,pnames=['cubic','quadratic','ycrit']):
     def form(x,a,b,yc):
       return a*(x - xm)**3 + b*(x - xm)**2 + yc
+    def jac(x,a,b,yc):
+      return None
+    self.form = form
+    self.jac  = jac
+    self.pnms = pnames
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+class CubicFit_zeros(FitFunc):
+  """
+  FitFunc of form a(x-x1)(x-x2)(x-x3)
+  """
+  def __init__(self,pnames=['cubic','zero1','zero2','zero3']):
+    def form(x,a,x1,x2,x3):
+      return a*(x-x1)*(x-x2)*(x-x3)
     def jac(x,a,b,yc):
       return None
     self.form = form
