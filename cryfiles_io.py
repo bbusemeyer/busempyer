@@ -1,14 +1,28 @@
 #!/usr/bin/python
-from numpy  import array,dot
+from numpy  import array,dot,zeros
 from mython import lines2str,gen_qsub
 import os
 import shutil as sh
 
-def read_basis_element(lines,pos):
+def read_basis_chunk(lines,pos):
+  header = lines[pos].split()
+  ngaus = int(header[2])
+  basis_elmt = zeros((ngaus,2))
+  for gix in range(ngaus):
+    basis_elmt[gix,:] = map(float,lines[pos+1+gix].split())
+  return pos + ngaus + 1, basis_elmt
+
+def read_element_basis(lines,pos):
+  nbasis = int(lines[pos-1].split()[1])
+  basis = []
   cur = pos+1
-  pseudo_header = lines[cur]
+  pseudo_header = lines[cur].split()
   npseudo = sum(map(int,pseudo_header[1:]))
-  
+  cur += npseudo + 1
+  for basis_pos in range(nbasis):
+    cur, b_elmt = read_basis_chunk(lines,cur)
+    basis.append(b_elmt)
+  return basis
 
 # Reads a CRYSTAL input file. Can easily be modified to get more information.
 def read_cryinp(inpf):
@@ -33,9 +47,12 @@ def read_cryinp(inpf):
     res['apos'].append(map(float,line[1:]))
     pos += 1
 
-  basis_poss = [line for line in lines if "INPUT" in line]
+  basis = {}
+  basis_poss = [pos for (pos,line) in enumerate(lines) if "INPUT" in line]
   for basis_pos in basis_poss:
-    print read_basis_element(lines,basis_pos)
+    elmt = int(lines[basis_pos-1].split()[0])
+    basis[elmt] = read_element_basis(lines,basis_pos)
+  res['basis'] = basis
 
   # Rest of input not position based, and may not be separated correctly by
   # newlines. TODO: this might be true of geometry as well.

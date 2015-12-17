@@ -91,7 +91,7 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     bres['c'] = dftdat['latparms'][1]
     bres['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
     for key in ['mixing','broyden','fmixing','tolinteg',
-                'kdens','spinlock','supercell','tole']:
+                'kdens','spinlock','supercell','tole','basis']:
       bres[key] = dftdat[key]
     dftdat = cio.read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
