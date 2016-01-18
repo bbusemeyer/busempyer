@@ -102,7 +102,7 @@ class FitFunc:
 
   def get_parm(self,key="print"):
     if key=="print":
-      return ','.join(self.pmap.keys())
+      return ', '.join(self.pmap.keys())
     elif self.pmap != {}:
       return self.pmap[key]
     else:
