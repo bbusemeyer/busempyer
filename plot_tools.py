@@ -100,8 +100,10 @@ class FitFunc:
                      np.dot(self.cov,
                             self.jac(x,*self.parm)))**.5
 
-  def get_parm(self,key):
-    if self.pmap != {}:
+  def get_parm(self,key="print"):
+    if key=="print":
+      return ', '.join(self.pmap.keys())
+    elif self.pmap != {}:
       return self.pmap[key]
     else:
       print "You must set pnames to use get_parm()."
@@ -126,6 +128,8 @@ class LinearFit(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -142,6 +146,8 @@ class LinearFit_xcross(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -158,6 +164,8 @@ class QuadraticFit(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -174,6 +182,8 @@ class CubicFit(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -190,6 +200,8 @@ class CubicFit_fixmin(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -206,6 +218,8 @@ class CubicFit_zeros(FitFunc):
     self.form = form
     self.jac  = jac
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -226,6 +240,8 @@ class EOSFit(FitFunc):
     self.derv = pressure
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -249,6 +265,8 @@ class EOSFit_fixV0(EOSFit):
     self.derv = pressure
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -264,6 +282,8 @@ class EOSFit_fixn(EOSFit):
     self.derv = pressure
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -279,6 +299,8 @@ class EOSFit_fixV0_fixn(EOSFit):
     self.derv = pressure
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -300,6 +322,8 @@ class MorseFit(FitFunc):
     self.form = pot
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
@@ -321,6 +345,8 @@ class MorseFitpp(FitFunc):
     self.form = pot
     self.jac  = None # Haven't bothered yet.
     self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
     self.parm = None
     self.perr = None
     self.cov  = None
