@@ -66,6 +66,7 @@ def read_cryinp(inpf):
   res['mixing'] = 0
   res['supercell'] = [1,0,0,0,1,0,0,0,1]
   res['tolinteg'] = [6,6,6,6,12]
+  pos = 0
   while pos < len(inpl):
     if 'SUPERCELL' == inpl[pos]:
       res['supercell'] =  map(int,inpl[pos+1:pos+10])
