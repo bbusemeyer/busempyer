@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import numpy as np
+import pandas as pd
 import os
 import json
 import cryfiles_io as cio
@@ -213,3 +214,58 @@ def trace_analysis(dftfns,ids=[]):
     with open(dftfn,'r') as dftf:
       res[ids[di]] = cio.read_crytrace(dftf)
   return res
+
+# Helper for format_autogen().
+def format_dftdf(rawdf):
+  def desect_basis(df):
+    return pd.Series(dict(zip(['lowest','number','factor'],df)))
+  def cast_supercell(sup):
+    for rix,row in enumerate(sup):
+      sup[rix] = tuple(row)
+    return tuple(sup)
+  ids = rawdf['control'].apply(lambda x:x['id'])
+  dftdf = pd.DataFrame(rawdf['dft'].to_dict()).T
+  dftdf = dftdf.join(ids).rename(columns={'control':'id'})
+  for rawinfo in ['supercell','nfu','cif']:
+    dftdf = dftdf.join(rawdf[rawinfo])
+  for col in dftdf['functional'].values[0].keys():
+    dftdf[col] = dftdf['functional'].apply(lambda x:x[col])
+  dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
+  dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
+  dftdf['number'] = dftdf['number'].apply(lambda x:int(round(x)))
+  dftdf['factor'] = dftdf['factor'].apply(lambda x:int(round(x)))
+  #listcols = [
+  #    'kmesh','basis','broyden','initial_charges',
+  #    'mag_moments','initial_spin'
+  #  ]
+  #for col in listcols:
+  #  dftdf.loc[dftdf[col].notnull(),col] = \
+  #      dftdf.loc[dftdf[col].notnull(),col].apply(lambda x:tuple(x))
+  dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
+      dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
+      .apply(lambda x:cast_supercell(x))
+  dftdf['max_mag_moment'] = np.nan
+  dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
+      dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
+          max(abs(np.array(x)))
+        )
+  dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
+  return dftdf
+
+def format_autogen(inp_json="results.json"):
+  rawdf = pd.read_json(open(inp_json,'r'))
+  rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
+      2*np.linalg.det(np.array(x))
+    )
+  dftdf = format_dftdf(rawdf)
+  qmcdf = pd.DataFrame(rawdf['qmc'].to_dict()).T
+  dmcdf = pd.DataFrame(qmcdf['dmc'].to_dict()).T
+  alldf = dmcdf.join(dftdf)
+  listcols = [
+      'kmesh','basis','broyden','initial_charges',
+      'mag_moments','initial_spin','localization'
+    ]
+  for col in listcols:
+    alldf.loc[alldf[col].notnull(),col] = \
+        alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
+  return rawdf,alldf
