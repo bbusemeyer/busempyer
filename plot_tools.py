@@ -272,7 +272,7 @@ class EOSFit_fixV0(EOSFit):
     self.cov  = None
 
 class EOSFit_fixn(EOSFit):
-  def __init__(self,n,pnames=['bulk_mod','n','Einf']):
+  def __init__(self,n,pnames=['bulk_mod','V0','Einf']):
     def energy(V,b,V0,Einf):
       return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
     def pressure(V,b,V0):
