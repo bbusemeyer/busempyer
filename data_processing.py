@@ -252,6 +252,11 @@ def format_dftdf(rawdf):
   dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
   return dftdf
 
+def parse_err(df,key='energy'):
+  tmpdf = df[key].apply(lambda x: pd.Series({key:x[0],'energy_err':x[1]}))
+  del df[key]
+  return df.join(tmpdf)
+
 def format_autogen(inp_json="results.json"):
   rawdf = pd.read_json(open(inp_json,'r'))
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
@@ -268,4 +273,6 @@ def format_autogen(inp_json="results.json"):
   for col in listcols:
     alldf.loc[alldf[col].notnull(),col] = \
         alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
+
   return rawdf,alldf
+
