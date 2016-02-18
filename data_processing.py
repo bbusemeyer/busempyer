@@ -7,6 +7,30 @@ import cryfiles_io as cio
 import qfiles_io as qio
 import qefiles_io as qeio
 import cubetools as ct
+from pymatgen.io.cif import CifParser
+
+# After processing, what are the columns that define the accuracy level of the
+# calculation? Defined as a function to make it more readable when importing.
+# Pls keep alphabetize (<range> sort u). Pls. 
+def gen_autogen_defining_columns():
+  return [
+      'basis_factor',
+      'basis_lowest',
+      'basis_number',
+      'cif',
+      'correlation',
+      'exchange',
+      'hybrid',
+      'jastrow',
+      'kmesh',
+      'localization',
+      'magstate',
+      'optimizer',
+      'struct',
+      'supercell',
+      'timestep',
+      'tolinteg'
+    ]
 
 # Temporary function to convert file names to metadata about the calculations.
 # In the future, an optional metadata file should contain overall qualitiative
@@ -218,7 +242,7 @@ def trace_analysis(dftfns,ids=[]):
 # Helper for format_autogen().
 def format_dftdf(rawdf):
   def desect_basis(df):
-    return pd.Series(dict(zip(['lowest','number','factor'],df)))
+    return pd.Series(dict(zip(['basis_lowest','basis_number','basis_factor'],df)))
   def cast_supercell(sup):
     for rix,row in enumerate(sup):
       sup[rix] = tuple(row)
@@ -228,34 +252,60 @@ def format_dftdf(rawdf):
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
   for rawinfo in ['supercell','nfu','cif']:
     dftdf = dftdf.join(rawdf[rawinfo])
-  for col in dftdf['functional'].values[0].keys():
-    dftdf[col] = dftdf['functional'].apply(lambda x:x[col])
+  funcdf = pd.DataFrame(dftdf['functional'].to_dict()).T
+  dftdf = dftdf.join(funcdf)
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
   dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
-  dftdf['number'] = dftdf['number'].apply(lambda x:int(round(x)))
-  dftdf['factor'] = dftdf['factor'].apply(lambda x:int(round(x)))
-  #listcols = [
-  #    'kmesh','basis','broyden','initial_charges',
-  #    'mag_moments','initial_spin'
-  #  ]
-  #for col in listcols:
-  #  dftdf.loc[dftdf[col].notnull(),col] = \
-  #      dftdf.loc[dftdf[col].notnull(),col].apply(lambda x:tuple(x))
+  dftdf['basis_number'] = dftdf['basis_number'].apply(lambda x:int(round(x)))
+  dftdf['basis_factor'] = dftdf['basis_factor'].apply(lambda x:int(round(x)))
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
       .apply(lambda x:cast_supercell(x))
-  dftdf['max_mag_moment'] = np.nan
-  dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
-      dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
-          max(abs(np.array(x)))
-        )
+  if 'mag_moments' in dftdf.columns:
+    dftdf['max_mag_moment'] = np.nan
+    dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
+        dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
+            max(abs(np.array(x)))
+          )
   dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
+  for redundant in ['basis','functional']:
+    del dftdf[redundant]
   return dftdf
 
+# Tuple to DF entry.
 def parse_err(df,key='energy'):
   tmpdf = df[key].apply(lambda x: pd.Series({key:x[0],'energy_err':x[1]}))
   del df[key]
   return df.join(tmpdf)
+
+# Get out atomic positions (and possibly more later).
+# Pretty slow: can be made faster by saving cifs that are already done.
+def extract_struct(cifstr):
+  parser = CifParser.from_string(cifstr)
+  poss = [
+      tuple(site['abc']) for site in 
+      parser.get_structures()[0].as_dict()['sites']
+    ]
+  ions = [
+      site['species'][0]['element'] for site in 
+      parser.get_structures()[0].as_dict()['sites']
+    ]
+  positions = {}
+  for iidx,ion in enumerate(ions):
+    if ion in positions.keys():
+      positions[ion].append(poss[iidx])
+    else:
+      positions[ion] = [poss[iidx]]
+  for key in positions.keys():
+    positions[key] = np.array(positions[key])
+  return pd.Series([positions],['positions'])
+
+# Better format for results in all qmc results.
+def format_results(resdict):
+  energy_k = {}
+  for rec in resdict:
+    energy_k[rec['knum']] = tuple(rec['energy'])
+  return energy_k
 
 def format_autogen(inp_json="results.json"):
   rawdf = pd.read_json(open(inp_json,'r'))
@@ -266,13 +316,37 @@ def format_autogen(inp_json="results.json"):
   qmcdf = pd.DataFrame(rawdf['qmc'].to_dict()).T
   dmcdf = pd.DataFrame(qmcdf['dmc'].to_dict()).T
   alldf = dmcdf.join(dftdf)
+  vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
+  alldf = alldf.join(vmcdf,rsuffix="_vmc")
   listcols = [
-      'kmesh','basis','broyden','initial_charges',
-      'mag_moments','initial_spin','localization'
+      'broyden',
+      'initial_charges',
+      'initial_spin',
+      'kmesh',
+      'localization',
+      'timestep'
     ]
+  if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
   for col in listcols:
     alldf.loc[alldf[col].notnull(),col] = \
         alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
 
+  for col in alldf.columns:
+    alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
+
   return rawdf,alldf
 
+# Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
+# TODO: Currently does no k-point weighting.
+def kavergage_dmc(alldf):
+  print("Warning! kaverage_dmc() assuming equal k-point weight!")
+  print("Warning! kaverage_dmc() takes no note of timestep or localization lists!")
+  def kavergage_record(reslist):
+    energies = [item['energy'][0]    for item in reslist]
+    evars    = [item['energy'][1]**2 for item in reslist]
+    return pd.Series([np.mean(energies),np.mean(evars)**.5],['dmc_energy','dmc_error'])
+  dmcdf = alldf.loc[alldf['results'].notnull(),'results'].apply(kavergage_record)
+  dmcdf = alldf.join(dmcdf)
+  dmcdf['dmc_energy'] = dmcdf['dmc_energy'] / dmcdf['nfu']
+  dmcdf['dmc_error']  = dmcdf['dmc_error']  / dmcdf['nfu']
+  return dmcdf
