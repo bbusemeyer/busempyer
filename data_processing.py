@@ -350,3 +350,21 @@ def kavergage_dmc(alldf):
   dmcdf['dmc_energy'] = dmcdf['dmc_energy'] / dmcdf['nfu']
   dmcdf['dmc_error']  = dmcdf['dmc_error']  / dmcdf['nfu']
   return dmcdf
+
+# Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
+# TODO: Currently does no k-point weighting.
+# TODO issue of ordering with format_results.
+def kavergage_qmc(alldf,qmc_type='dmc'):
+  print("Warning! kaverage_qmc() assuming equal k-point weight!")
+  print("Warning! kaverage_qmc() takes no note of timestep or localization lists!")
+  encol = qmc_type+'_energy'
+  ercol = qmc_type+'_error'
+  def kavergage_record(reslist):
+    energies = [item['energy'][0]    for item in reslist]
+    evars    = [item['energy'][1]**2 for item in reslist]
+    return pd.Series([np.mean(energies),np.mean(evars)**.5], [encol,ercol])
+  dmcdf = alldf.loc[alldf['results'].notnull(),'results'].apply(kavergage_record)
+  dmcdf = alldf.join(dmcdf)
+  dmcdf[encol] = dmcdf[encol] / dmcdf['nfu']
+  dmcdf[ercol]  = dmcdf[ercol]  / dmcdf['nfu']
+  return dmcdf
