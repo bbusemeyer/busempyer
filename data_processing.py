@@ -316,8 +316,9 @@ def format_autogen(inp_json="results.json"):
   qmcdf = pd.DataFrame(rawdf['qmc'].to_dict()).T
   dmcdf = pd.DataFrame(qmcdf['dmc'].to_dict()).T
   alldf = dmcdf.join(dftdf)
-  vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
-  alldf = alldf.join(vmcdf,rsuffix="_vmc")
+  if 'vmc' in qmcdf.keys():
+    vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
+    alldf = alldf.join(vmcdf,rsuffix="_vmc")
   listcols = [
       'broyden',
       'initial_charges',
