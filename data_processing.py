@@ -17,7 +17,7 @@ def gen_autogen_defining_columns():
       'basis_factor',
       'basis_lowest',
       'basis_number',
-      'cif',
+      'a','b','c',
       'correlation',
       'exchange',
       'hybrid',
@@ -281,14 +281,19 @@ def parse_err(df,key='energy'):
 # Get out atomic positions (and possibly more later).
 # Pretty slow: can be made faster by saving cifs that are already done.
 def extract_struct(cifstr):
-  parser = CifParser.from_string(cifstr)
+  parser = CifParser.from_string(cifstr)\
+      .get_structures()[0]\
+      .as_dict()
+  lat_a = parser['lattice']['a']
+  lat_b = parser['lattice']['b']
+  lat_c = parser['lattice']['c']
   poss = [
       tuple(site['abc']) for site in 
-      parser.get_structures()[0].as_dict()['sites']
+      parser['sites']
     ]
   ions = [
       site['species'][0]['element'] for site in 
-      parser.get_structures()[0].as_dict()['sites']
+      parser['sites']
     ]
   positions = {}
   for iidx,ion in enumerate(ions):
@@ -298,7 +303,10 @@ def extract_struct(cifstr):
       positions[ion] = [poss[iidx]]
   for key in positions.keys():
     positions[key] = np.array(positions[key])
-  return pd.Series([positions],['positions'])
+  return pd.Series(
+      [lat_a,lat_b,lat_c,positions],
+      ['a','b','c','positions']
+    )
 
 # Better format for results in all qmc results.
 def format_results(resdict):
@@ -316,8 +324,12 @@ def format_autogen(inp_json="results.json"):
   qmcdf = pd.DataFrame(rawdf['qmc'].to_dict()).T
   dmcdf = pd.DataFrame(qmcdf['dmc'].to_dict()).T
   alldf = dmcdf.join(dftdf)
-  vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
-  alldf = alldf.join(vmcdf,rsuffix="_vmc")
+  if 'vmc' in qmcdf.columns:
+    vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
+    alldf = alldf.join(vmcdf,rsuffix="_vmc")
+  if 'postprocess' in qmcdf.columns:
+    postdf = pd.DataFrame(qmcdf['postprocess'].to_dict()).T
+    alldf = alldf.join(postdf,rsuffix="_post")
   listcols = [
       'broyden',
       'initial_charges',
