@@ -6,6 +6,7 @@ from scipy.interpolate import griddata
 from scipy.signal import butter, lfilter
 from copy import deepcopy
 
+#####################################
 def read_cube(inpf):
   cube={}
   cube['comment']=inpf.readline()
@@ -49,6 +50,7 @@ def read_cube(inpf):
 
   return cube
 
+#####################################
 def write_cube(cube, outf):
   outf.write(cube['comment'])
   outf.write(cube['type'])
@@ -71,6 +73,7 @@ def write_cube(cube, outf):
           outf.write('\n')
   outf.write('\n')
 
+#####################################
 def write_xsf(cube,outf):
   outf.write("CRYSTAL\n")
   outf.write("PRIMVEC\n")
@@ -103,6 +106,7 @@ def write_xsf(cube,outf):
   outf.write("END_DATAGRID_3D\n")
   outf.write("END_BLOCK_DATAGRID_3D\n")
   
+#####################################
 def integrate(cube):
   """Numerically integrate the density.
   
@@ -110,6 +114,7 @@ def integrate(cube):
   vol=abs(det(cube['latvec']))
   return sum(cube['data'])*vol
 
+#####################################
 def integrate_abs(cube):
   """Numerically integrate the absolute value of the density.
   
@@ -117,7 +122,7 @@ def integrate_abs(cube):
   vol=abs(det(cube['latvec']))
   return sum(abs(cube['data']))*vol
 
-
+#####################################
 def normalize_abs(cube,Nelec=1):
   """Normalize the density so the integral over all space yeilds Nelec.
   
@@ -126,6 +131,7 @@ def normalize_abs(cube,Nelec=1):
   norm=sum(abs(cube['data']))*vol
   cube['data']*=(float(Nelec)/norm)
 
+#####################################
 def freq_cutoff(cube,freq_cutoff=0.90):
   """ Cutoff frequencies of the signal with size freq_cutoff * the
   maximum or higher, in place."""
@@ -153,6 +159,7 @@ def freq_cutoff(cube,freq_cutoff=0.90):
   cube['data'] = cube['data'].real
   cube['data'] *= (max_val / cube['data'].max())
 
+#####################################
 def butter_cutoff(cube,crit_freq=1,order=4):
   """
   Simple wrapper for scipy routines to perform Butterworth low pass filter.
@@ -167,6 +174,7 @@ def butter_cutoff(cube,crit_freq=1,order=4):
   #cube['data'] = lfilter(b,a,cube['data'],1)
   #cube['data'] = lfilter(b,a,cube['data'],2)
 
+#####################################
 def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
   """ Average each point in the cube file with blob_range neighbors in each
   direction, weighted by a Gaussian with SD sigma."""
@@ -202,6 +210,7 @@ def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
           done_steps += 1
     cube['data'] = new
 
+#####################################
 def sub_cubes(poscube,negcube,Npos=1,Nneg=1):
   """Subtract two cube files.
 
@@ -213,6 +222,7 @@ def sub_cubes(poscube,negcube,Npos=1,Nneg=1):
   subcube['data'] -= negcube['data']
   return subcube
 
+#####################################
 def add_cubes(cube1,cube2,N1=1,N2=1):
   """Add two cube files.
 
@@ -225,6 +235,7 @@ def add_cubes(cube1,cube2,N1=1,N2=1):
   addcube['data'] /= abs(addcube['data']).sum()
   return addcube
 
+#####################################
 # Used for interpolation scheme
 def nearest(point,cube):
   """Find the value in the cube file located closest to point."""
@@ -233,6 +244,7 @@ def nearest(point,cube):
   #print a % cube['ints']
   return cube['data'][tuple(map(int,a % cube['ints']))]
 
+#####################################
 # Used for interpolation scheme
 def linear(point,cube):
   """Compute the linear extrapolation to the point using closest available
@@ -259,6 +271,7 @@ def linear(point,cube):
         wght[i,j,k] = vols[1-i,1-j,1-k]/tvol
   return sum(wght*vals)
 
+#####################################
 def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   """Interpolate cube in plane defined by three points, pos, with res points, using
   method to interpolate, and ensuring atrad radius around each atom is included.
