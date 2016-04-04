@@ -136,10 +136,10 @@ def freq_cutoff(cube,freq_cutoff=0.90):
   fft = np.fft.fftn(cube['data'])
   endfreqs = np.array([int(round(s*freq_cutoff/2.)) for s in fft.shape])
 
-  print "Cutting off ",
-  for si,s in enumerate(fft.shape): print "%d "%(s - 2*int(round(endfreqs[si]))),
-  print "frequencies, out of ",
-  print "%d %d %d"%fft.shape
+  print("Cutting off ",)
+  for si,s in enumerate(fft.shape): print("%d "%(s - 2*int(round(endfreqs[si]))),)
+  print("frequencies, out of ",)
+  print("%d %d %d"%fft.shape)
 
   for dim in range(fft.ndim):
     fft = fft.swapaxes(dim,fft.ndim-1)
@@ -149,7 +149,7 @@ def freq_cutoff(cube,freq_cutoff=0.90):
     fft = fft.swapaxes(dim,fft.ndim-1)
   cube['data'] = np.fft.ifftn(fft)
   if abs(cube['data'].imag).max() > 1e-16:
-    print "Warning, inverting FFT may not be completely real!"
+    print("Warning, inverting FFT may not be completely real!")
   cube['data'] = cube['data'].real
   cube['data'] *= (max_val / cube['data'].max())
 
@@ -191,7 +191,7 @@ def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
         wj = wf(jj)
         for kk in range(-(nd-abs(ii)-abs(jj)),(nd-abs(ii)-abs(jj))+1):
           wk = wf(kk)
-          print "Finished {0:5.2f}%. ".format(100 * (done_steps/total_steps))
+          print("Finished {0:5.2f}%. ".format(100 * (done_steps/total_steps)))
           for i in range(cube['data'].shape[0]):
             ip = (i+ii)%cube['data'].shape[0]
             for j in range(cube['data'].shape[1]):
@@ -323,6 +323,6 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   elif method=='linear':
     Z = array([linear(point,cube) for point in odom]).reshape(res)
   else:
-    print 'Interpolation method is not implemented yet.'
+    print('Interpolation method is not implemented yet.')
   
   return {'points':(X,Y), 'data':Z, 'acoor':array(acoor), 'adist':array(adist)}
