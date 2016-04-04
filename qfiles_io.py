@@ -46,7 +46,7 @@ def read_qfile(inpf):
   inpstr = ''
   for line in inpf:
     if '#' in line: # TODO: Needs to be fixed when '#' isn't the first thing in line.
-      print 'Warning, reading commented lines is incomplete!'
+      print('Warning, reading commented lines is incomplete!')
       continue
     inpstr += line
   # Ensure correct splitting. This is inefficient for large files.
@@ -201,14 +201,14 @@ def read_qenergy(logfile,gosling='./gosling'):
     try:
       sp.call([gosling, logfile.name], stdout = out)
     except OSError:
-      print "Cannot find gosling!"
+      print("Cannot find gosling!")
       exit()
   with open(statfilen,'r') as F:
     for line in F:
       if 'total_energy0' in line:
         spl = line.split()
         return {'egy':spl[1],'err':spl[3],'var':spl[5]}
-  print 'ERROR: cannot find total_energy0 in stat file.'
+  print('ERROR: cannot find total_energy0 in stat file.')
   return {'egy':None,'err':None,'var':None}
 
 def gen_optimize(dftfn,time='02:00:00'):

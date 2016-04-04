@@ -43,6 +43,10 @@ def cif_to_dict(cifstr):
   os.remove("tmp")
   return cifp[cifp.keys()[0]]
 
+def thin_ticks(ticks,div=2,start=0):
+  newticks = [ticks[div*i] for i in range(start,len(ticks)//div)]
+  return newticks
+
 class FitFunc:
   """
   Define a function that can be fit to and plotted with.
@@ -106,14 +110,14 @@ class FitFunc:
     elif self.pmap != {}:
       return self.pmap[key]
     else:
-      print "You must set pnames to use get_parm()."
+      print("You must set pnames to use get_parm().")
       return None
 
   def get_parm_err(self,key):
     if self.pmap != {}:
       return self.emap[key]
     else:
-      print "You must set pnames to use get_parm()."
+      print("You must set pnames to use get_parm().")
       return None
 
 class LinearFit(FitFunc):

@@ -16,7 +16,7 @@ def read_input(espinp):
       spl = line.split()
       if len(spl) < 3: 
         # Should be "this = that" not this=that or this =that
-        print "Warning: line not formatted right (%s)"%espinp
+        print("Warning: line not formatted right (%s)"%espinp)
       try:
         if '.' in spl[2]:
           record[spl[0]] = float(spl[2])
