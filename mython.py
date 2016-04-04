@@ -37,7 +37,7 @@ class Ldict(dict):
 class NumpyEncoder(JSONEncoder):
   def default(self, obj):
     if isinstance(obj, ndarray):
-      print obj
+      print(obj)
       return dict(__ndarray__=obj.tolist(),
                   dtype=str(obj.dtype),
                   shape=obj.shape)
