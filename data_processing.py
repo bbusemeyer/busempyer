@@ -9,6 +9,11 @@ import qefiles_io as qeio
 import cubetools as ct
 from pymatgen.io.cif import CifParser
 
+################################################################################
+# If you're wondering about how to use these, and you're in the Wagner group on
+# github, check out my FeTe notebook!
+################################################################################
+
 # After processing, what are the columns that define the accuracy level of the
 # calculation? Defined as a function to make it more readable when importing.
 # Pls keep alphabetize (<range> sort u). Pls. 
@@ -90,7 +95,7 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
 
   bres['access_root'] = os.getcwd() + '/' + froot
 
-  print "Working on",froot+"..." 
+  print("Working on",froot+"..." )
   try:
     with open(froot+'_metadata.json','r') as metaf:
       metad = json.load(metaf)
@@ -107,9 +112,9 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
         bres['pressure'] = metad['pressure']
     except KeyError: pass
   except IOError:
-    print "  Didn't find any metadata"
+    print("  Didn't find any metadata")
   
-  print "  DFT params and results..." 
+  print("  DFT params and results..." )
   try:
     dftdat = cio.read_cryinp(open(dftfile,'r'))
     bres['a'] = dftdat['latparms'][0]
@@ -122,24 +127,24 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']
   except IOError:
-    print "There's no dft in this directory!"
+    print("There's no dft in this directory!")
     return {}
 
   # Determine k-point set and naming convention.
   if os.path.isfile(froot+'_'+str(oldrealk[0])+'.sys'):
     realk=oldrealk
-    print "Using old-style kpoint notation."
+    print("Using old-style kpoint notation.")
   elif os.path.isfile(froot+'_'+str(realk2[-1])+'.sys'):
     realk=realk2
-    print "Using 6x6x6 kpoint notation."
+    print("Using 6x6x6 kpoint notation.")
   else:
     realk=realk1
-    print "Using 4x4x4 kpoint notation."
+    print("Using 4x4x4 kpoint notation.")
 
   for rk in realk:
     kroot = froot + '_' + str(rk)
 
-    print "  now DMC:",kroot+"..." 
+    print("  now DMC:",kroot+"..." )
     try:
       sysdat = qio.read_qfile(open(kroot+'.sys','r'))
       dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
@@ -147,17 +152,17 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
       ress[rk]['kpoint'] = sysdat['system']['kpoint']
       ress[rk]['ts'] = dmcinp['method']['timestep']
     except IOError:
-      print "  (cannot find QMC input, skipping)"
+      print("  (cannot find QMC input, skipping)")
       continue
     
-    print "  energies..." 
+    print("  energies..." )
     try:
       inpf = open(kroot+'.dmc.log','r')
       egydat = qio.read_qenergy(inpf,gosling)
       ress[rk]['dmc_energy']     =  egydat['egy']
       ress[rk]['dmc_energy_err'] =  egydat['err']
     except IOError:
-      print "  (cannot find ground state energy log file)"
+      print("  (cannot find ground state energy log file)")
 
     try:
       inpf = open(kroot+'.ogp.log','r')
@@ -165,10 +170,10 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
       ress[rk]['dmc_excited_energy']     =  ogpdat['egy']
       ress[rk]['dmc_excited_energy_err'] =  ogpdat['err']
     except IOError:
-      print "  (cannot find excited state energy log file)"
+      print("  (cannot find excited state energy log file)")
 
     if read_cubes:
-      print "  densities..." 
+      print("  densities..." )
       try:
         inpf = open(kroot+'.dmc.up.cube','r')
         upcube = ct.read_cube(inpf)
@@ -177,35 +182,35 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
         ress[rk]['updens'] = upcube
         ress[rk]['dndens'] = dncube
       except IOError:
-        print "  (cannot find electron density)"
+        print("  (cannot find electron density)")
       except ValueError:
-        print "  (electron density is corrupted)"
+        print("  (electron density is corrupted)")
 
-    print "  fluctuations..." 
+    print("  fluctuations..." )
     try:
       inpf = open(kroot+'.ppr.o','r')
       fludat, fluerr = qio.read_number_dens(inpf)
       if fludat is None:
-        print "  (Error in number fluctuation output, skipping)"
+        print("  (Error in number fluctuation output, skipping)")
       else:
         avg, var, cov, avge, vare, cove = qio.moments(fludat,fluerr)
         ress[rk]['average']    = avg
         ress[rk]['covariance'] = cov
     except IOError:
-      print "  (cannot find number fluctuation)"
+      print("  (cannot find number fluctuation)")
 
-    print "  1-RDM..." 
+    print("  1-RDM..." )
     try:
       inpf = open(kroot+'.ordm.o')
       odmdat = qio.read_dm(inpf)
       if odmdat is None:
-        print "  (Error in 1-RDM output, skipping)"
+        print("  (Error in 1-RDM output, skipping)")
       else:
         ress[rk]['1rdm'] = odmdat
     except IOError:
-      print "  (cannot find 1-RDM)"
+      print("  (cannot find 1-RDM)")
 
-    print "  done."; 
+    print("  done." )
 
   if ress == {}:
     ress['dft-only'] = bres
@@ -316,6 +321,9 @@ def format_results(resdict):
   return energy_k
 
 def format_autogen(inp_json="results.json"):
+  """
+  Takes autogen json file and organizes it into a Pandas DataFrame.
+  """
   rawdf = pd.read_json(open(inp_json,'r'))
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
       2*np.linalg.det(np.array(x))
@@ -353,6 +361,7 @@ def format_autogen(inp_json="results.json"):
 def kavergage_dmc(alldf):
   print("Warning! kaverage_dmc() assuming equal k-point weight!")
   print("Warning! kaverage_dmc() takes no note of timestep or localization lists!")
+  print("If you need this functionality, I encourage you to generize it for me (and anyone else using it)!")
   def kavergage_record(reslist):
     energies = [item['energy'][0]    for item in reslist]
     evars    = [item['energy'][1]**2 for item in reslist]
@@ -369,6 +378,7 @@ def kavergage_dmc(alldf):
 def kavergage_qmc(alldf,qmc_type='dmc'):
   print("Warning! kaverage_qmc() assuming equal k-point weight!")
   print("Warning! kaverage_qmc() takes no note of timestep or localization lists!")
+  print("If you need this functionality, I encourage you to generize it for me (and anyone else using it)!")
   encol = qmc_type+'_energy'
   ercol = qmc_type+'_error'
   def kavergage_record(reslist):
@@ -380,3 +390,8 @@ def kavergage_qmc(alldf,qmc_type='dmc'):
   dmcdf[encol] = dmcdf[encol] / dmcdf['nfu']
   dmcdf[ercol]  = dmcdf[ercol]  / dmcdf['nfu']
   return dmcdf
+
+# Convert pandas DataFrame row into a dictionary.
+def row_to_dict(row):
+  ret = row.T.to_dict()
+  return ret[list(ret.keys())[0]]
