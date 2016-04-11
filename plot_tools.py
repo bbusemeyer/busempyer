@@ -61,23 +61,31 @@ class FitFunc:
     self.perr = None
     self.cov  = None
 
-  def fit(self,xvals,yvals,evals=None,*p0,**kwargs):
+  def _set_default_parms(self):
+    # Better things possible for more specific functions.
+    return np.ones(len(getargspec(self.form)[0]))
+
+  def fit(self,xvals,yvals,evals=None,guess=(),**kwargs):
     """
     Use xvals and yvals +/- evals to fit params with initial values p0.
 
     evals == None means don't use errorbars.
+    guess == () means guess all 1.0 for the parameters (usually bad!)
+    kwargs passed to curve_fit()
     """
+    if guess == ():
+      guess = self._set_default_parms()
     if (evals is None) or (np.isnan(evals).any()):
       fit = curve_fit(self.form,
         xvals,yvals,
-        p0=p0,**kwargs)
+        p0=*guess,**kwargs)
     else:
       fit = curve_fit(self.form,
         xvals,yvals,sigma=evals,
         absolute_sigma=True,
-        p0=p0,**kwargs)
-    self.parm = np.array(p0)
-    self.perr = np.array(p0)
+        p0=*guess,**kwargs)
+    self.parm = np.array(guess)
+    self.perr = np.array(guess)
     for pi,p in enumerate(p0):
       self.parm[pi] = fit[0][pi]
       self.perr[pi] = fit[1][pi][pi]**.5
