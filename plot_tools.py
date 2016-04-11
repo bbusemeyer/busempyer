@@ -78,12 +78,12 @@ class FitFunc:
     if (evals is None) or (np.isnan(evals).any()):
       fit = curve_fit(self.form,
         xvals,yvals,
-        p0=*guess,**kwargs)
+        p0=guess,**kwargs)
     else:
       fit = curve_fit(self.form,
         xvals,yvals,sigma=evals,
         absolute_sigma=True,
-        p0=*guess,**kwargs)
+        p0=guess,**kwargs)
     self.parm = np.array(guess)
     self.perr = np.array(guess)
     for pi,p in enumerate(p0):

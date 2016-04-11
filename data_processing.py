@@ -245,7 +245,7 @@ def trace_analysis(dftfns,ids=[]):
   return res
 
 # Helper for format_autogen().
-def format_dftdf(rawdf):
+def _format_dftdf(rawdf):
   def desect_basis(df):
     return pd.Series(dict(zip(['basis_lowest','basis_number','basis_factor'],df)))
   def cast_supercell(sup):
@@ -276,6 +276,11 @@ def format_dftdf(rawdf):
   for redundant in ['basis','functional']:
     del dftdf[redundant]
   return dftdf
+
+def unpack(ser):
+  """ Attempt to turn a series of dictionaries into a new DataFrame. 
+  Works with most autogen levels of data storage. """
+  return pd.DataFrame(ser.to_dict()).T
 
 # Tuple to DF entry.
 def parse_err(df,key='energy'):
@@ -313,13 +318,6 @@ def extract_struct(cifstr):
       ['a','b','c','positions']
     )
 
-# Better format for results in all qmc results.
-def format_results(resdict):
-  energy_k = {}
-  for rec in resdict:
-    energy_k[rec['knum']] = tuple(rec['energy'])
-  return energy_k
-
 def format_autogen(inp_json="results.json"):
   """
   Takes autogen json file and organizes it into a Pandas DataFrame.
@@ -328,15 +326,15 @@ def format_autogen(inp_json="results.json"):
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
       2*np.linalg.det(np.array(x))
     )
-  dftdf = format_dftdf(rawdf)
-  qmcdf = pd.DataFrame(rawdf['qmc'].to_dict()).T
-  dmcdf = pd.DataFrame(qmcdf['dmc'].to_dict()).T
+  dftdf = _format_dftdf(rawdf)
+  qmcdf = unpack(rawdf['qmc'])
+  dmcdf = unpack(qmcdf['dmc'])
   alldf = dmcdf.join(dftdf)
   if 'vmc' in qmcdf.columns:
-    vmcdf = pd.DataFrame(qmcdf['vmc'].to_dict()).T
+    vmcdf = unpack(qmcdf['vmc'])
     alldf = alldf.join(vmcdf,rsuffix="_vmc")
   if 'postprocess' in qmcdf.columns:
-    postdf = pd.DataFrame(qmcdf['postprocess'].to_dict()).T
+    postdf = unpack(qmcdf['postprocess'])
     alldf = alldf.join(postdf,rsuffix="_post")
   listcols = [
       'broyden',
@@ -344,7 +342,9 @@ def format_autogen(inp_json="results.json"):
       'initial_spin',
       'kmesh',
       'localization',
-      'timestep'
+      'timestep',
+      'jastrow',
+      'optimizer'
     ]
   if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
   for col in listcols:
@@ -356,35 +356,38 @@ def format_autogen(inp_json="results.json"):
 
   return rawdf,alldf
 
-# Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
-# TODO: Currently does no k-point weighting.
-def kavergage_dmc(alldf):
-  print("Warning! kaverage_dmc() assuming equal k-point weight!")
-  print("Warning! kaverage_dmc() takes no note of timestep or localization lists!")
-  print("If you need this functionality, I encourage you to generize it for me (and anyone else using it)!")
-  def kavergage_record(reslist):
-    energies = [item['energy'][0]    for item in reslist]
-    evars    = [item['energy'][1]**2 for item in reslist]
-    return pd.Series([np.mean(energies),np.mean(evars)**.5],['dmc_energy','dmc_error'])
-  dmcdf = alldf.loc[alldf['results'].notnull(),'results'].apply(kavergage_record)
-  dmcdf = alldf.join(dmcdf)
-  dmcdf['dmc_energy'] = dmcdf['dmc_energy'] / dmcdf['nfu']
-  dmcdf['dmc_error']  = dmcdf['dmc_error']  / dmcdf['nfu']
-  return dmcdf
+# Safely take list of one element into it's value.
+def unlist(li):
+  if len(li) > 1: AssertionError("unlist can't operate on multi-element list")
+  return li[0]
 
 # Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
 # TODO: Currently does no k-point weighting.
-# TODO issue of ordering with format_results.
-def kavergage_qmc(alldf,qmc_type='dmc'):
+def kavergage_qmc(alldf):
   print("Warning! kaverage_qmc() assuming equal k-point weight!")
-  print("Warning! kaverage_qmc() takes no note of timestep or localization lists!")
-  print("If you need this functionality, I encourage you to generize it for me (and anyone else using it)!")
-  encol = qmc_type+'_energy'
-  ercol = qmc_type+'_error'
-  def kavergage_record(reslist):
-    energies = [item['energy'][0]    for item in reslist]
-    evars    = [item['energy'][1]**2 for item in reslist]
-    return pd.Series([np.mean(energies),np.mean(evars)**.5], [encol,ercol])
+  encol = 'dmc_energy'
+  ercol = 'dmc_error'
+  def kavergage_record(reclist):
+    keys = reclist[0].keys()
+    # Check if implementation can handle data.
+    for option in [k for k in keys if k not in ['results','knum']]:
+      for rec in reclist:
+        if (type(rec[option])==list) and (len(rec[option]) != 1):
+          print(rec[option])
+          AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
+            "If you need this functionality, I encourage you to generize it for me"+\
+            "(and anyone else using it)!")
+    # Keep unpacking until reaching energy.
+    egydf = \
+      unpack(
+        unpack(
+          unpack(
+            pd.DataFrame(reclist)\
+          ['results'])\
+        ['properties'])\
+      ['total_energy']).applymap(unlist)
+    return pd.Series([egydf['value'].mean(),(egydf['error']**2).mean()**.5], 
+        [encol,ercol])
   dmcdf = alldf.loc[alldf['results'].notnull(),'results'].apply(kavergage_record)
   dmcdf = alldf.join(dmcdf)
   dmcdf[encol] = dmcdf[encol] / dmcdf['nfu']
