@@ -14,6 +14,36 @@ from pymatgen.io.cif import CifParser
 # github, check out my FeTe notebook!
 ################################################################################
 
+def mean_array(ser):
+  """
+  Converts an interable to an array, averages the series, and returns the array
+  of averaged elements.
+  """
+  if ser.isnull().any():
+    return None
+  else:
+    return (ser.apply(np.array).sum()/ser.shape[0]).tolist()
+
+def abs_mean_array(ser):
+  """
+  Converts an interable to an array, absolute value averages the series, and
+  returns the array of averaged elements.
+  """
+  if ser.isnull().any():
+    return None
+  else:
+    #return tuple(map(tuple,ser.apply(np.array).sum()))
+    return tuple((abs(ser.apply(np.array)).sum()/ser.shape[0]).tolist())
+
+def mean_array_err(ser):
+  """
+  Computes the error corresponding to mean_array().
+  """
+  if ser.isnull().any():
+    return None
+  else:
+    return tuple(((ser.apply(lambda x: (np.array(x)/ser.shape[0])**2)).sum()**.5).tolist())
+
 # After processing, what are the columns that define the accuracy level of the
 # calculation? Defined as a function to make it more readable when importing.
 # Pls keep alphabetize (<range> sort u). Pls. 
@@ -216,22 +246,6 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     ress['dft-only'] = bres
   return ress
 
-#def read_dir_espresso(froot):
-#  espinp = open(froot + ".inp",'r')
-#  record = qefiles_io(espinp)
-#  espout = open(froot + ".out",'r')
-#
-#  inpstr = ''
-#  for line in espout:
-#    inpstr += line
-#  inplines = inpstr.split('\n')
-#
-#  for lidx,line in enumerate(inplines):
-#    if '!' in line:
-#      #TODO
-#
-#  return record
-
 def trace_analysis(dftfns,ids=[]):
   """
   Generate a dictionary of energy traces from DFT output, useful for checking
@@ -363,7 +377,7 @@ def unlist(li):
 
 # Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
 # TODO: Currently does no k-point weighting.
-def kavergage_qmc(alldf):
+def kavergage_dmc_energy(alldf):
   print("Warning! kaverage_qmc() assuming equal k-point weight!")
   encol = 'dmc_energy'
   ercol = 'dmc_error'
@@ -394,7 +408,40 @@ def kavergage_qmc(alldf):
   dmcdf[ercol]  = dmcdf[ercol]  / dmcdf['nfu']
   return dmcdf
 
+def kaverage_dmc_rfluct(alldf):
+  print("Warning! kaverage_qmc() assuming equal k-point weight!")
+  valcol = 'fluct'
+  errcol = 'fluct_error'
+  def kavergage_record(reclist):
+    keys = reclist[0].keys()
+    # Check if implementation can handle data.
+    for option in [k for k in keys if k not in ['results','knum']]:
+      for rec in reclist:
+        if (type(rec[option])==list) and (len(rec[option]) != 1):
+          print(rec[option])
+          AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
+            "If you need this functionality, I encourage you to generize it for me"+\
+            "(and anyone else using it)!")
+    # Keep unpacking until reaching energy.
+    datdf = \
+      unpack(
+        unpack(
+          unpack(
+            unpack(
+              pd.DataFrame(reclist)\
+            ['results'])\
+          ['properties'])\
+        ['region_fluctuation'])\
+      ['fluctuation data'])
+    valser = datdf.applymap(lambda x: x['value']).apply(mean_array)
+    errser = datdf.applymap(lambda x: x['error']).apply(mean_array_err)
+    return pd.Series([valser,errser], [valcol,errcol])
+  dmcdf = alldf.loc[alldf['results_post'].notnull(),'results_post'].apply(kavergage_record)
+  dmcdf = alldf.join(dmcdf)
+  return dmcdf
+
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
   ret = row.T.to_dict()
   return ret[list(ret.keys())[0]]
+
