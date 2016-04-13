@@ -86,7 +86,7 @@ class FitFunc:
         p0=guess,**kwargs)
     self.parm = np.array(guess)
     self.perr = np.array(guess)
-    for pi,p in enumerate(p0):
+    for pi,p in enumerate(guess):
       self.parm[pi] = fit[0][pi]
       self.perr[pi] = fit[1][pi][pi]**.5
     self.cov  = fit[1]
