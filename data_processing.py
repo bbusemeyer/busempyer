@@ -375,76 +375,70 @@ def unlist(li):
   if len(li) > 1: AssertionError("unlist can't operate on multi-element list")
   return li[0]
 
-# Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
-# TODO: Currently does no k-point weighting.
-def kaverage_dmc_energy(alldf):
+def kaverage_energy(reclist):
   print("Warning! kaverage_qmc() assuming equal k-point weight!")
-  encol = 'dmc_energy'
-  ercol = 'dmc_error'
-  def kavergage_record(reclist):
-    keys = reclist[0].keys()
-    # Check if implementation can handle data.
-    for option in [k for k in keys if k not in ['results','knum']]:
-      for rec in reclist:
-        if (type(rec[option])==list) and (len(rec[option]) != 1):
-          print(rec[option])
-          AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
-            "If you need this functionality, I encourage you to generize it for me"+\
-            "(and anyone else using it)!")
-    # Keep unpacking until reaching energy.
-    egydf = \
+  keys = reclist[0].keys()
+  # Check if implementation can handle data.
+  for option in [k for k in keys if k not in ['results','knum']]:
+    for rec in reclist:
+      if (type(rec[option])==list) and (len(rec[option]) != 1):
+        print(rec[option])
+        AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
+          "If you need this functionality, I encourage you to generize it for me"+\
+          "(and anyone else using it)!")
+  # Keep unpacking until reaching energy.
+  egydf = \
+    unpack(
+      unpack(
+        unpack(
+          pd.DataFrame(reclist)\
+        ['results'])\
+      ['properties'])\
+    ['total_energy']).applymap(unlist)
+  return {"value":egydf['value'].mean(),"error":(egydf['error']**2).mean()**.5}
+
+def kaverage_fluct(reclist):
+  print("Warning! kaverage_qmc() assuming equal k-point weight!")
+  keys = reclist[0].keys()
+  # Check if implementation can handle data.
+  for option in [k for k in keys if k not in ['results','knum']]:
+    for rec in reclist:
+      if (type(rec[option])==list) and (len(rec[option]) != 1):
+        print(rec[option])
+        AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
+          "If you need this functionality, I encourage you to generize it for me"+\
+          "(and anyone else using it)!")
+  # Keep unpacking until reaching energy.
+  datdf = \
+    unpack(
       unpack(
         unpack(
           unpack(
             pd.DataFrame(reclist)\
           ['results'])\
         ['properties'])\
-      ['total_energy']).applymap(unlist)
-    return pd.Series([egydf['value'].mean(),(egydf['error']**2).mean()**.5], 
-        [encol,ercol])
-  dmcdf = alldf.loc[alldf['results'].notnull(),'results'].apply(kavergage_record)
-  dmcdf = alldf.join(dmcdf)
-  dmcdf[encol] = dmcdf[encol] / dmcdf['nfu']
-  dmcdf[ercol]  = dmcdf[ercol]  / dmcdf['nfu']
-  return dmcdf
+      ['region_fluctuation'])\
+    ['fluctuation data'])
+  spinser = datdf.applymap(lambda x: tuple(x['spin'])).drop_duplicates()
+  siteser = datdf.applymap(lambda x: tuple(x['region'])).drop_duplicates()
+  valser  = datdf.applymap(lambda x: x['value']).apply(mean_array)
+  errser  = datdf.applymap(lambda x: x['error']).apply(mean_array_err)
+  if spinser.shape[0] == 1: spinser = spinser.T[0]
+  if siteser.shape[0] == 1: siteser = siteser.T[0]
+  fluctdf = pd.DataFrame([spinser,siteser,valser,errser],
+                        ["spin", "site", "value", "error"])
+  return fluctdf.T.to_dict()
 
-def kaverage_dmc_rfluct(alldf):
-  print("Warning! kaverage_qmc() assuming equal k-point weight!")
-  valcol = 'fluct'
-  errcol = 'fluct_error'
-  def kavergage_record(reclist):
-    keys = reclist[0].keys()
-    # Check if implementation can handle data.
-    for option in [k for k in keys if k not in ['results','knum']]:
-      for rec in reclist:
-        if (type(rec[option])==list) and (len(rec[option]) != 1):
-          print(rec[option])
-          AssertionError("Error! kaverage_qmc() takes no note of timestep or localization lists!"+\
-            "If you need this functionality, I encourage you to generize it for me"+\
-            "(and anyone else using it)!")
-    # Keep unpacking until reaching energy.
-    datdf = \
-      unpack(
-        unpack(
-          unpack(
-            unpack(
-              pd.DataFrame(reclist)\
-            ['results'])\
-          ['properties'])\
-        ['region_fluctuation'])\
-      ['fluctuation data'])
-    valser = datdf.applymap(lambda x: x['value']).apply(mean_array)
-    errser = datdf.applymap(lambda x: x['error']).apply(mean_array_err)
-    return pd.Series([valser,errser], [valcol,errcol])
-  dmcdf = alldf.loc[alldf['results_post'].notnull(),'results_post'].apply(kavergage_record)
-  dmcdf = alldf.join(dmcdf)
-  return dmcdf
+def process_dmc(dmc_record):
+  res = {}
+  res['energy'] = kaverage_energy(dmc_record['results'])
+  return res
 
-def analyze_fluct(alldf):
-  def calc_expectations(nfmat):
-    res = 0.0
-    for n in range(len(nfmat)):
-      res += n*nfmat(n,n)
+def process_post(post_record):
+  res = {}
+  res['fluct'] = kaverage_fluct(post_record['results'])
+  return res
+
 
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
