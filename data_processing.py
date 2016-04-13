@@ -9,6 +9,9 @@ import qefiles_io as qeio
 import cubetools as ct
 from pymatgen.io.cif import CifParser
 
+# TODO generalize to other supercells.
+NFE = 8
+
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
 # github, check out my FeTe notebook!
@@ -444,9 +447,10 @@ def process_dmc(dmc_record):
   return res
 
 def process_post(post_record):
-  " Process postprocess results by k-averaging and site-averaging."""
+  """ Process postprocess results by k-averaging and site-averaging."""
 
   def diag_exp(rec):
+    """ Compute mean and variance. """
     avg,var = 0.,0.
     spin = rec['spini']
     site = rec['sitei']
@@ -457,6 +461,7 @@ def process_post(post_record):
     return pd.Series({'spin':spin,'site':site,'avg':avg,'var':var})
 
   def covar(rec,adf):
+    """ Compute covariance. """
     cov = 0.0
     pmat = rec['value']
     nmax = len(pmat)
@@ -473,15 +478,43 @@ def process_post(post_record):
         'cov':cov
       })
 
+  def subspins(siterec):
+    tmpdf = siterec.set_index('spin')
+    magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    return pd.Series({
+        'site':siterec['site'].values[0],
+        'magmom':magmom
+      })
+
+  def siteaverage(sgrp):
+    if sgrp['var'].std() > 1e-2:
+      print("Site average warning: variation in sites larger than expected.")
+      print("%f > 1e-2"%sgrp['var'].std())
+    return sgrp['var'].mean()
 
   res = {}
+  # Moments and other arithmatic.
   fluctdf = kaverage_fluct(post_record['results'])
+  for s in ['spini','spinj']:
+    ups = (fluctdf[s] == 0)
+    fluctdf[s] = "down"
+    fluctdf.loc[ups,s] = "up"
   diag = ( (fluctdf['spini']==fluctdf['spinj']) &\
            (fluctdf['sitei']==fluctdf['sitej'])    )
   avgdf = fluctdf[diag].apply(diag_exp,axis=1)
-  for col in ['spin','site']: avgdf[col] = avgdf[col].astype(int)
   covdf = fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
-  return covdf
+  magdf = avgdf.groupby('site').apply(subspins)
+  avgdf = pd.merge(avgdf,magdf)
+
+  # Catagorization.
+  avgdf['netmag'] = "down"
+  avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
+  avgdf['spinchan'] = "antiparallel"
+  avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "parallel"
+  avgdf['element'] = "Se"
+  avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
+  savgdf = avgdf.groupby(['spinchan','element']).apply(siteaverage)
+  return avgdf,covdf,magdf,savgdf
 
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
