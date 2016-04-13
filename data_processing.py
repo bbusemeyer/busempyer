@@ -33,7 +33,7 @@ def abs_mean_array(ser):
     return None
   else:
     #return tuple(map(tuple,ser.apply(np.array).sum()))
-    return tuple((abs(ser.apply(np.array)).sum()/ser.shape[0]).tolist())
+    return (abs(ser.apply(np.array)).sum()/ser.shape[0]).tolist()
 
 def mean_array_err(ser):
   """
@@ -42,7 +42,7 @@ def mean_array_err(ser):
   if ser.isnull().any():
     return None
   else:
-    return tuple(((ser.apply(lambda x: (np.array(x)/ser.shape[0])**2)).sum()**.5).tolist())
+    return ((ser.apply(lambda x: (np.array(x)/ser.shape[0])**2)).sum()**.5).tolist()
 
 # After processing, what are the columns that define the accuracy level of the
 # calculation? Defined as a function to make it more readable when importing.
@@ -419,15 +419,24 @@ def kaverage_fluct(reclist):
         ['properties'])\
       ['region_fluctuation'])\
     ['fluctuation data'])
-  spinser = datdf.applymap(lambda x: tuple(x['spin'])).drop_duplicates()
-  siteser = datdf.applymap(lambda x: tuple(x['region'])).drop_duplicates()
+  spiniser = datdf.applymap(lambda x: x['spin'][0]).drop_duplicates()
+  spinjser = datdf.applymap(lambda x: x['spin'][1]).drop_duplicates()
+  siteiser = datdf.applymap(lambda x: x['region'][0]).drop_duplicates()
+  sitejser = datdf.applymap(lambda x: x['region'][1]).drop_duplicates()
   valser  = datdf.applymap(lambda x: x['value']).apply(mean_array)
   errser  = datdf.applymap(lambda x: x['error']).apply(mean_array_err)
-  if spinser.shape[0] == 1: spinser = spinser.T[0]
-  if siteser.shape[0] == 1: siteser = siteser.T[0]
-  fluctdf = pd.DataFrame([spinser,siteser,valser,errser],
-                        ["spin", "site", "value", "error"])
-  return fluctdf.T.to_dict()
+  if spiniser.shape[0] == 1: spiniser = spiniser.T[0]
+  if spinjser.shape[0] == 1: spinjser = spinjser.T[0]
+  if siteiser.shape[0] == 1: siteiser = siteiser.T[0]
+  if sitejser.shape[0] == 1: sitejser = sitejser.T[0]
+  return pd.DataFrame({
+      'spini':spiniser,
+      'spinj':spinjser,
+      'sitei':siteiser,
+      'sitej':sitejser,
+      'value':valser,
+      'error':errser
+    })
 
 def process_dmc(dmc_record):
   res = {}
@@ -435,10 +444,44 @@ def process_dmc(dmc_record):
   return res
 
 def process_post(post_record):
-  res = {}
-  res['fluct'] = kaverage_fluct(post_record['results'])
-  return res
+  " Process postprocess results by k-averaging and site-averaging."""
 
+  def diag_exp(rec):
+    avg,var = 0.,0.
+    spin = rec['spini']
+    site = rec['sitei']
+    pmat = rec['value']
+    nmax = len(pmat)
+    for n in range(nmax): avg += n*pmat[n][n]
+    for n in range(nmax): var += (n-avg)**2*pmat[n][n]
+    return pd.Series({'spin':spin,'site':site,'avg':avg,'var':var})
+
+  def covar(rec,adf):
+    cov = 0.0
+    pmat = rec['value']
+    nmax = len(pmat)
+    avgi = adf.loc[(rec['spini'],rec['sitei']),'avg']
+    avgj = adf.loc[(rec['spinj'],rec['sitej']),'avg']
+    for m in range(nmax): 
+      for n in range(nmax): 
+        cov += pmat[m][n]*(m-avgi)*(n-avgj)
+    return pd.Series({
+        'spini':rec['spini'],
+        'spinj':rec['spinj'],
+        'sitei':rec['sitei'],
+        'sitej':rec['sitej'],
+        'cov':cov
+      })
+
+
+  res = {}
+  fluctdf = kaverage_fluct(post_record['results'])
+  diag = ( (fluctdf['spini']==fluctdf['spinj']) &\
+           (fluctdf['sitei']==fluctdf['sitej'])    )
+  avgdf = fluctdf[diag].apply(diag_exp,axis=1)
+  for col in ['spin','site']: avgdf[col] = avgdf[col].astype(int)
+  covdf = fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
+  return covdf
 
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
