@@ -368,7 +368,7 @@ def format_autogen(inp_json="results.json"):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
-  return rawdf,alldf
+  return alldf
 
 # Safely take list of one element into it's value.
 def unlist(li):
@@ -377,7 +377,7 @@ def unlist(li):
 
 # Currently only does energy. TODO: Any way to generalize to any kaverage quantity?
 # TODO: Currently does no k-point weighting.
-def kavergage_dmc_energy(alldf):
+def kaverage_dmc_energy(alldf):
   print("Warning! kaverage_qmc() assuming equal k-point weight!")
   encol = 'dmc_energy'
   ercol = 'dmc_error'
@@ -439,6 +439,12 @@ def kaverage_dmc_rfluct(alldf):
   dmcdf = alldf.loc[alldf['results_post'].notnull(),'results_post'].apply(kavergage_record)
   dmcdf = alldf.join(dmcdf)
   return dmcdf
+
+def analyze_fluct(alldf):
+  def calc_expectations(nfmat):
+    res = 0.0
+    for n in range(len(nfmat)):
+      res += n*nfmat(n,n)
 
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
