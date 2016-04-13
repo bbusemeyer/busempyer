@@ -490,8 +490,12 @@ def process_post(post_record):
     if sgrp['var'].std() > 1e-2:
       print("Site average warning: variation in sites larger than expected.")
       print("%f > 1e-2"%sgrp['var'].std())
-    return sgrp['var'].mean()
+    return pd.Series({
+        'variance':sgrp['var'].mean(),
+        'magmom':abs(sgrp['magmom'].values).mean()
+      })
 
+  ### Number fluctuation information. ###
   res = {}
   # Moments and other arithmatic.
   fluctdf = kaverage_fluct(post_record['results'])
@@ -509,12 +513,23 @@ def process_post(post_record):
   # Catagorization.
   avgdf['netmag'] = "down"
   avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
-  avgdf['spinchan'] = "antiparallel"
-  avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "parallel"
+  avgdf['spinchan'] = "minority"
+  avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "majority"
   avgdf['element'] = "Se"
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
+
+  # Site averaging. 
   savgdf = avgdf.groupby(['spinchan','element']).apply(siteaverage)
-  return avgdf,covdf,magdf,savgdf
+
+  res['fluct'] = savgdf.to_dict()
+  return res
+
+def process_record(record):
+  res = {}
+  res['dft'] = record['dft']
+  res['dmc'] = process_dmc(record['qmc']['dmc'])
+  res['dmc'].update(process_post(record['qmc']['postprocess']))
+  return res
 
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
