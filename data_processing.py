@@ -337,6 +337,13 @@ def extract_struct(cifstr):
       ['a','b','c','positions']
     )
 
+def untuple_cols(df,prefix="",sep="_"):
+  replace = {}
+  for col in list(df.columns):
+    if type(col) == tuple:
+      replace[col] = prefix+sep+sep.join(col)
+  return df.rename(columns=replace)
+
 def format_autogen(inp_json="results.json"):
   """
   Takes autogen json file and organizes it into a Pandas DataFrame.
@@ -345,6 +352,7 @@ def format_autogen(inp_json="results.json"):
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
       2*np.linalg.det(np.array(x))
     )
+  # Unpacking the energies.
   dftdf = _format_dftdf(rawdf)
   dmcdf = unpack(rawdf['dmc'])
   dmcdf = dmcdf.join(unpack(dmcdf['energy']))
@@ -362,13 +370,22 @@ def format_autogen(inp_json="results.json"):
       'jastrow',
       'optimizer'
     ]
+
   if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
+
+  # Convert lists.
   for col in listcols:
     alldf.loc[alldf[col].notnull(),col] = \
         alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
-
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
+
+  # Number fluctuation.
+  sel = alldf['fluct'].notnull()
+  fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
+    pd.DataFrame(df).set_index(['element','spinchan']).stack())
+  alldf = alldf.join(fluctdf)
+  alldf = untuple_cols(alldf,"fluct")
 
   return alldf
 
