@@ -9,8 +9,10 @@ import qefiles_io as qeio
 import cubetools as ct
 from pymatgen.io.cif import CifParser
 
-# TODO generalize to other supercells.
+# TODO generalize!
 NFE = 8
+VARTOL = 1e-2
+
 
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
@@ -270,7 +272,7 @@ def _format_dftdf(rawdf):
       sup[rix] = tuple(row)
     return tuple(sup)
   ids = rawdf['control'].apply(lambda x:x['id'])
-  dftdf = pd.DataFrame(rawdf['dft'].to_dict()).T
+  dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
   for rawinfo in ['supercell','nfu','cif']:
     dftdf = dftdf.join(rawdf[rawinfo])
@@ -344,15 +346,12 @@ def format_autogen(inp_json="results.json"):
       2*np.linalg.det(np.array(x))
     )
   dftdf = _format_dftdf(rawdf)
-  qmcdf = unpack(rawdf['qmc'])
-  dmcdf = unpack(qmcdf['dmc'])
+  dmcdf = unpack(rawdf['dmc'])
+  dmcdf = dmcdf.join(unpack(dmcdf['energy']))
+  dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
   alldf = dmcdf.join(dftdf)
-  if 'vmc' in qmcdf.columns:
-    vmcdf = unpack(qmcdf['vmc'])
-    alldf = alldf.join(vmcdf,rsuffix="_vmc")
-  if 'postprocess' in qmcdf.columns:
-    postdf = unpack(qmcdf['postprocess'])
-    alldf = alldf.join(postdf,rsuffix="_post")
+  alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
+  alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
   listcols = [
       'broyden',
       'initial_charges',
@@ -379,7 +378,7 @@ def unlist(li):
   return li[0]
 
 def kaverage_energy(reclist):
-  print("Warning! kaverage_qmc() assuming equal k-point weight!")
+  # Warning! kaverage_qmc() assuming equal k-point weight!
   keys = reclist[0].keys()
   # Check if implementation can handle data.
   for option in [k for k in keys if k not in ['results','knum']]:
@@ -401,7 +400,7 @@ def kaverage_energy(reclist):
   return {"value":egydf['value'].mean(),"error":(egydf['error']**2).mean()**.5}
 
 def kaverage_fluct(reclist):
-  print("Warning! kaverage_qmc() assuming equal k-point weight!")
+  # Warning! kaverage_qmc() assuming equal k-point weight!
   keys = reclist[0].keys()
   # Check if implementation can handle data.
   for option in [k for k in keys if k not in ['results','knum']]:
@@ -442,12 +441,19 @@ def kaverage_fluct(reclist):
     })
 
 def process_dmc(dmc_record):
+  if 'results' not in dmc_record.keys():
+    return {}
   res = {}
+  for savekey in ['excitations','timestep','jastrow',
+      'optimizer','localization','nblock']:
+    res[savekey] = dmc_record[savekey]
   res['energy'] = kaverage_energy(dmc_record['results'])
   return res
 
 def process_post(post_record):
   """ Process postprocess results by k-averaging and site-averaging."""
+  if 'results' not in post_record.keys():
+    return {}
 
   def diag_exp(rec):
     """ Compute mean and variance. """
@@ -487,7 +493,7 @@ def process_post(post_record):
       })
 
   def siteaverage(sgrp):
-    if sgrp['var'].std() > 1e-2:
+    if sgrp['var'].std() > VARTOL:
       print("Site average warning: variation in sites larger than expected.")
       print("%f > 1e-2"%sgrp['var'].std())
     return pd.Series({
@@ -521,11 +527,16 @@ def process_post(post_record):
   # Site averaging. 
   savgdf = avgdf.groupby(['spinchan','element']).apply(siteaverage)
 
-  res['fluct'] = savgdf.to_dict()
+  # This way of exporting ensures it's format is compatible with json.
+  res['fluct'] = json.loads(savgdf.reset_index().to_json())
   return res
 
 def process_record(record):
   res = {}
+  copykeys = ['dft','supercell','total_spin','charge','cif','control']
+  if 'mag_moments' in record.keys(): copykeys.append('mag_moments')
+  for copykey in copykeys:
+    res[copykey] = record[copykey]
   res['dft'] = record['dft']
   res['dmc'] = process_dmc(record['qmc']['dmc'])
   res['dmc'].update(process_post(record['qmc']['postprocess']))
@@ -535,4 +546,3 @@ def process_record(record):
 def row_to_dict(row):
   ret = row.T.to_dict()
   return ret[list(ret.keys())[0]]
-
