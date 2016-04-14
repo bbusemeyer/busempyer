@@ -457,14 +457,21 @@ def process_post(post_record):
 
   def diag_exp(rec):
     """ Compute mean and variance. """
-    avg,var = 0.,0.
+    avg,var,avgerr,varerr = np.zeros(4)
     spin = rec['spini']
     site = rec['sitei']
     pmat = rec['value']
+    perr = rec['error']
     nmax = len(pmat)
-    for n in range(nmax): avg += n*pmat[n][n]
-    for n in range(nmax): var += (n-avg)**2*pmat[n][n]
-    return pd.Series({'spin':spin,'site':site,'avg':avg,'var':var})
+    for n in range(nmax): 
+      avg    += n*pmat[n][n]
+      avgerr += (n*perr[n][n])**2
+    avgerr = avgerr**0.5
+    for n in range(nmax): 
+      var += (n-avg)**2*pmat[n][n]
+      varerr += perr[n][n]**2 * (n-avg)**4 + 4*pmat[n][n]**2 * (n-avg)**2
+    return pd.Series({'spin':spin,'site':site,
+      'avg':avg,'var':var,'avg_err':avgerr,'var_err':varerr})
 
   def covar(rec,adf):
     """ Compute covariance. """
@@ -487,9 +494,10 @@ def process_post(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    magerr = (tmpdf.loc['up','avg_err']**2 + tmpdf.loc['down','avg_err']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
-        'magmom':magmom
+        'magmom':magmom, 'magmom_err':magerr
       })
 
   def siteaverage(sgrp):
@@ -498,7 +506,9 @@ def process_post(post_record):
       print("%f > 1e-2"%sgrp['var'].std())
     return pd.Series({
         'variance':sgrp['var'].mean(),
-        'magmom':abs(sgrp['magmom'].values).mean()
+        'variance_err':(sgrp['var_err']**2).mean()**0.5,
+        'magmom':abs(sgrp['magmom'].values).mean(),
+        'magmom_err':(sgrp['magmom']**2).mean()**0.5
       })
 
   ### Number fluctuation information. ###
@@ -524,7 +534,7 @@ def process_post(post_record):
   avgdf['element'] = "Se"
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
-  # Site averaging. 
+  # Site average.
   savgdf = avgdf.groupby(['spinchan','element']).apply(siteaverage)
 
   # This way of exporting ensures it's format is compatible with json.
