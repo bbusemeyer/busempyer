@@ -12,6 +12,7 @@ from pymatgen.io.cif import CifParser
 # TODO generalize!
 NFE = 8
 VARTOL = 1e-2
+SMALLSPIN = 1.0 # Spins less than this are considered zero.
 
 
 ################################################################################
@@ -26,10 +27,11 @@ def process_record(record):
   processed and more useful results. """
   res = {}
   copykeys = ['dft','supercell','total_spin','charge','cif','control']
-  if 'mag_moments' in record.keys(): copykeys.append('mag_moments')
   for copykey in copykeys:
     res[copykey] = record[copykey]
   res['dft'] = record['dft']
+  if 'mag_moments' in record['dft'].keys():
+    res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
   res['dmc'] = _process_dmc(record['qmc']['dmc'])
   res['dmc'].update(_process_post(record['qmc']['postprocess']))
   res['dmc'].update(_process_post(record['qmc']['postprocess']))
@@ -230,6 +232,101 @@ def _kaverage_ordm(reclist):
     res[spin] = datdf[spin].iloc[3]
     res[spin+'_err'] = datdf[spin+'_err'].iloc[3]
   return res
+
+def _check_spins(dft_record,small=1.0):
+  """ Check that the spins that were set at the beginning correspond to the
+  spins it ends up having. Anything less than small is considered zero."""
+  moms = dft_record['mag_moments']
+  moms = np.array(moms)
+  zs = abs(moms) < small
+  up = moms > 0.
+  dn = moms < 0.
+  moms.dtype = int
+  moms[up] = 1
+  moms[dn] = -1
+  moms[zs] = 0
+  return int((moms == dft_record['initial_spin']).all())
+
+###############################################################################
+# Format autogen group of functions.
+def format_autogen(inp_json="results.json"):
+  """
+  Takes autogen json file and organizes it into a Pandas DataFrame.
+  """
+  rawdf = pd.read_json(open(inp_json,'r'))
+  rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
+      2*np.linalg.det(np.array(x))
+    )
+  # Unpacking the energies.
+  dftdf = _format_dftdf(rawdf)
+  dmcdf = unpack(rawdf['dmc'])
+  dmcdf = dmcdf.join(unpack(dmcdf['energy']))
+  dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
+  alldf = dmcdf.join(dftdf)
+  alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
+  alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
+  listcols = [
+      'broyden',
+      'initial_charges',
+      'initial_spin',
+      'kmesh',
+      'localization',
+      'timestep',
+      'jastrow',
+      'optimizer'
+    ]
+
+  if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
+
+  # Convert lists.
+  for col in listcols:
+    alldf.loc[alldf[col].notnull(),col] = \
+        alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
+  for col in alldf.columns:
+    alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
+
+  # Number fluctuation.
+  sel = alldf['fluct'].notnull()
+  fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
+    pd.DataFrame(df).set_index(['element','spinchan']).stack())
+  alldf = alldf.join(fluctdf)
+  alldf = untuple_cols(alldf,"fluct")
+
+  return alldf
+
+def _format_dftdf(rawdf):
+  def desect_basis(df):
+    return pd.Series(dict(zip(['basis_lowest','basis_number','basis_factor'],df)))
+  def cast_supercell(sup):
+    for rix,row in enumerate(sup):
+      sup[rix] = tuple(row)
+    return tuple(sup)
+  ids = rawdf['control'].apply(lambda x:x['id'])
+  dftdf = unpack(rawdf['dft'])
+  dftdf = dftdf.join(ids).rename(columns={'control':'id'})
+  for rawinfo in ['supercell','nfu','cif']:
+    dftdf = dftdf.join(rawdf[rawinfo])
+  funcdf = pd.DataFrame(dftdf['functional'].to_dict()).T
+  dftdf = dftdf.join(funcdf)
+  dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
+  dftdf['spins_consistent'] = dftdf['spins_consistent'].astype(bool)
+  dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
+  dftdf['basis_number'] = dftdf['basis_number'].apply(lambda x:int(round(x)))
+  dftdf['basis_factor'] = dftdf['basis_factor'].apply(lambda x:int(round(x)))
+  dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
+      dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
+      .apply(lambda x:cast_supercell(x))
+  if 'mag_moments' in dftdf.columns:
+    dftdf['max_mag_moment'] = np.nan
+    dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
+        dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
+            max(abs(np.array(x)))
+          )
+  dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
+  for redundant in ['basis','functional']:
+    del dftdf[redundant]
+  return dftdf
+###############################################################################
 
 ###############################################################################
 # Misc. tools.
@@ -534,83 +631,3 @@ def row_to_dict(row):
   return ret[list(ret.keys())[0]]
 ###############################################################################
 
-###############################################################################
-# Format autogen group of functions.
-# This is made obsolete by process_record().
-def format_autogen(inp_json="results.json"):
-  """
-  Takes autogen json file and organizes it into a Pandas DataFrame.
-  """
-  rawdf = pd.read_json(open(inp_json,'r'))
-  rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
-      2*np.linalg.det(np.array(x))
-    )
-  # Unpacking the energies.
-  dftdf = _format_dftdf(rawdf)
-  dmcdf = unpack(rawdf['dmc'])
-  dmcdf = dmcdf.join(unpack(dmcdf['energy']))
-  dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
-  alldf = dmcdf.join(dftdf)
-  alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
-  alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
-  listcols = [
-      'broyden',
-      'initial_charges',
-      'initial_spin',
-      'kmesh',
-      'localization',
-      'timestep',
-      'jastrow',
-      'optimizer'
-    ]
-
-  if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
-
-  # Convert lists.
-  for col in listcols:
-    alldf.loc[alldf[col].notnull(),col] = \
-        alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
-  for col in alldf.columns:
-    alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
-
-  # Number fluctuation.
-  sel = alldf['fluct'].notnull()
-  fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
-    pd.DataFrame(df).set_index(['element','spinchan']).stack())
-  alldf = alldf.join(fluctdf)
-  alldf = untuple_cols(alldf,"fluct")
-
-  return alldf
-
-def _format_dftdf(rawdf):
-  def desect_basis(df):
-    return pd.Series(dict(zip(['basis_lowest','basis_number','basis_factor'],df)))
-  def cast_supercell(sup):
-    for rix,row in enumerate(sup):
-      sup[rix] = tuple(row)
-    return tuple(sup)
-  ids = rawdf['control'].apply(lambda x:x['id'])
-  dftdf = unpack(rawdf['dft'])
-  dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  for rawinfo in ['supercell','nfu','cif']:
-    dftdf = dftdf.join(rawdf[rawinfo])
-  funcdf = pd.DataFrame(dftdf['functional'].to_dict()).T
-  dftdf = dftdf.join(funcdf)
-  dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
-  dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
-  dftdf['basis_number'] = dftdf['basis_number'].apply(lambda x:int(round(x)))
-  dftdf['basis_factor'] = dftdf['basis_factor'].apply(lambda x:int(round(x)))
-  dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
-      dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
-      .apply(lambda x:cast_supercell(x))
-  if 'mag_moments' in dftdf.columns:
-    dftdf['max_mag_moment'] = np.nan
-    dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
-        dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
-            max(abs(np.array(x)))
-          )
-  dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
-  for redundant in ['basis','functional']:
-    del dftdf[redundant]
-  return dftdf
-###############################################################################
