@@ -43,8 +43,8 @@ def cif_to_dict(cifstr):
   os.remove("tmp")
   return cifp[cifp.keys()[0]]
 
-def thin_ticks(ticks,div=2,start=0):
-  newticks = [ticks[div*i] for i in range(start,len(ticks)//div)]
+def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
+  newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
 
 class FitFunc:
