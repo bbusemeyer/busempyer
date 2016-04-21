@@ -629,5 +629,18 @@ def unlist(li):
 def row_to_dict(row):
   ret = row.T.to_dict()
   return ret[list(ret.keys())[0]]
+
+def cif_to_dict(cifstr):
+  """
+  Takes a cif string and parses it into a dictionary.
+
+  Currently acts as a inefficient, but effective wrapper around pymatgen's cif
+  file parser.
+  """
+  with open("tmp",'w') as outf:
+    outf.write(cifstr)
+  cifp = CifParser("tmp").as_dict()
+  os.remove("tmp")
+  return cifp[cifp.keys()[0]]
 ###############################################################################
 

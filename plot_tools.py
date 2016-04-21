@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.optimize import curve_fit
-from pymatgen.io.cifio import CifParser
 import os
 
 def fix_lims(ax_array,factor=0.04):
@@ -30,19 +29,6 @@ def fix_lims(ax_array,factor=0.04):
 
 def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 
-def cif_to_dict(cifstr):
-  """
-  Takes a cif string and parses it into a dictionary.
-
-  Currently acts as a inefficient, but effective wrapper around pymatgen's cif
-  file parser.
-  """
-  with open("tmp",'w') as outf:
-    outf.write(cifstr)
-  cifp = CifParser("tmp").as_dict()
-  os.remove("tmp")
-  return cifp[cifp.keys()[0]]
-
 def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
   newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
@@ -61,10 +47,6 @@ class FitFunc:
     self.perr = None
     self.cov  = None
 
-  def _set_default_parms(self):
-    # Better things possible for more specific functions.
-    return np.ones(len(getargspec(self.form)[0]))
-
   def fit(self,xvals,yvals,evals=None,guess=(),**kwargs):
     """
     Use xvals and yvals +/- evals to fit params with initial values p0.
@@ -74,7 +56,7 @@ class FitFunc:
     kwargs passed to curve_fit()
     """
     if guess == ():
-      guess = self._set_default_parms()
+      guess = self._set_default_parms(xvals,yvals,evals)
     if (evals is None) or (np.isnan(evals).any()):
       fit = curve_fit(self.form,
         xvals,yvals,
@@ -128,6 +110,10 @@ class FitFunc:
       print("You must set pnames to use get_parm().")
       return None
 
+  def _set_default_parms(self,xvals,yvals,evals):
+    # Better things possible for more specific functions.
+    return np.ones(len(getargspec(self.form)[0]))
+
 class LinearFit(FitFunc):
   """
   FitFunc of form c*x + y0
@@ -145,6 +131,9 @@ class LinearFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    return (slope(xvals,yvals), yvals[xvals.argmin()])
 
 class LinearFit_xcross(FitFunc):
   """
