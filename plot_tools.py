@@ -1,4 +1,5 @@
 import numpy as np
+from inspect import getargspec
 from scipy.optimize import curve_fit
 import os
 
@@ -96,23 +97,29 @@ class FitFunc:
 
   def get_parm(self,key="print"):
     if key=="print":
+      print("What did you want? Available keys:")
       return ', '.join(self.pmap.keys())
     elif self.pmap != {}:
       return self.pmap[key]
     else:
       print("You must set pnames to use get_parm().")
+      print("Alternatively, use self.parm.")
       return None
 
-  def get_parm_err(self,key):
-    if self.pmap != {}:
+  def get_parm_err(self,key="print"):
+    if key=="print":
+      print("What did you want? Available keys:")
+      return ', '.join(self.pmap.keys())
+    elif self.pmap != {}:
       return self.emap[key]
     else:
       print("You must set pnames to use get_parm().")
+      print("Alternatively, use self.perr.")
       return None
 
   def _set_default_parms(self,xvals,yvals,evals):
     # Better things possible for more specific functions.
-    return np.ones(len(getargspec(self.form)[0]))
+    return np.ones(len(getargspec(self.form)[0])-1)
 
 class LinearFit(FitFunc):
   """
@@ -133,7 +140,7 @@ class LinearFit(FitFunc):
     self.cov  = None
 
   def _set_default_parms(self,xvals,yvals,evals):
-    return (slope(xvals,yvals), yvals[xvals.argmin()])
+    return (slope(xvals,yvals), yvals[abs(xvals).argmin()])
 
 class LinearFit_xcross(FitFunc):
   """
@@ -152,6 +159,9 @@ class LinearFit_xcross(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    return (slope(xvals,yvals), xvals[abs(yvals).argmin()])
 
 class QuadraticFit(FitFunc):
   """
@@ -197,7 +207,7 @@ class CubicFit_fixmin(FitFunc):
     def form(x,a,b,yc):
       return a*(x - xm)**3 + b*(x - xm)**2 + yc
     def jac(x,a,b,yc):
-      return None
+      return None # implement me!
     self.form = form
     self.jac  = jac
     self.pnms = pnames
@@ -215,7 +225,7 @@ class CubicFit_zeros(FitFunc):
     def form(x,a,x1,x2,x3):
       return a*(x-x1)*(x-x2)*(x-x3)
     def jac(x,a,b,yc):
-      return None
+      return None # implement me!
     self.form = form
     self.jac  = jac
     self.pnms = pnames
@@ -224,6 +234,48 @@ class CubicFit_zeros(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+class NormedGaussianFit(FitFunc):
+  """
+  FitFunc of form (2 pi sigma)**-0.5 exp(-(x-mu)**2/2sigma**2)
+  """
+  def __init__(self,pnames=['mean','std']):
+    def form(x,mu,sigma):
+      return (2.*np.pi*sigma)**-0.5 * np.exp(-(x-mu)**2/2./sigma**2)
+    def jac(x,mu,sigma):
+      return None 
+    self.form = form
+    self.jac  = None # implement me!
+    self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    return (np.mean(xvals),np.std(xvals))
+
+class GaussianFit(FitFunc):
+  """
+  FitFunc of form A/(2 pi sigma)**0.5 exp(-(x-mu)**2/2sigma**2)
+  """
+  def __init__(self,pnames=['mean','std','amp']):
+    def form(x,mu,sigma,A):
+      return A/(2.*np.pi*sigma)**0.5 * np.exp(-(x-mu)**2/2./sigma**2)
+    def jac(x,mu,sigma):
+      return None 
+    self.form = form
+    self.jac  = None # implement me!
+    self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    return (np.mean(xvals),np.std(xvals),max(yvals)-min(yvals))
 
 class EOSFit(FitFunc):
   """
