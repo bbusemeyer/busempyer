@@ -199,7 +199,7 @@ def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
         wj = wf(jj)
         for kk in range(-(nd-abs(ii)-abs(jj)),(nd-abs(ii)-abs(jj))+1):
           wk = wf(kk)
-          print("Finished {0:5.2f}%. ".format(100 * (done_steps/total_steps)))
+          print("Finished {:5.2%}. ".format(done_steps/total_steps))
           for i in range(cube['data'].shape[0]):
             ip = (i+ii)%cube['data'].shape[0]
             for j in range(cube['data'].shape[1]):
