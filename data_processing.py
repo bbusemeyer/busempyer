@@ -5,6 +5,7 @@ import os
 import json
 import cryfiles_io as cio
 import qfiles_io as qio
+import read_numberfluct as rn
 import qefiles_io as qeio
 import cubetools as ct
 from copy import deepcopy
@@ -44,15 +45,15 @@ def _process_post(post_record):
 
   res = {}
   nfluctdf = _analyze_nfluct(post_record)
-  ordmdf   = _analyze_ordm(post_record)
+  # Not working yet. Any way to condition on this data being available?
+  #ordmdf   = _analyze_ordm(post_record)
 
   # This way of exporting ensures it's format is compatible with json.
   res['fluct'] = json.loads(nfluctdf.reset_index().to_json())
-  res['ordm']  = ordmdf
+  #res['ordm']  = ordmdf
   return res
 
 def _process_dmc(dmc_record):
-  print(dmc_record.keys())
   if 'results' not in dmc_record.keys():
     return {}
   res = {}
@@ -159,8 +160,8 @@ def _kaverage_energy(reclist):
   for option in [k for k in keys if k not in ['results','knum']]:
     for rec in reclist:
       if (type(rec[option])==list) and (len(rec[option]) != 1):
-        print(rec[option])
-        AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists!"+\
+        print("kaverage exception:",rec[option])
+        raise AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists!"+\
           "If you need this functionality, I encourage you to generize it for me"+\
           "(and anyone else using it)!")
   # Keep unpacking until reaching energy.
@@ -181,9 +182,9 @@ def _kaverage_fluct(reclist):
   for option in [k for k in keys if k not in ['results','knum']]:
     for rec in reclist:
       if (type(rec[option])==list) and (len(rec[option]) != 1):
-        print(rec[option])
-        AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists!"+\
-          "If you need this functionality, I encourage you to generize it for me"+\
+        print("kaverage exception:",rec[option])
+        raise AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists! "+\
+          "If you need this functionality, I encourage you to generize it for me "+\
           "(and anyone else using it)!")
   # Keep unpacking until reaching energy.
   datdf = \
@@ -653,12 +654,12 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     try:
       sysdat = qio.read_qfile(open(kroot+'.sys','r'))
       dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
-      entry['kpoint'] = sysdat['system']['kpoint']
-      entry['timestep'] = dmcinp['method']['timestep']
-      entry['localization'] = "None"
-      entry['jastrow'] = "twobody"
-      entry['optimizer'] = "variance"
-      entry['excitations'] = []
+      entry['kpoint'] = [sysdat['system']['kpoint']]
+      entry['timestep'] = [dmcinp['method']['timestep']]
+      entry['localization'] = ["None"]
+      entry['jastrow'] = ["twobody"]
+      entry['optimizer'] = ["variance"]
+      entry['excitations'] = "no"
     except IOError:
       print("  (cannot find QMC input, skipping)")
       continue
@@ -701,13 +702,17 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     print("  Postprocessing results..." )
     try:
       inpf = open(kroot+'.ppr.o','r')
-      fludat, fluerr = qio.read_number_dens(inpf)
+      fludat = rn.read_number_dens_likejson(inpf)
       if fludat is None:
         print("  (Error in number fluctuation output, skipping)")
       else:
         ppr_entry = deepcopy(entry)
-        ppr_entry['results'] = {'fluctuations':fludat.tolist(),
-                                       'fluct_err':fluerr.tolist()}
+        ppr_entry['results'] = {
+            'properties':{
+              'region_fluctuation':{
+                'fluctuation data': fludat} 
+              }
+            }
         ppr_ret.append(ppr_entry)
     except IOError:
       print("  (cannot find number fluctuation)")
@@ -728,21 +733,21 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
 
   if len(dmc_ret) > 0:
     res['qmc']['dmc']['results'] = dmc_ret
-    res['qmc']['dmc']['kpoint'] = sysdat['system']['kpoint']
-    res['qmc']['dmc']['timestep'] = dmcinp['method']['timestep']
-    res['qmc']['dmc']['localization'] = "None"
-    res['qmc']['dmc']['jastrow'] = "twobody"
-    res['qmc']['dmc']['optimizer'] = "variance"
+    res['qmc']['dmc']['kpoint'] = [sysdat['system']['kpoint']]
+    res['qmc']['dmc']['timestep'] = [dmcinp['method']['timestep']]
+    res['qmc']['dmc']['localization'] = ["None"]
+    res['qmc']['dmc']['jastrow'] = ["twobody"]
+    res['qmc']['dmc']['optimizer'] = ["variance"]
     res['qmc']['dmc']['nblock'] = -1
-    res['qmc']['dmc']['excitations'] = []
+    res['qmc']['dmc']['excitations'] = "no"
   if len(ppr_ret) > 0:
     res['qmc']['postprocess']['results'] = ppr_ret
-    res['qmc']['postprocess']['kpoint'] = sysdat['system']['kpoint']
-    res['qmc']['postprocess']['timestep'] = dmcinp['method']['timestep']
-    res['qmc']['postprocess']['localization'] = "None"
-    res['qmc']['postprocess']['jastrow'] = "twobody"
-    res['qmc']['postprocess']['optimizer'] = "variance"
-    res['qmc']['postprocess']['excitations'] = []
+    res['qmc']['postprocess']['kpoint'] = [sysdat['system']['kpoint']]
+    res['qmc']['postprocess']['timestep'] = [dmcinp['method']['timestep']]
+    res['qmc']['postprocess']['localization'] = ["None"]
+    res['qmc']['postprocess']['jastrow'] = ["twobody"]
+    res['qmc']['postprocess']['optimizer'] = ["variance"]
+    res['qmc']['postprocess']['excitations'] = "no"
     res['qmc']['postprocess']['nblock'] = -1
   return res
 
