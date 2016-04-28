@@ -2,9 +2,11 @@
 
 import json
 import sys
-from data_processing import read_dir
+import data_processing as dp
 from mython import NumpyToListEncoder
 from subprocess import check_output
+from imp import reload
+reload(dp)
 
 # Neat way of calling: 
 # find . -name '*_metadata.json' > rootlist
@@ -12,9 +14,15 @@ from subprocess import check_output
 
 files = sys.argv[1:]
 roots = [f.replace('_metadata.json','') for f in files]
+locs = ['/'.join(f.split('/')[:-1]) for f in files]
+locs = set(locs)
+if len(locs)>1:
+  raise AssertionError
+else:
+  loc = list(locs)[0]
 for root in roots:
-  data = read_dir(root,gosling='/home/busemey2/bin/gosling')
-  for k in data.keys():
-    print "Dumping {0}_{1} to JSON".format(root,k)
-    with open('{0}_{1}_datarecord.json'.format(root,k),'w') as outf:
-      json.dump(data[k],outf,cls=NumpyToListEncoder)
+  data = dp.read_dir_autogen(root,gosling='/home/brian/bin/gosling')
+  outfn = loc+"/record.json"
+  print("Outputting to %s..."%outfn)
+  with open(outfn,'w') as outf:
+    json.dump(data,outf,cls=NumpyToListEncoder)

@@ -52,6 +52,7 @@ def _process_post(post_record):
   return res
 
 def _process_dmc(dmc_record):
+  print(dmc_record.keys())
   if 'results' not in dmc_record.keys():
     return {}
   res = {}
@@ -563,11 +564,12 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
 
 def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
   """ Reads a CRYSTAL + QWalk directory's data into a dictionary, formats it
-  like how autogen would do.
+  like how autogen would do. NOTE: this is *not* intended to read an
+  autogen-generated directory! This is for the purpose of joining an
+  autogen-generated database with another set of DMC data.
   
   Current dictionary keys:
-    fmixing, kdens, excited_energy_err, ordering, total_energy_err, 
-    excited_energy, ts, tole, total_energy, se_height, tolinteg, 
+    fmixing, kdens, excited_energy_err, ordering, total_energy_err, excited_energy, ts, tole, total_energy, se_height, tolinteg, 
     supercell, mixing, kpoint, spinlock, dft_energy, a, c, broyden, 
     dft_moments, 1rdm, access_root, average, covariance
   """
@@ -584,6 +586,8 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
   ############################################################################
 
   res  = {}
+  res['dft'] = {}
+  res['qmc'] = {'dmc':{},'postprocess':{}}
 
   res['access_root'] = os.getcwd() + '/' + froot
 
@@ -612,8 +616,13 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     res['a'] = dftdat['latparms'][-1]
     res['c'] = dftdat['latparms'][1]
     res['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
+    res['supercell'] = dftdat['supercell']
+    res['total_spin'] = dftdat['spinlock']
+    res['charge'] = 0
+    res['cif'] = "None"
+    res['control'] = {}
     for key in ['mixing','broyden','fmixing','tolinteg',
-                'kdens','spinlock','supercell','tole','basis']:
+                'kdens','tole','basis']:
       res['dft'][key] = dftdat[key]
     dftdat = cio.read_cryout(open(dftoutf,'r'))
     res['dft']['energy'] = dftdat['dft_energy']
@@ -637,7 +646,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
   ppr_ret = []
   for rk in realk:
     entry = {}
-    entry['knum'] = rk
+    entry['knum'] = int(rk)
     kroot = froot + '_' + str(rk)
 
     print("  now DMC:",kroot+"..." )
@@ -646,9 +655,10 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
       dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
       entry['kpoint'] = sysdat['system']['kpoint']
       entry['timestep'] = dmcinp['method']['timestep']
-      entry['localization'] = ""
+      entry['localization'] = "None"
       entry['jastrow'] = "twobody"
       entry['optimizer'] = "variance"
+      entry['excitations'] = []
     except IOError:
       print("  (cannot find QMC input, skipping)")
       continue
@@ -696,7 +706,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
         print("  (Error in number fluctuation output, skipping)")
       else:
         ppr_entry = deepcopy(entry)
-        ppr_entry['ppr']['results'] = {'fluctuations':fludat.tolist(),
+        ppr_entry['results'] = {'fluctuations':fludat.tolist(),
                                        'fluct_err':fluerr.tolist()}
         ppr_ret.append(ppr_entry)
     except IOError:
@@ -718,9 +728,23 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
 
   if len(dmc_ret) > 0:
     res['qmc']['dmc']['results'] = dmc_ret
+    res['qmc']['dmc']['kpoint'] = sysdat['system']['kpoint']
+    res['qmc']['dmc']['timestep'] = dmcinp['method']['timestep']
+    res['qmc']['dmc']['localization'] = "None"
+    res['qmc']['dmc']['jastrow'] = "twobody"
+    res['qmc']['dmc']['optimizer'] = "variance"
+    res['qmc']['dmc']['nblock'] = -1
+    res['qmc']['dmc']['excitations'] = []
   if len(ppr_ret) > 0:
     res['qmc']['postprocess']['results'] = ppr_ret
-  return ress
+    res['qmc']['postprocess']['kpoint'] = sysdat['system']['kpoint']
+    res['qmc']['postprocess']['timestep'] = dmcinp['method']['timestep']
+    res['qmc']['postprocess']['localization'] = "None"
+    res['qmc']['postprocess']['jastrow'] = "twobody"
+    res['qmc']['postprocess']['optimizer'] = "variance"
+    res['qmc']['postprocess']['excitations'] = []
+    res['qmc']['postprocess']['nblock'] = -1
+  return res
 
 def trace_analysis(dftfns,ids=[]):
   """

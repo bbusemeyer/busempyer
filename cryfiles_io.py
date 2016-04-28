@@ -9,7 +9,7 @@ def read_basis_chunk(lines,pos):
   ngaus = int(header[2])
   basis_elmt = zeros((ngaus,2))
   for gix in range(ngaus):
-    basis_elmt[gix,:] = map(float,lines[pos+1+gix].split())
+    basis_elmt[gix,:] = list(map(float,lines[pos+1+gix].split()))
   return pos + ngaus + 1, basis_elmt
 
 def read_element_basis(lines,pos):
@@ -37,14 +37,14 @@ def read_cryinp(inpf):
   pos = 2
 
   # Read in geometry section which is primarily position-based.
-  res['group']    = int(lines[pos]);                pos += 1
-  res['latparms'] = map(float,lines[pos].split());  pos += 1
-  res['natoms']   = int(lines[pos]);                pos += 1 #TODO Not always correct!
+  res['group']    = int(lines[pos]);                      pos += 1
+  res['latparms'] = list(map(float,lines[pos].split()));  pos += 1
+  res['natoms']   = int(lines[pos]);                      pos += 1 #TODO Not always correct!
   res['atypes'], res['apos'] = [],[]
   for i in range(res['natoms']):
     line = lines[pos].split()
     res['atypes'].append(int(line[0]))
-    res['apos'].append(map(float,line[1:]))
+    res['apos'].append(list(map(float,line[1:])))
     pos += 1
 
   basis = {}
@@ -69,7 +69,7 @@ def read_cryinp(inpf):
   pos = 0
   while pos < len(inpl):
     if 'SUPERCELL' == inpl[pos]:
-      res['supercell'] =  map(int,inpl[pos+1:pos+10])
+      res['supercell'] =  list(map(int,inpl[pos+1:pos+10]))
       pos += 11
       continue
 
@@ -132,7 +132,7 @@ def read_cryinp(inpf):
       continue
 
     if 'BROYDEN' == inpl[pos]:
-      res['broyden'] = [float(inpl[pos+1])] + map(int,inpl[pos+2:pos+4])
+      res['broyden'] = [float(inpl[pos+1])] + list(map(int,inpl[pos+2:pos+4]))
       pos += 5
       continue
 
@@ -154,7 +154,7 @@ def read_cryout(inpf):
       spins = []
       line  = inpf.readline()
       while ('TTT' not in line) and (line != ''):
-        spins += map(float,line.split())
+        spins += list(map(float,line.split()))
         line   = inpf.readline()
 
     if 'SCF ENDED' in line:
