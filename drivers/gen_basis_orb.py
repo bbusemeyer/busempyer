@@ -5,8 +5,7 @@
 import sys
 
 if len(sys.argv) != 4:
-  print("Usage: ")
-  print("python gen_basis_orb.py your.sys your.min.basis output.orb")
+  raise AssertionError("Usage: python gen_basis_orb.py your.sys your.min.basis output.orb")
 
 sysf=open(sys.argv[1],'r')
 basfn=sys.argv[2]
