@@ -2,6 +2,7 @@ import numpy as np
 import json
 import data_processing as dp
 import pandas as pd
+from pymatgen.io.cif import CifParser
 
 # TODO generalize!
 VARTOL = 1e-2
@@ -226,10 +227,10 @@ def _kaverage_ordm(kavgdf):
     ['obdm'])
   for spin in ('up','down'):
     #print("datdf[spin]\n",datdf[spin])
-    res[spin] = dp.abs_mean_array(datdf[spin])
-    res[spin+'_err'] = dp.mean_array_err(datdf[spin+'_err'])
-    #res[spin] = datdf[spin].iloc[3]
-    #res[spin+'_err'] = datdf[spin+'_err'].iloc[3]
+    #res[spin] = dp.abs_mean_array(datdf[spin])
+    #res[spin+'_err'] = dp.mean_array_err(datdf[spin+'_err'])
+    res[spin] = datdf[spin].iloc[4]
+    res[spin+'_err'] = datdf[spin+'_err'].iloc[4]
   return res
 
 def _check_spins(dft_record,small=1.0):

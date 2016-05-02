@@ -7,8 +7,6 @@ import read_numberfluct as rn
 import qefiles_io as qeio
 import cubetools as ct
 from copy import deepcopy
-from pymatgen.io.cif import CifParser
-
 
 ###############################################################################
 # Misc. tools.
