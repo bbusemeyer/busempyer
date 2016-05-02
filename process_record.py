@@ -3,6 +3,11 @@ import json
 import data_processing as dp
 import pandas as pd
 
+# TODO generalize!
+VARTOL = 1e-2
+NFE = 8
+SMALLSPIN = 1.0 # Spins less than this are considered zero.
+
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
 # github, check out my FeTe notebook!
@@ -30,13 +35,14 @@ def _process_post(post_record):
   if 'results' not in post_record.keys(): return {}
 
   res = {}
-  nfluctdf = _analyze_nfluct(post_record)
-  # Not working yet. Any way to condition on this data being available?
-  #ordmdf   = _analyze_ordm(post_record)
+  # Right now just checks the first k-point: problem?
+  if 'region_fluctuation' in post_record['results'][0]['results']['properties'].keys():
+    nfluctdf = _analyze_nfluct(post_record)
+    res['fluct'] = json.loads(nfluctdf.reset_index().to_json())
+  if 'tbdm_basis' in post_record['results'][0]['results']['properties'].keys():
+    ordmdf = _analyze_ordm(post_record)
+    res['ordm']  = ordmdf
 
-  # This way of exporting ensures it's format is compatible with json.
-  res['fluct'] = json.loads(nfluctdf.reset_index().to_json())
-  #res['ordm']  = ordmdf
   return res
 
 def _process_dmc(dmc_record):
@@ -53,22 +59,25 @@ def _analyze_nfluct(post_record):
   """ Compute physical values and site-average number fluctuation. """
   def diag_exp(rec):
     """ Compute mean and variance. """
-    avg,var,avgerr,varerr = np.zeros(4)
-    spin = rec['spini']
-    site = rec['sitei']
-    pmat = rec['value']
-    perr = rec['error']
+    res = {}
+    for dat in ['avg','var','avgerr','varerr']:
+      res[dat] = 0.0
+    for info in ['jastrow', 'optimizer', 'localization', 
+                 'timestep', 'spini', 'sitei']:
+      res[info] = rec[info]
+    pmat     =  rec['value']
+    perr     =  rec['error']
     nmax = len(pmat)
     for n in range(nmax): 
-      avg    += n*pmat[n][n]
-      avgerr += (n*perr[n][n])**2
-    avgerr = avgerr**0.5
+      res['avg']    += n*pmat[n][n]
+      res['avgerr'] += (n*perr[n][n])**2
+    res['avgerr']= res['avgerr']**0.5
     for n in range(nmax): 
-      var += (n-avg)**2*pmat[n][n]
-      varerr += (perr[n][n]*(n-avg)**2)**2 + (2*pmat[n][n]*avgerr*(n-avg))**2
-    varerr = varerr**0.5
-    return pd.Series({'spin':spin,'site':site,
-      'avg':avg,'var':var,'avg_err':avgerr,'var_err':varerr})
+      res['var']    += (n-res['avg'])**2*pmat[n][n]
+      res['varerr'] += (perr[n][n]*(n-res['avg'])**2)**2 +\
+          (2*pmat[n][n]*res['avgerr']*(n-res['avg']))**2
+    res['varerr'] = res['varerr']**0.5
+    return pd.Series(res)
 
   def covar(rec,adf):
     """ Compute covariance. """
@@ -91,7 +100,7 @@ def _analyze_nfluct(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
-    magerr = (tmpdf.loc['up','avg_err']**2 + tmpdf.loc['down','avg_err']**2)**0.5
+    magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
         'magmom':magmom, 'magmom_err':magerr
@@ -103,13 +112,18 @@ def _analyze_nfluct(post_record):
       print("%f > 1e-2"%sgrp['var'].std())
     return pd.Series({
         'variance':sgrp['var'].mean(),
-        'variance_err':(sgrp['var_err']**2).mean()**0.5,
+        'variance_err':(sgrp['varerr']**1).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
         'magmom_err':(sgrp['magmom']**2).mean()**0.5
       })
 
   # Moments and other arithmatic.
-  fluctdf = _kaverage_fluct(post_record['results'])
+  #fluctdf = _kaverage_fluct(post_record['results'])
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  fluctdf = pd.DataFrame(post_record['results'])\
+      .groupby(grouplist)\
+      .apply(_kaverage_fluct)\
+      .reset_index()
   for s in ['spini','spinj']:
     ups = (fluctdf[s] == 0)
     fluctdf[s] = "down"
@@ -117,8 +131,9 @@ def _analyze_nfluct(post_record):
   diag = ( (fluctdf['spini']==fluctdf['spinj']) &\
            (fluctdf['sitei']==fluctdf['sitej'])    )
   avgdf = fluctdf[diag].apply(diag_exp,axis=1)
-  covdf = fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
-  magdf = avgdf.groupby('site').apply(subspins)
+  avgdf = avgdf.rename(columns={'spini':'spin','sitei':'site'})
+  #covdf = fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
+  magdf = avgdf.groupby(grouplist+['site']).apply(subspins)
   avgdf = pd.merge(avgdf,magdf)
 
   # Catagorization.
@@ -130,13 +145,15 @@ def _analyze_nfluct(post_record):
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
   # Site average.
-  savgdf = avgdf.groupby(['spinchan','element']).apply(siteaverage)
+  savgdf = avgdf.groupby(grouplist+['spinchan','element']).apply(siteaverage)
 
   return savgdf
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
-  ordmdf = _kaverage_ordm(post_record['results'])
+  ordmdf = pd.DataFrame(post_record['results'])\
+      .groupby(['timestep','jastrow','localization','optimizer'])\
+      .apply(_kaverage_ordm)
   return ordmdf
 
 def _kaverage_energy(reclist):
@@ -163,16 +180,6 @@ def _kaverage_energy(reclist):
 
 def _kaverage_fluct(reclist):
   # Warning! _kaverage_qmc() assuming equal k-point weight!
-  keys = reclist[0].keys()
-  # Check if implementation can handle data.
-  for option in [k for k in keys if k not in ['results','knum']]:
-    for rec in reclist:
-      if (type(rec[option])==list) and (len(rec[option]) != 1):
-        print("kaverage exception:",rec[option])
-        raise AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists! "+\
-          "If you need this functionality, I encourage you to generize it for me "+\
-          "(and anyone else using it)!")
-  # Keep unpacking until reaching energy.
   datdf = \
     unpack(
       unpack(
@@ -189,20 +196,22 @@ def _kaverage_fluct(reclist):
   sitejser = datdf.applymap(lambda x: x['region'][1]).drop_duplicates()
   valser  = datdf.applymap(lambda x: x['value']).apply(dp.mean_array)
   errser  = datdf.applymap(lambda x: x['error']).apply(dp.mean_array_err)
-  if spiniser.shape[0] == 1: spiniser = spiniser.T[0]
-  if spinjser.shape[0] == 1: spinjser = spinjser.T[0]
-  if siteiser.shape[0] == 1: siteiser = siteiser.T[0]
-  if sitejser.shape[0] == 1: sitejser = sitejser.T[0]
-  return pd.DataFrame({
+  # Safely turn DataFrame into Series.
+  if spiniser.shape[0] == 1: spiniser = spiniser.iloc[0]
+  if spinjser.shape[0] == 1: spinjser = spinjser.iloc[0]
+  if siteiser.shape[0] == 1: siteiser = siteiser.iloc[0]
+  if sitejser.shape[0] == 1: sitejser = sitejser.iloc[0]
+  ret = pd.DataFrame({
       'spini':spiniser,
       'spinj':spinjser,
       'sitei':siteiser,
       'sitej':sitejser,
       'value':valser,
       'error':errser
-    })
+    }).set_index(['spini','spinj','sitei','sitej'])
+  return ret
 
-def _kaverage_ordm(reclist):
+def _kaverage_ordm(kavgdf):
   # Warning! _kaverage_qmc() assuming equal k-point weight!
   res = {}
   datdf =\
@@ -210,21 +219,23 @@ def _kaverage_ordm(reclist):
       unpack(
         unpack(
           unpack(
-            pd.DataFrame(reclist)\
+            kavgdf\
           ['results'])\
         ['properties'])\
       ['tbdm_basis'])\
     ['obdm'])
   for spin in ('up','down'):
-    #res[spin] = abs_mean_array(datdf[spin])
-    #res[spin+'_err'] = mean_array_err(datdf[spin+'_err'])
-    res[spin] = datdf[spin].iloc[3]
-    res[spin+'_err'] = datdf[spin+'_err'].iloc[3]
+    #print("datdf[spin]\n",datdf[spin])
+    res[spin] = dp.abs_mean_array(datdf[spin])
+    res[spin+'_err'] = dp.mean_array_err(datdf[spin+'_err'])
+    #res[spin] = datdf[spin].iloc[3]
+    #res[spin+'_err'] = datdf[spin+'_err'].iloc[3]
   return res
 
 def _check_spins(dft_record,small=1.0):
   """ Check that the spins that were set at the beginning correspond to the
   spins it ends up having. Anything less than small is considered zero."""
+  init_spins = dft_record['initial_spin']
   moms = dft_record['mag_moments']
   moms = np.array(moms)
   zs = abs(moms) < small
@@ -234,7 +245,13 @@ def _check_spins(dft_record,small=1.0):
   moms[up] = 1
   moms[dn] = -1
   moms[zs] = 0
-  return int((moms == dft_record['initial_spin']).all())
+  if len(init_spins)==0:
+    if (moms == np.zeros(moms.shape)).all():
+      return True
+    else:
+      return False
+  else:
+    return (moms == np.array(init_spins)).all()
 
 ###############################################################################
 # Format autogen group of functions (this was used before process_records).
