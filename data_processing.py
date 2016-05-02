@@ -349,11 +349,11 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     
     print("  DMC results..." )
     try:
-      os.system("gosling -json {0}.dmc.log > {0}.json".format(kroot))
+      os.system("{0} -json {1}.dmc.log > {1}.json".format(gosling,kroot))
       dmc_entry = deepcopy(entry)
       dmc_entry['results'] = json.load(open("{}.json".format(kroot)))
       dmc_ret.append(dmc_entry)
-    except IOError:
+    except ValueError:
       print("  (cannot find ground state energy log file)")
 
     # I'm going to skip the optical gap information for now. Is this really

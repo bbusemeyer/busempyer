@@ -14,14 +14,9 @@ reload(dp)
 
 files = sys.argv[1:]
 roots = [f.replace('_metadata.json','') for f in files]
-locs = ['/'.join(f.split('/')[:-1]) for f in files]
-locs = set(locs)
-if len(locs)>1:
-  raise AssertionError
-else:
-  loc = list(locs)[0]
 for root in roots:
-  data = dp.read_dir_autogen(root,gosling='/home/brian/bin/gosling')
+  data = dp.read_dir_autogen(root,gosling='/home/busemey2/bin/gosling')
+  loc = '/'.join(root.split('/')[:-1])
   outfn = loc+"/record.json"
   print("Outputting to %s..."%outfn)
   with open(outfn,'w') as outf:
