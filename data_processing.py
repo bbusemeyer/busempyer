@@ -9,10 +9,6 @@ import cubetools as ct
 from copy import deepcopy
 from pymatgen.io.cif import CifParser
 
-# TODO generalize!
-NFE = 8
-VARTOL = 1e-2
-SMALLSPIN = 1.0 # Spins less than this are considered zero.
 
 ###############################################################################
 # Misc. tools.
