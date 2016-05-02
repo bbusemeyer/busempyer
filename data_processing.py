@@ -258,9 +258,9 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
   dftoutf   = froot+'.d12.out'
   # Start by taking only the real k-points, since I'm sure these are on solid
   # ground, and have enough sample points. TODO generalize
-  realk1 = np.array([1,3,8,10,27,29,34,36]) - 1
-  realk2 = np.array([1,4,17,20,93,96,109,112]) - 1
-  oldrealk = np.array(['k0','k1','k2','k3','k4','k5','k6','k7'])
+  realk1 = list(map(str,np.array([1,3,8,10,27,29,34,36]) - 1))
+  realk2 = list(map(str,np.array([1,4,17,20,93,96,109,112]) - 1))
+  oldrealk = ['k0','k1','k2','k3','k4','k5','k6','k7']
   ############################################################################
 
   res  = {}
@@ -324,7 +324,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
   ppr_ret = []
   for rk in realk:
     entry = {}
-    entry['knum'] = int(rk)
+    entry['knum'] = int(rk.replace("k",""))
     kroot = froot + '_' + str(rk)
 
     print("  now DMC:",kroot+"..." )
@@ -343,11 +343,11 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     
     print("  DMC results..." )
     try:
-      os.system("gosling -json {0}.dmc.log > {0}.json".format(kroot))
+      os.system("{0} -json {1}.dmc.log > {1}.json".format(gosling,kroot))
       dmc_entry = deepcopy(entry)
       dmc_entry['results'] = json.load(open("{}.json".format(kroot)))
       dmc_ret.append(dmc_entry)
-    except IOError:
+    except ValueError:
       print("  (cannot find ground state energy log file)")
 
     # I'm going to skip the optical gap information for now. Is this really
