@@ -5,7 +5,8 @@
 import sys
 
 if len(sys.argv) != 4:
-  raise AssertionError("Usage: python gen_basis_orb.py your.sys your.min.basis output.orb")
+  print("\nUsage: python gen_basis_orb.py your.sys your.min.basis output.orb\n")
+  raise AssertionError("Not enough filenames.")
 
 sysf=open(sys.argv[1],'r')
 basfn=sys.argv[2]
