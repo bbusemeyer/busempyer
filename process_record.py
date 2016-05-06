@@ -7,6 +7,8 @@ from pymatgen.io.cif import CifParser
 # TODO generalize!
 VARTOL = 1e-2
 NFE = 8
+NORBFE = 10
+NORBCH = 4
 SMALLSPIN = 1.0 # Spins less than this are considered zero.
 
 ################################################################################
@@ -41,19 +43,21 @@ def _process_post(post_record):
     nfluctdf = _analyze_nfluct(post_record)
     res['fluct'] = json.loads(nfluctdf.reset_index().to_json())
   if 'tbdm_basis' in post_record['results'][0]['results']['properties'].keys():
-    ordmdf = _analyze_ordm(post_record)
-    res['ordm']  = ordmdf
-
+    res['ordm'] = {}
+    ordmdfs = _analyze_ordm(post_record)
+    for key in ordmdfs.keys():
+      res['ordm'][key] = json.loads(ordmdfs[key].reset_index().to_json())
   return res
 
 def _process_dmc(dmc_record):
-  if 'results' not in dmc_record.keys():
-    return {}
+  grouplist = ['timestep','jastrow','localization','optimizer']
   res = {}
-  for savekey in ['excitations','timestep','jastrow',
-      'optimizer','localization','nblock']:
-    res[savekey] = dmc_record[savekey]
-  res['energy'] = _kaverage_energy(dmc_record['results'])
+  if 'results' not in dmc_record.keys():
+    return res
+  res['energy'] = pd.DataFrame(dmc_record['results'])\
+      .groupby(grouplist)\
+      .apply(_kaverage_energy)\
+      .reset_index()
   return res
 
 def _analyze_nfluct(post_record):
@@ -113,7 +117,7 @@ def _analyze_nfluct(post_record):
       print("%f > 1e-2"%sgrp['var'].std())
     return pd.Series({
         'variance':sgrp['var'].mean(),
-        'variance_err':(sgrp['varerr']**1).mean()**0.5,
+        'variance_err':(sgrp['varerr']**2).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
         'magmom_err':(sgrp['magmom']**2).mean()**0.5
       })
@@ -152,32 +156,102 @@ def _analyze_nfluct(post_record):
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
+  def saverage_orb(sgrp):
+    if sgrp['ordm'].std() > VARTOL:
+      print("Site average warning: variation in sites larger than expected.")
+      print("%.3f > %.2f"%(sgrp['ordm'].std(),VARTOL))
+    return pd.Series({
+        'ordm':sgrp['ordm'].mean(),
+        'ordm_err':(sgrp['ordm_err']**2).mean()**0.5,
+      })
+  def saverage_hop(sgrp):
+    if sgrp['ordm'].std() > VARTOL:
+      print("Site average warning: variation in sites larger than expected.")
+      print("%.3f > %.2f"%(sgrp['ordm'].std(),VARTOL))
+    return pd.Series({
+        'ordm':sgrp['ordm'].mean(),
+        'ordm_err':(sgrp['ordm_err']**2).mean()**0.5,
+      })
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  # k-average (currently selects gamma-only due to bug).
   ordmdf = pd.DataFrame(post_record['results'])\
       .groupby(['timestep','jastrow','localization','optimizer'])\
-      .apply(_kaverage_ordm)
-  return ordmdf
+      .apply(_kaverage_ordm)\
+      .reset_index()
+  # Classify orbitals based on index.
+  infodf = ordmdf['orbni'].drop_duplicates().apply(lambda orbnum:
+      pd.Series(dict(zip(['orbnum','elem','atom','orb'],orbinfo(orbnum)))))
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbni',right_on='orbnum')
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbnj',right_on='orbnum',
+      suffixes=("i","j"))
+  ordmdf = ordmdf.drop(['orbnumi','orbnumj'],axis=1)
+  # Classify atoms based on spin occupations.
+  occdf = ordmdf[ordmdf['orbni']==ordmdf['orbnj']]\
+      .groupby(grouplist+['atomi'])\
+      .agg({'up':np.sum,'down':np.sum})\
+      .reset_index()\
+      .rename(columns={'atomi':'at'})
+  occdf['net']  = occdf['up'] - occdf['down']
+  occdf = occdf.drop(['up','down'],axis=1)
+  occdf['atspin'] = 'up'
+  occdf.loc[occdf['net'] < 0,'atspin'] = 'down'
+  occdf.loc[occdf['net'].abs() < 1e-1,'atspin'] = 'zero'
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomi'],right_on=grouplist+['at'])
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomj'],right_on=grouplist+['at'],
+      suffixes=('i','j'))\
+      .drop(['ati','atj'],axis=1)
+  ordmdf['rel_atspin'] = "antiparallel"
+  ordmdf.loc[ordmdf['atspini']==ordmdf['atspinj'],'rel_atspin'] = "parallel"
+  ordmdf.loc[ordmdf['atspini']=='zero','rel_atspin'] = "zero"
+  ordmdf.loc[ordmdf['atspinj']=='zero','rel_atspin'] = "zero"
+  # Classify spin channels based on minority and majority channels.
+  ordmdf = ordmdf.set_index([c for c in ordmdf.columns 
+    if c not in ['up','down','up_err','down_err']])
+  vals = ordmdf[['up','down']].stack()
+  vals.index.names = vals.index.names[:-1]+['spin']
+  errs = ordmdf[['up_err','down_err']]\
+      .rename(columns={'up_err':'up','down_err':'down'})\
+      .stack()
+  errs.index.names = errs.index.names[:-1]+['spin']
+  ordmdf = pd.DataFrame({'ordm':vals,'ordm_err':errs}).reset_index()
+  ordmdf['spini'] = "minority"
+  ordmdf['spinj'] = "minority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspini'],'spini'] = "majority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspinj'],'spinj'] = "majority"
+  ordmdf.loc[ordmdf['atspini'] == 'zero','spini'] = 'neither'
+  ordmdf.loc[ordmdf['atspinj'] == 'zero','spinj'] = 'neither'
+  # Focus in on orbital occupations.
+  orboccdf = ordmdf[ordmdf['orbni']==ordmdf['orbnj']]\
+      .drop([col for col in ordmdf.columns if col[-1]=='j'],1)\
+      .groupby(grouplist+['elemi','orbi','spini'])\
+      .apply(saverage_orb)
+  # Focus in on parallel or antiparallel hopping.
+  orbsumsel = grouplist+['atomi','atomj','elemi','elemj','rel_atspin','spini','spinj']
+  siteavgsel = [c for c in orbsumsel if c not in ['atomi','atomj']]
+  hopdf = ordmdf[ordmdf['atomi'] != ordmdf['atomj']]\
+      .groupby(orbsumsel)\
+      .agg({'ordm':lambda x:x.abs().sum(), 'ordm_err':lambda x:sum(x**2)**0.5})\
+      .reset_index()\
+      .groupby(siteavgsel)\
+      .agg({'ordm':np.mean, 'ordm_err':lambda x:np.mean(x**2)**0.5})
+  return {'orb':orboccdf,'hop':hopdf}
 
-def _kaverage_energy(reclist):
-  # Warning! _kaverage_qmc() assuming equal k-point weight!
-  keys = reclist[0].keys()
-  # Check if implementation can handle data.
-  for option in [k for k in keys if k not in ['results','knum']]:
-    for rec in reclist:
-      if (type(rec[option])==list) and (len(rec[option]) != 1):
-        print("kaverage exception:",rec[option])
-        raise AssertionError("Error! _kaverage_qmc() takes no note of timestep or localization lists!"+\
-          "If you need this functionality, I encourage you to generize it for me"+\
-          "(and anyone else using it)!")
+def _kaverage_energy(kavgdf):
   # Keep unpacking until reaching energy.
   egydf = \
     unpack(
       unpack(
         unpack(
-          pd.DataFrame(reclist)\
+          kavgdf
         ['results'])\
       ['properties'])\
     ['total_energy']).applymap(dp.unlist)
-  return {"value":egydf['value'].mean(),"error":(egydf['error']**2).mean()**.5}
+  return pd.Series({
+    "value":egydf['value'].mean(),
+    "error":(egydf['error']**2).mean()**.5
+    })
 
 def _kaverage_fluct(reclist):
   # Warning! _kaverage_qmc() assuming equal k-point weight!
@@ -214,7 +288,6 @@ def _kaverage_fluct(reclist):
 
 def _kaverage_ordm(kavgdf):
   # Warning! _kaverage_qmc() assuming equal k-point weight!
-  res = {}
   datdf =\
     unpack(
       unpack(
@@ -225,12 +298,13 @@ def _kaverage_ordm(kavgdf):
         ['properties'])\
       ['tbdm_basis'])\
     ['obdm'])
-  for spin in ('up','down'):
-    #print("datdf[spin]\n",datdf[spin])
-    #res[spin] = dp.abs_mean_array(datdf[spin])
-    #res[spin+'_err'] = dp.mean_array_err(datdf[spin+'_err'])
-    res[spin] = datdf[spin].iloc[4]
-    res[spin+'_err'] = datdf[spin+'_err'].iloc[4]
+  res = pd.DataFrame(datdf['up'].iloc[0]).stack().to_frame('up')
+  res = res.join(pd.DataFrame(datdf['down'].iloc[0]).stack().to_frame('down'))
+  res = res.join(pd.DataFrame(datdf['up_err'].iloc[0]).stack().to_frame('up_err'))
+  res = res.join(pd.DataFrame(datdf['down_err'].iloc[0]).stack().to_frame('down_err'))
+  res = res.reset_index()\
+      .rename(columns={'level_0':'orbni','level_1':'orbnj'})\
+      .set_index(['orbni','orbnj'])
   return res
 
 def _check_spins(dft_record,small=1.0):
@@ -252,20 +326,41 @@ def _check_spins(dft_record,small=1.0):
     else:
       return False
   else:
-    return (moms == np.array(init_spins)).all()
+    # Note casting prevents numpy.bool.
+    return bool((moms == np.array(init_spins)).all())
+
+def orbinfo(orbnum):
+  """ Compute orbital info based on orbital number: [element,atomnum,orbital].
+
+  Currently only useful for Fe-chalcogenides."""
+  NFe = 8
+  NSe = 8
+  # CRYSTAL: 'order of internal storage'.
+  # s, px, py, pz, dz2-r2, dxz, dyz, dx2-y2, dxy, ...
+  Feorbs = ['3s','3px','3py','3pz','3dz2-r2','3dxz','3dyz','3dx2-y2','3dxy','4s']
+  Seorbs = ['3s','3px','3py','3pz']
+  NbFe = len(Feorbs)
+  NbSe = len(Seorbs)
+  res = [orbnum]
+  if float(orbnum)/(NFe * NbFe) > (1 - 1e-8):
+    res += ['Te',(orbnum - NFe*NbFe) // NbSe + 1 + NFe]
+    res.append(Seorbs[orbnum%NbSe])
+  else:
+    res += ['Fe',orbnum // NbFe + 1]
+    res.append(Feorbs[orbnum%NbFe])
+  return res
 
 ###############################################################################
-# Format autogen group of functions (this was used before process_records).
-def format_autogen(inp_json="results.json"):
-  """
-  Takes autogen json file and organizes it into a Pandas DataFrame.
-  """
+# Format autogen group of function.
+def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
+  """ Takes processed autogen json file and organizes it into a Pandas DataFrame."""
   rawdf = pd.read_json(open(inp_json,'r'))
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
       2*np.linalg.det(np.array(x))
     )
   # Unpacking the energies.
   dftdf = _format_dftdf(rawdf)
+  rawdf = rawdf[dftdf['id'].apply(filterfunc)]
   dmcdf = unpack(rawdf['dmc'])
   dmcdf = dmcdf.join(unpack(dmcdf['energy']))
   dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
@@ -292,12 +387,14 @@ def format_autogen(inp_json="results.json"):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
-  # Number fluctuation.
-  sel = alldf['fluct'].notnull()
-  fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
-    pd.DataFrame(df).set_index(['element','spinchan']).stack())
-  alldf = alldf.join(fluctdf)
-  alldf = dp.untuple_cols(alldf,"fluct")
+  ## Number fluctuation.
+  # This way of doing it is really messy and explodes the number of columns.
+  # It's better to extract the data in a more specific way.
+  #sel = alldf['fluct'].notnull()
+  #fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
+  #  pd.DataFrame(df).set_index(['element','spinchan']).stack())
+  #alldf = alldf.join(fluctdf)
+  #alldf = dp.untuple_cols(alldf,"fluct")
 
   return alldf
 
