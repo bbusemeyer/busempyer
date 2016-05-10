@@ -452,6 +452,11 @@ def unlist(li):
   if len(li) > 1: AssertionError("unlist can't operate on multi-element list")
   return li[0]
 
+# Safely take list of one element into it's value.
+def undict(di):
+  if len(di) > 1: AssertionError("undict can't operate on multi-element dict")
+  return list(di.items())[0][1]
+
 # Convert pandas DataFrame row into a dictionary.
 def row_to_dict(row):
   ret = row.T.to_dict()

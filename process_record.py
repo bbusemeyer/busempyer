@@ -40,13 +40,9 @@ def _process_post(post_record):
   res = {}
   # Right now just checks the first k-point: problem?
   if 'region_fluctuation' in post_record['results'][0]['results']['properties'].keys():
-    nfluctdf = _analyze_nfluct(post_record)
-    res['fluct'] = json.loads(nfluctdf.reset_index().to_json())
+    res['fluct'] = _analyze_nfluct(post_record)
   if 'tbdm_basis' in post_record['results'][0]['results']['properties'].keys():
-    res['ordm'] = {}
-    ordmdfs = _analyze_ordm(post_record)
-    for key in ordmdfs.keys():
-      res['ordm'][key] = json.loads(ordmdfs[key].reset_index().to_json())
+    res['ordm'] = _analyze_nfluct(post_record)
   return res
 
 def _process_dmc(dmc_record):
@@ -54,10 +50,12 @@ def _process_dmc(dmc_record):
   res = {}
   if 'results' not in dmc_record.keys():
     return res
-  res['energy'] = pd.DataFrame(dmc_record['results'])\
+  res['energy'] = json.loads(pd.DataFrame(dmc_record['results'])\
       .groupby(grouplist)\
       .apply(_kaverage_energy)\
       .reset_index()
+      .to_json()
+    )
   return res
 
 def _analyze_nfluct(post_record):
@@ -150,9 +148,13 @@ def _analyze_nfluct(post_record):
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
   # Site average.
-  savgdf = avgdf.groupby(grouplist+['spinchan','element']).apply(siteaverage)
-
-  return savgdf
+  savgdf = avgdf.groupby(grouplist+['spinchan','element'])\
+      .apply(siteaverage)\
+      .reset_index()
+  magdf = savgdf.drop(['spinchan','variance','variance_err'],axis=1).drop_duplicates()
+  vardf = savgdf.drop(['magmom','magmom_err'],axis=1)
+  return { 'magmom':json.loads(magdf.to_json()),
+           'variance':json.loads(vardf.to_json()) }
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
@@ -236,7 +238,8 @@ def _analyze_ordm(post_record):
       .reset_index()\
       .groupby(siteavgsel)\
       .agg({'ordm':np.mean, 'ordm_err':lambda x:np.mean(x**2)**0.5})
-  return {'orb':orboccdf,'hop':hopdf}
+  return {'orb':json.loads(orboccdf.to_json()),
+          'hop':json.loads(hopdf.to_json())}
 
 def _kaverage_energy(kavgdf):
   # Keep unpacking until reaching energy.
@@ -362,7 +365,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   dftdf = _format_dftdf(rawdf)
   rawdf = rawdf[dftdf['id'].apply(filterfunc)]
   dmcdf = unpack(rawdf['dmc'])
-  dmcdf = dmcdf.join(unpack(dmcdf['energy']))
+  dmcdf = dmcdf.join(
+        unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
+      )
   dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
   alldf = dmcdf.join(dftdf)
   alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
@@ -371,11 +376,11 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       'broyden',
       'initial_charges',
       'initial_spin',
-      'kmesh',
-      'localization',
-      'timestep',
-      'jastrow',
-      'optimizer'
+      'kmesh'
+#      'localization',
+#      'timestep',
+#      'jastrow',
+#      'optimizer'
     ]
 
   if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
