@@ -1,5 +1,4 @@
 import sys
-from numpy import array,linspace,zeros,ones,cumprod,floor,ceil,dot,cross,sum,nan_to_num,errstate
 import numpy as np
 from numpy.linalg import det
 from scipy.interpolate import griddata
@@ -7,27 +6,31 @@ from scipy.signal import butter, lfilter
 from copy import deepcopy
 
 #####################################
-def read_cube(inpf):
+def read_cube(inpf,qwalk_patch=False):
   cube={}
   cube['comment']=inpf.readline()
   cube['type']=inpf.readline()
   spl=inpf.readline().split()
-  cube['natoms']=int(spl[0])
-  cube['origin']=map(float, spl[1:])
-  cube['ints']=array([0,0,0])
-  cube['latvec']=zeros((3,3))
+  #cube['natoms']=int(spl[0])
+  cube['natoms']=round(float(spl[0]))
+  if qwalk_patch:
+    cube['origin']=np.zeros(3)
+  else:
+    cube['origin']=np.array(spl[1:],dtype=float)
+  cube['ints']=np.array([0,0,0])
+  cube['latvec']=np.zeros((3,3))
   for i in range(0,3):
     spl=inpf.readline().split()
     cube['ints'][i]=int(spl[0])
-    cube['latvec'][i,:]=map(float,spl[1:])
+    cube['latvec'][i,:]=np.array(spl[1:],dtype=float)
   natoms=cube['natoms']
   cube['atomname']=[]
-  cube['atomxyz']=zeros((natoms,3))
+  cube['atomxyz']=np.zeros((natoms,3))
   for i in range(0,natoms):
     spl=inpf.readline().split()
     cube['atomname'].append(spl[0])
-    cube['atomxyz'][i,:]=map(float,spl[2:])
-  cube['data']=zeros(cube['ints'])
+    cube['atomxyz'][i,:]=np.array(spl[2:],dtype=float)
+  cube['data']=np.zeros(cube['ints'])
   vector=[]
   while True:
     spl=inpf.readline().split()
@@ -54,7 +57,7 @@ def read_cube(inpf):
 def write_cube(cube, outf):
   outf.write(cube['comment'])
   outf.write(cube['type'])
-  outf.write(' '.join(map(str,[cube['natoms']]+cube['origin'])))
+  outf.write(str(cube['natoms'])+" {} {} {}".format(*cube['origin']))
   outf.write("\n")
   for i in range(0,3):
     outf.write("%i "%cube['ints'][i])
@@ -112,7 +115,7 @@ def integrate(cube):
   
   Appoximates integral by simple sum."""
   vol=abs(det(cube['latvec']))
-  return sum(cube['data'])*vol
+  return np.sum(cube['data'])*vol
 
 #####################################
 def integrate_abs(cube):
@@ -120,7 +123,7 @@ def integrate_abs(cube):
   
   Appoximates integral by simple sum."""
   vol=abs(det(cube['latvec']))
-  return sum(abs(cube['data']))*vol
+  return np.sum(abs(cube['data']))*vol
 
 #####################################
 def normalize_abs(cube,Nelec=1):
@@ -128,7 +131,7 @@ def normalize_abs(cube,Nelec=1):
   
   Appoximates integral by simple sum."""
   vol=abs(det(cube['latvec']))
-  norm=sum(abs(cube['data']))*vol
+  norm=np.sum(abs(cube['data']))*vol
   cube['data']*=(float(Nelec)/norm)
 
 #####################################
@@ -239,7 +242,7 @@ def add_cubes(cube1,cube2,N1=1,N2=1):
 # Used for interpolation scheme
 def nearest(point,cube):
   """Find the value in the cube file located closest to point."""
-  a = array([ dot(cube['latvec'][i],point)/dot(cube['latvec'][i],cube['latvec'][i])
+  a = np.array([ np.dot(cube['latvec'][i],point)/np.dot(cube['latvec'][i],cube['latvec'][i])
               for i in range(3) ]).round()
   #print a % cube['ints']
   return cube['data'][tuple(map(int,a % cube['ints']))]
@@ -252,24 +255,24 @@ def linear(point,cube):
   latvec = cube['latvec'] 
   ints = cube['ints']
   # point in the basis of latvec.
-  pnb = array([ dot(latvec[i],point)/dot(latvec[i],latvec[i])
+  pnb = np.array([ np.dot(latvec[i],point)/np.dot(latvec[i],latvec[i])
               for i in range(3) ])
   # Round up and down to get points on the lattice.
   neighbors = [(ax,ay,az)
-    for ax in map(int,[floor(pnb[0]),ceil(pnb[0])])
-    for ay in map(int,[floor(pnb[1]),ceil(pnb[1])]) 
-    for az in map(int,[floor(pnb[2]),ceil(pnb[2])])]
-  vals = array([cube['data'][tuple(n)] for n in (neighbors%ints)])
+    for ax in map(int,[np.floor(pnb[0]),np.ceil(pnb[0])])
+    for ay in map(int,[np.floor(pnb[1]),np.ceil(pnb[1])]) 
+    for az in map(int,[np.floor(pnb[2]),np.ceil(pnb[2])])]
+  vals = np.array([cube['data'][tuple(n)] for n in (neighbors%ints)])
   vals = vals.reshape(2,2,2)
   tvol = abs(det(latvec))
-  vols = array([abs(det((n-pnb)*latvec)) for n in neighbors]).reshape(2,2,2)
-  wght = zeros(vals.shape)
+  vols = np.array([abs(det((n-pnb)*latvec)) for n in neighbors]).reshape(2,2,2)
+  wght = np.zeros(vals.shape)
   # Weights for average are the subvolumes of opposing corner.
   for i in range(2):
     for j in range(2):
       for k in range(2):
         wght[i,j,k] = vols[1-i,1-j,1-k]/tvol
-  return sum(wght*vals)
+  return np.sum(wght*vals)
 
 #####################################
 def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
@@ -281,19 +284,19 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   ints = cube['ints']
   
   # Classify points to show all atoms while minimizing extra space.
-  pidx = (array((pos[1]-pos[2], pos[2]-pos[0], pos[0]-pos[1]))**2).sum(axis=1).argsort()
+  pidx = (np.array((pos[1]-pos[2], pos[2]-pos[0], pos[0]-pos[1]))**2).sum(axis=1).argsort()
   orig = pos[pidx[ 1]]
   pvm  = pos[pidx[ 0]] - orig # Main plotting axis (static).
   pvo  = pos[pidx[-1]] - orig # Orthogonal plotting axis.
 
   # Orthogonalize orth. axis, since this is how most plots are.
-  pvo -= sum(pvo*pvm)/sum(pvm**2) * pvm
+  pvo -= np.sum(pvo*pvm)/np.sum(pvm**2) * pvm
   # Make it a square plot.
   #pvo *= (sum(pvm**2)/sum(pvo**2))**.5
 
   # Add buffer to contain all of atom. Extra space in each plot dir.
-  buffm = atrad/(sum(pvm**2))**.5 * pvm 
-  buffo = atrad/(sum(pvo**2))**.5 * pvo
+  buffm = atrad/(np.sum(pvm**2))**.5 * pvm 
+  buffo = atrad/(np.sum(pvo**2))**.5 * pvo
 
   pvm += 2*buffm
   pvo += 2*buffo
@@ -302,7 +305,7 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   e2 = pvo / float(res[1]-1)
 
   # Domain of output.
-  odom = array( [ i*e1 + j*e2
+  odom = np.array( [ i*e1 + j*e2
                    for i in range(res[0])
                    for j in range(res[1]) ])
   odom += orig - buffm - buffo
@@ -311,7 +314,7 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   # Wrap at zone boundaries.
   basis = latvec * ints
   for j in range(len(odom)):
-    odom[j] = sum( [(dot(basis[i],odom[j])/dot(basis[i],basis[i]))%1*basis[i]
+    odom[j] = np.sum( [(np.dot(basis[i],odom[j])/np.dot(basis[i],basis[i]))%1*basis[i]
                     for i in range(3)], axis=1 )
 
   # Compute the closest point of the atoms to the plane, and how far away they
@@ -322,20 +325,20 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   atpos += [a-b for b in basis for a in atpos] + [a+b for b in basis for a in atpos]
 
 
-  acoor = [( dot(pvm,a) / dot(pvm,pvm)**.5,
-             dot(pvo,a) / dot(pvo,pvo)**.5 )
+  acoor = [( np.dot(pvm,a) / np.dot(pvm,pvm)**.5,
+             np.dot(pvo,a) / np.dot(pvo,pvo)**.5 )
            for a in atpos]
-  adist = [dot( cross(pvm,pvo)/(dot(pvm,pvm)*dot(pvo,pvo))**.5, a ) 
+  adist = [np.dot( np.cross(pvm,pvo)/(np.dot(pvm,pvm)*np.dot(pvo,pvo))**.5, a ) 
            for a in atpos]
 
-  X = linspace(0,sum(pvm**2)**.5,res[0])
-  Y = linspace(0,sum(pvo**2)**.5,res[1])
+  X = np.linspace(0,np.sum(pvm**2)**.5,res[0])
+  Y = np.linspace(0,np.sum(pvo**2)**.5,res[1])
 
   if method=='nearest':
-    Z = array([nearest(point,cube) for point in odom]).reshape(res)
+    Z = np.array([nearest(point,cube) for point in odom]).reshape(res)
   elif method=='linear':
-    Z = array([linear(point,cube) for point in odom]).reshape(res)
+    Z = np.array([linear(point,cube) for point in odom]).reshape(res)
   else:
     print('Interpolation method is not implemented yet.')
   
-  return {'points':(X,Y), 'data':Z, 'acoor':array(acoor), 'adist':array(adist)}
+  return {'points':(X,Y), 'data':Z, 'acoor':np.array(acoor), 'adist':np.array(adist)}
