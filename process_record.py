@@ -42,7 +42,7 @@ def _process_post(post_record):
   if 'region_fluctuation' in post_record['results'][0]['results']['properties'].keys():
     res['fluct'] = _analyze_nfluct(post_record)
   if 'tbdm_basis' in post_record['results'][0]['results']['properties'].keys():
-    res['ordm'] = _analyze_nfluct(post_record)
+    res['ordm'] = _analyze_ordm(post_record)
   return res
 
 def _process_dmc(dmc_record):
@@ -117,7 +117,7 @@ def _analyze_nfluct(post_record):
         'variance':sgrp['var'].mean(),
         'variance_err':(sgrp['varerr']**2).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
-        'magmom_err':(sgrp['magmom']**2).mean()**0.5
+        'magmom_err':(sgrp['magmom_err']**2).mean()**0.5
       })
 
   # Moments and other arithmatic.
@@ -144,7 +144,7 @@ def _analyze_nfluct(post_record):
   avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
   avgdf['spinchan'] = "minority"
   avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "majority"
-  avgdf['element'] = "Se"
+  avgdf['element'] = "Te"
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
   # Site average.
@@ -228,7 +228,8 @@ def _analyze_ordm(post_record):
   orboccdf = ordmdf[ordmdf['orbni']==ordmdf['orbnj']]\
       .drop([col for col in ordmdf.columns if col[-1]=='j'],1)\
       .groupby(grouplist+['elemi','orbi','spini'])\
-      .apply(saverage_orb)
+      .apply(saverage_orb)\
+      .reset_index()
   # Focus in on parallel or antiparallel hopping.
   orbsumsel = grouplist+['atomi','atomj','elemi','elemj','rel_atspin','spini','spinj']
   siteavgsel = [c for c in orbsumsel if c not in ['atomi','atomj']]
@@ -237,7 +238,8 @@ def _analyze_ordm(post_record):
       .agg({'ordm':lambda x:x.abs().sum(), 'ordm_err':lambda x:sum(x**2)**0.5})\
       .reset_index()\
       .groupby(siteavgsel)\
-      .agg({'ordm':np.mean, 'ordm_err':lambda x:np.mean(x**2)**0.5})
+      .agg({'ordm':np.mean, 'ordm_err':lambda x:np.mean(x**2)**0.5})\
+      .reset_index()
   return {'orb':json.loads(orboccdf.to_json()),
           'hop':json.loads(hopdf.to_json())}
 
@@ -335,12 +337,13 @@ def _check_spins(dft_record,small=1.0):
 def orbinfo(orbnum):
   """ Compute orbital info based on orbital number: [element,atomnum,orbital].
 
-  Currently only useful for Fe-chalcogenides."""
+  Currently only useful for Fe-chalcogenides. Warning: this depends on how you
+  define the basis!"""
   NFe = 8
   NSe = 8
   # CRYSTAL: 'order of internal storage'.
   # s, px, py, pz, dz2-r2, dxz, dyz, dx2-y2, dxy, ...
-  Feorbs = ['3s','3px','3py','3pz','3dz2-r2','3dxz','3dyz','3dx2-y2','3dxy','4s']
+  Feorbs = ['3s','3px','3py','3pz','4s','3dz2-r2','3dxz','3dyz','3dx2-y2','3dxy']
   Seorbs = ['3s','3px','3py','3pz']
   NbFe = len(Feorbs)
   NbSe = len(Seorbs)
@@ -391,15 +394,6 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
         alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
-
-  ## Number fluctuation.
-  # This way of doing it is really messy and explodes the number of columns.
-  # It's better to extract the data in a more specific way.
-  #sel = alldf['fluct'].notnull()
-  #fluctdf = alldf.loc[sel,'fluct'].apply(lambda df:
-  #  pd.DataFrame(df).set_index(['element','spinchan']).stack())
-  #alldf = alldf.join(fluctdf)
-  #alldf = dp.untuple_cols(alldf,"fluct")
 
   return alldf
 
