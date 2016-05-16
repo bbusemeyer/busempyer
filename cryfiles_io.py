@@ -7,9 +7,14 @@ import shutil as sh
 def read_basis_chunk(lines,pos):
   header = lines[pos].split()
   ngaus = int(header[2])
-  basis_elmt = zeros((ngaus,2))
+  basis_elmt = {
+      'type':int(header[1]),
+      'charge':int(header[3]),
+      'coefs':zeros((ngaus,2))
+    }
   for gix in range(ngaus):
-    basis_elmt[gix,:] = list(map(float,lines[pos+1+gix].split()))
+    basis_elmt['coefs'][gix,:] = list(map(float,lines[pos+1+gix].split()))
+  basis_elmt['coefs'] = basis_elmt['coefs'].tolist()
   return pos + ngaus + 1, basis_elmt
 
 def read_element_basis(lines,pos):
