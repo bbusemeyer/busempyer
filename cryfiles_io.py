@@ -9,7 +9,7 @@ def read_basis_chunk(lines,pos):
   ngaus = int(header[2])
   basis_elmt = {
       'type':int(header[1]),
-      'charge':int(header[3]),
+      'charge':float(header[3]),
       'coefs':zeros((ngaus,2))
     }
   for gix in range(ngaus):
