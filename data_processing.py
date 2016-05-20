@@ -331,11 +331,11 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     try:
       sysdat = qio.read_qfile(open(kroot+'.sys','r'))
       dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
-      entry['kpoint'] = [sysdat['system']['kpoint']]
-      entry['timestep'] = [dmcinp['method']['timestep']]
-      entry['localization'] = ["None"]
-      entry['jastrow'] = ["twobody"]
-      entry['optimizer'] = ["variance"]
+      entry['kpoint'] = sysdat['system']['kpoint']
+      entry['timestep'] = dmcinp['method']['timestep']
+      entry['localization'] = "None"
+      entry['jastrow'] = "twobody"
+      entry['optimizer'] = "variance"
       entry['excitations'] = "no"
     except IOError:
       print("  (cannot find QMC input, skipping)")
@@ -410,20 +410,20 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
 
   if len(dmc_ret) > 0:
     res['qmc']['dmc']['results'] = dmc_ret
-    res['qmc']['dmc']['kpoint'] = [sysdat['system']['kpoint']]
-    res['qmc']['dmc']['timestep'] = [dmcinp['method']['timestep']]
-    res['qmc']['dmc']['localization'] = ["None"]
-    res['qmc']['dmc']['jastrow'] = ["twobody"]
-    res['qmc']['dmc']['optimizer'] = ["variance"]
+    res['qmc']['dmc']['kpoint'] = sysdat['system']['kpoint']
+    res['qmc']['dmc']['timestep'] = dmcinp['method']['timestep']
+    res['qmc']['dmc']['localization'] = "None"
+    res['qmc']['dmc']['jastrow'] = "twobody"
+    res['qmc']['dmc']['optimizer'] = "variance"
     res['qmc']['dmc']['nblock'] = -1
     res['qmc']['dmc']['excitations'] = "no"
   if len(ppr_ret) > 0:
     res['qmc']['postprocess']['results'] = ppr_ret
-    res['qmc']['postprocess']['kpoint'] = [sysdat['system']['kpoint']]
-    res['qmc']['postprocess']['timestep'] = [dmcinp['method']['timestep']]
-    res['qmc']['postprocess']['localization'] = ["None"]
-    res['qmc']['postprocess']['jastrow'] = ["twobody"]
-    res['qmc']['postprocess']['optimizer'] = ["variance"]
+    res['qmc']['postprocess']['kpoint'] = sysdat['system']['kpoint']
+    res['qmc']['postprocess']['timestep'] = dmcinp['method']['timestep']
+    res['qmc']['postprocess']['localization'] = "None"
+    res['qmc']['postprocess']['jastrow'] = "twobody"
+    res['qmc']['postprocess']['optimizer'] = "variance"
     res['qmc']['postprocess']['excitations'] = "no"
     res['qmc']['postprocess']['nblock'] = -1
   return res
