@@ -2,6 +2,20 @@ import numpy as np
 from inspect import getargspec
 from scipy.optimize import curve_fit
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def matplotlib_header(usetex=True,family='serif'):
+  sns.set_style("ticks")
+  plt.rc('axes.formatter',useoffset=False)
+  plt.rc('text',usetex=usetex)
+  plt.rc('font',style='normal')
+  plt.rc('font',family=family)
+  plt.rc('font',serif='Computer Modern')
+  plt.rc('text',usetex=True)
+  ticksize = 4
+  plt.rc('xtick.major',size=ticksize)
+  plt.rc('ytick.major',size=ticksize)
 
 def fix_lims(ax_array,factor=0.04):
   """
