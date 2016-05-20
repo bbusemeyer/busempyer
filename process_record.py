@@ -29,8 +29,9 @@ def process_record(record):
   if 'mag_moments' in record['dft'].keys():
     res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
   res['dmc'] = _process_dmc(record['qmc']['dmc'])
-  res['dmc'].update(_process_post(record['qmc']['postprocess']))
-  res['dmc'].update(_process_post(record['qmc']['postprocess']))
+  if 'postprocess' in record['qmc'].keys():
+    res['dmc'].update(_process_post(record['qmc']['postprocess']))
+    res['dmc'].update(_process_post(record['qmc']['postprocess']))
   return res
 
 def _process_post(post_record):
