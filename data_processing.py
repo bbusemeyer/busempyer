@@ -449,11 +449,13 @@ def untuple_cols(df,prefix="",sep="_"):
 
 # Safely take list of one element into it's value.
 def unlist(li):
+  if li != li: return np.nan
   if len(li) > 1: AssertionError("unlist can't operate on multi-element list")
   return li[0]
 
 # Safely take list of one element into it's value.
 def undict(di):
+  if di != di: return np.nan
   if len(di) > 1: AssertionError("undict can't operate on multi-element dict")
   return list(di.items())[0][1]
 
