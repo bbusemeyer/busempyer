@@ -1,4 +1,4 @@
-from numpy import ndarray,frombuffer
+import numpy as np
 from base64 import b64encode,b64decode
 from json import JSONEncoder
 from os import getcwd
@@ -36,9 +36,9 @@ class Ldict(dict):
 # http://stackoverflow.com/questions/3488934/simplejson-and-numpy-array/24375113#24375113
 class NumpyEncoder(JSONEncoder):
   def default(self, obj):
-    if isinstance(obj, ndarray):
+    if isinstance(obj, np.ndarray):
       print(obj)
-      return dict(__ndarray__=obj.tolist(),
+      return dict(np.__ndarray__=obj.tolist(),
                   dtype=str(obj.dtype),
                   shape=obj.shape)
     # Let the base class default method raise the TypeError
@@ -46,7 +46,7 @@ class NumpyEncoder(JSONEncoder):
 
 class NumpyToListEncoder(JSONEncoder):
   def default(self, obj):
-    if isinstance(obj, ndarray):
+    if isinstance(obj, np.ndarray):
       return obj.tolist()
     # Let the base class default method raise the TypeError
     return JSONEncoder(self, obj)
@@ -61,7 +61,7 @@ def json_numpy_obj_hook(dct):
   """
 
   if isinstance(dct, dict) and '__ndarray__' in dct:
-    data = ndarray(dct['__ndarray__'],dtype=dct['dtype'])
+    data = np.ndarray(dct['__ndarray__'],dtype=dct['dtype'])
     return data.reshape(dct['shape'])
   return dct
 
@@ -77,7 +77,7 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
   header = []
   header.append('#!/bin/bash')
   if np=='allprocs': header.append('#PBS -l nodes=%d,flags=allprocs'%nn)
-  else:              header.append('#PBS -l nodes=%d:ppn=%d'%(nn,np))
+  else:              header.append('#PBS -l nodes=%d:ppn=%s'%(nn,str(np)))
   header.append('#PBS -q %s'%queue)
   header.append('#PBS -l walltime=%s'%time)
   header.append('#PBS -j oe')
