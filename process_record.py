@@ -369,13 +369,15 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   dftdf = _format_dftdf(rawdf)
   rawdf = rawdf[dftdf['id'].apply(filterfunc)]
   dmcdf = unpack(rawdf['dmc'])
-  dmcdf = dmcdf.join(
-        unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
-      )
-  dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
+  if 'energy' in dftdf.columns:
+    dmcdf = dmcdf.join(
+          unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
+        )
+    dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
   alldf = dmcdf.join(dftdf)
-  alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
-  alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
+  if 'dmc_energy' in dftdf.columns:
+    alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
+    alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
   listcols = [
       'broyden',
       'initial_charges',
@@ -399,8 +401,20 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   return alldf
 
 def _format_dftdf(rawdf):
-  def desect_basis(df):
-    return pd.Series(dict(zip(['basis_lowest','basis_number','basis_factor'],df)))
+  def desect_basis(basis_info):
+    if type(basis_info)==list:
+      return pd.Series(dict(zip(
+        ['basis_lowest','basis_number','basis_factor'],basis_info)))
+    elif type(basis_info)==dict:
+      min_basis = 1e10
+      for atom in basis_info.keys():
+        new = min([np.array(elem['coefs'])[0,:].min() for elem in basis_info[atom]])
+        if new < min_basis: min_basis = new
+      return pd.Series(dict(zip(
+        ['basis_lowest','basis_number','basis_factor'],[min_basis,np.nan,np.nan])))
+    else:
+      return pd.Series(dict(zip(
+        ['basis_lowest','basis_number','basis_factor'],[np.nan,np.nan,np.nan])))
   def cast_supercell(sup):
     for rix,row in enumerate(sup):
       sup[rix] = tuple(row)
@@ -415,8 +429,6 @@ def _format_dftdf(rawdf):
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
   dftdf['spins_consistent'] = dftdf['spins_consistent'].astype(bool)
   dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
-  dftdf['basis_number'] = dftdf['basis_number'].apply(lambda x:int(round(x)))
-  dftdf['basis_factor'] = dftdf['basis_factor'].apply(lambda x:int(round(x)))
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
       .apply(lambda x:cast_supercell(x))
