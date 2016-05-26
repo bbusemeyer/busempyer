@@ -22,12 +22,14 @@ def process_record(record):
   """ Take the json produced from autogen and process into a dictionary of much
   processed and more useful results. """
   res = {}
-  copykeys = ['dft','supercell','total_spin','charge','cif','control']
+  copykeys = ['dft','supercell','total_spin','charge','xyz','cif','control']
   for copykey in copykeys:
-    res[copykey] = record[copykey]
+    if copykey in record.keys():
+      res[copykey] = record[copykey]
   res['dft'] = record['dft']
   if 'mag_moments' in record['dft'].keys():
     res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
+  res['vmc'] = _process_vmc(record['qmc']['vmc'])
   res['dmc'] = _process_dmc(record['qmc']['dmc'])
   if 'postprocess' in record['qmc'].keys():
     res['dmc'].update(_process_post(record['qmc']['postprocess']))
@@ -44,6 +46,19 @@ def _process_post(post_record):
     res['fluct'] = _analyze_nfluct(post_record)
   if 'tbdm_basis' in post_record['results'][0]['results']['properties'].keys():
     res['ordm'] = _analyze_ordm(post_record)
+  return res
+
+def _process_vmc(dmc_record):
+  grouplist = ['jastrow','optimizer']
+  res = {}
+  if 'results' not in dmc_record.keys():
+    return res
+  res['energy'] = json.loads(pd.DataFrame(dmc_record['results'])\
+      .groupby(grouplist)\
+      .apply(_kaverage_energy)\
+      .reset_index()
+      .to_json()
+    )
   return res
 
 def _process_dmc(dmc_record):
@@ -369,7 +384,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   dftdf = _format_dftdf(rawdf)
   rawdf = rawdf[dftdf['id'].apply(filterfunc)]
   dmcdf = unpack(rawdf['dmc'])
-  if 'energy' in dftdf.columns:
+  if 'energy' in dmcdf.columns:
     dmcdf = dmcdf.join(
           unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
         )
@@ -411,10 +426,10 @@ def _format_dftdf(rawdf):
         new = min([np.array(elem['coefs'])[0,:].min() for elem in basis_info[atom]])
         if new < min_basis: min_basis = new
       return pd.Series(dict(zip(
-        ['basis_lowest','basis_number','basis_factor'],[min_basis,np.nan,np.nan])))
+        ['basis_lowest','basis_number','basis_factor'],[min_basis,0,0])))
     else:
       return pd.Series(dict(zip(
-        ['basis_lowest','basis_number','basis_factor'],[np.nan,np.nan,np.nan])))
+        ['basis_lowest','basis_number','basis_factor'],[0,0,0])))
   def cast_supercell(sup):
     for rix,row in enumerate(sup):
       sup[rix] = tuple(row)
@@ -422,8 +437,9 @@ def _format_dftdf(rawdf):
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  for rawinfo in ['supercell','nfu','cif']:
-    dftdf = dftdf.join(rawdf[rawinfo])
+  for rawinfo in ['supercell','nfu','cif','xyz']:
+    if rawinfo in rawdf.columns:
+      dftdf = dftdf.join(rawdf[rawinfo])
   funcdf = pd.DataFrame(dftdf['functional'].to_dict()).T
   dftdf = dftdf.join(funcdf)
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
