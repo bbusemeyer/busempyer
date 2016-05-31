@@ -29,7 +29,8 @@ def process_record(record):
   res['dft'] = record['dft']
   if 'mag_moments' in record['dft'].keys():
     res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
-  res['vmc'] = _process_vmc(record['qmc']['vmc'])
+  if 'vmc' in record['qmc'].keys():
+    res['vmc'] = _process_vmc(record['qmc']['vmc'])
   res['dmc'] = _process_dmc(record['qmc']['dmc'])
   if 'postprocess' in record['qmc'].keys():
     res['dmc'].update(_process_post(record['qmc']['postprocess']))
@@ -269,9 +270,11 @@ def _kaverage_energy(kavgdf):
         ['results'])\
       ['properties'])\
     ['total_energy']).applymap(dp.unlist)
+  # TODO generalize!
+  weights = np.tile(1./egydf['value'].shape[0],egydf['value'].shape)
   return pd.Series({
-    "value":egydf['value'].mean(),
-    "error":(egydf['error']**2).mean()**.5
+    "value":(weights*egydf['value'].values).sum(),
+    "error":((weights*egydf['error'].values)**2).sum()**.5
     })
 
 def _kaverage_fluct(reclist):
