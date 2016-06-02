@@ -399,6 +399,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   listcols = [
       'broyden',
       'initial_charges',
+      'energy_trace',
       'initial_spin',
       'kmesh'
 #      'localization',

@@ -17,12 +17,16 @@ def matplotlib_header(usetex=True,family='serif'):
   plt.rc('xtick.major',size=ticksize)
   plt.rc('ytick.major',size=ticksize)
 
-def fix_lims(ax_array,factor=0.04):
+def fix_lims(ax_inp,factor=0.04):
   """
   Create buffer around all points that is factor*(data range) wide.
   """
   minx,miny = np.Inf,np.Inf
   maxx,maxy = -np.Inf,-np.Inf
+  if type(ax_inp) != np.ndarray:
+    ax_array = np.array((ax_inp))
+  else:
+    ax_array = ax_inp
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
@@ -212,6 +216,14 @@ class CubicFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    # These will work well for cubics that are close to parabolic, with samples
+    # centered around the min or max.
+    if yvals[yvals.shape[0]//2] > yvals[0]:
+      return (1.0, -1.0, xvals.mean(), yvals.max())
+    if yvals[yvals.shape[0]//2] < yvals[0]:
+      return (1.0, 1.0, xvals.mean(), yvals.min())
 
 class CubicFit_fixmin(FitFunc):
   """

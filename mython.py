@@ -38,7 +38,7 @@ class NumpyEncoder(JSONEncoder):
   def default(self, obj):
     if isinstance(obj, np.ndarray):
       print(obj)
-      return dict(np.__ndarray__=obj.tolist(),
+      return dict(__ndarray__=obj.tolist(),
                   dtype=str(obj.dtype),
                   shape=obj.shape)
     # Let the base class default method raise the TypeError
