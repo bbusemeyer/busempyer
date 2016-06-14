@@ -13,6 +13,12 @@ def lines2str(lines):
   outstr = '\n'.join(outlines)
   return outstr
 
+def cross_prod(sets):
+  mg = np.array(np.meshgrid(*sets))
+  mg = mg.swapaxes(0,-1)
+  mg = mg.reshape(np.prod(mg.shape[:-1]),mg.shape[-1])
+  return mg
+
 class Ldict(dict):
   """
   Dictionary that can append data rather than overwriting it when append item is
