@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from numpy  import array,dot,zeros
+import numpy as np
 from mython import lines2str,gen_qsub
 import os
 import shutil as sh
@@ -69,12 +70,12 @@ def read_cryinp(inpf):
   res['effchg'] = []
   res['spinlock'] = None
   res['mixing'] = 0
-  res['supercell'] = [1,0,0,0,1,0,0,0,1]
+  res['supercell'] = [[1,0,0],[0,1,0],[0,0,1]]
   res['tolinteg'] = [6,6,6,6,12]
   pos = 0
   while pos < len(inpl):
     if 'SUPERCELL' == inpl[pos]:
-      res['supercell'] =  list(map(int,inpl[pos+1:pos+10]))
+      res['supercell'] = list(np.array(inpl[pos+1:pos+10],dtype=int).reshape(3,3))
       pos += 11
       continue
 

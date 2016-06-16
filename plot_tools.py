@@ -17,12 +17,16 @@ def matplotlib_header(usetex=True,family='serif'):
   plt.rc('xtick.major',size=ticksize)
   plt.rc('ytick.major',size=ticksize)
 
-def fix_lims(ax_array,factor=0.04):
+def fix_lims(ax_inp,factor=0.04):
   """
   Create buffer around all points that is factor*(data range) wide.
   """
   minx,miny = np.Inf,np.Inf
   maxx,maxy = -np.Inf,-np.Inf
+  if type(ax_inp) != np.ndarray:
+    ax_array = np.array((ax_inp))
+  else:
+    ax_array = ax_inp
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
@@ -62,14 +66,25 @@ class FitFunc:
     self.perr = None
     self.cov  = None
 
-  def fit(self,xvals,yvals,evals=None,guess=(),**kwargs):
+  def fit(self,xvals,yvals,evals=None,guess=(),handle_nans=True,**kwargs):
     """
     Use xvals and yvals +/- evals to fit params with initial values p0.
 
     evals == None means don't use errorbars.
     guess == () means guess all 1.0 for the parameters (usually bad!)
     kwargs passed to curve_fit()
+    handle_nans automatically drops tuples that have nan in any of xvals, yvals,
+      or evals.
     """
+    if handle_nans:
+      drop = np.isnan(xvals)
+      drop = drop | np.isnan(yvals)
+      if evals is not None:
+        drop = drop | np.isnan(evals)
+      xvals = np.array(xvals)[~drop]
+      yvals = np.array(yvals)[~drop]
+      if evals is not None:
+        evals = np.array(evals)[~drop]
     if guess == ():
       guess = self._set_default_parms(xvals,yvals,evals)
     if (evals is None) or (np.isnan(evals).any()):
@@ -212,6 +227,14 @@ class CubicFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+  def _set_default_parms(self,xvals,yvals,evals):
+    # These will work well for cubics that are close to parabolic, with samples
+    # centered around the min or max.
+    if yvals[yvals.shape[0]//2] > yvals[0]:
+      return (1.0, -1.0, xvals.mean(), yvals.max())
+    if yvals[yvals.shape[0]//2] < yvals[0]:
+      return (1.0, 1.0, xvals.mean(), yvals.min())
 
 class CubicFit_fixmin(FitFunc):
   """

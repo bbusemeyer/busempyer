@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.linalg as lin
 from base64 import b64encode,b64decode
 from json import JSONEncoder
 from os import getcwd
@@ -12,6 +13,12 @@ def lines2str(lines):
     outlines.append(' '.join(map(str,line)))
   outstr = '\n'.join(outlines)
   return outstr
+
+def cross_prod(sets):
+  mg = np.array(np.meshgrid(*sets))
+  mg = mg.swapaxes(0,-1)
+  mg = mg.reshape(np.prod(mg.shape[:-1]),mg.shape[-1])
+  return mg
 
 class Ldict(dict):
   """
@@ -95,3 +102,44 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
   with open(loc+'/qsub.in','w') as qsin:
     qsin.write(outstr)
   return loc+'/qsub.in'
+
+class Bootstrapper:
+  """ Can be used to resample some function over and over to gain information
+  about the statistics. Currenly only computes the variance. """
+  def __init__(self,func,resample):
+    """ Definition of inputs:
+    func: function that accepts random variable inputs.
+    resampler: Generates samples of input from whatever distribution you deem fit.
+    """
+    self.func = func
+    self.resample = resample
+  def gen_stats(self,nsamples=1000):
+    """ Compute statistics of func results from distribution of resampler. """
+    stats = {}
+    mom1 = self.resample()
+    mom2 = self.resample()**2
+    for i in range(nsample-1):
+      mom1 += self.func(self.resample())
+      mom2 += self.func(self.resample())**2
+    res['mean'] = mom1/nsamples
+    res['variance'] = mom2/nsamples - res['mean']**2
+    return stats
+
+  def gen_stats_parallel(self,nsamples=1000,ncores=8):
+    """ Compute statistics of func results from distribution of resampler. 
+    Computes in parallel, which is *sometimes* faster (for harder func calls). """
+    raise AssertionError("Not implemented!")
+
+def gaussian_matrix_resample(values,stdevs):
+  return np.random.randn(*values.shape)*stdevs + values
+
+class Bootstrapper_eigh(Bootstrapper):
+  """ Bootstrapper for finding eigenvalues of hermitian matrices."""
+  def __init__(self,matrix,error,overlap=None,overlap_err=None):
+    if overlap_err is None:
+      self.func = lambda mat:eigh(mat,overlap)
+      self.resample = lambda: gaussian_matrix_resample(matrix,error)
+    else:
+      self.func = lambda mats:eigh(mats[0],mats[1])
+      self.resample = lambda: (gaussian_matrix_resample(matrix,error),
+                                 gaussian_matrix_resample(overlap,overlap_err))
