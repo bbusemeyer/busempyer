@@ -66,14 +66,25 @@ class FitFunc:
     self.perr = None
     self.cov  = None
 
-  def fit(self,xvals,yvals,evals=None,guess=(),**kwargs):
+  def fit(self,xvals,yvals,evals=None,guess=(),handle_nans=True,**kwargs):
     """
     Use xvals and yvals +/- evals to fit params with initial values p0.
 
     evals == None means don't use errorbars.
     guess == () means guess all 1.0 for the parameters (usually bad!)
     kwargs passed to curve_fit()
+    handle_nans automatically drops tuples that have nan in any of xvals, yvals,
+      or evals.
     """
+    if handle_nans:
+      drop = np.isnan(xvals)
+      drop = drop | np.isnan(yvals)
+      if evals is not None:
+        drop = drop | np.isnan(evals)
+      xvals = np.array(xvals)[~drop]
+      yvals = np.array(yvals)[~drop]
+      if evals is not None:
+        evals = np.array(evals)[~drop]
     if guess == ():
       guess = self._set_default_parms(xvals,yvals,evals)
     if (evals is None) or (np.isnan(evals).any()):
