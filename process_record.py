@@ -393,7 +393,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
         )
     dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
   alldf = dmcdf.join(dftdf)
-  if 'dmc_energy' in dftdf.columns:
+  if 'dmc_energy' in dmcdf.columns:
     alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
     alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
   listcols = [
