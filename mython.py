@@ -109,20 +109,19 @@ class Bootstrapper:
   def __init__(self,func,resample):
     """ Definition of inputs:
     func: function that accepts random variable inputs.
-    resampler: Generates samples of input from whatever distribution you deem fit.
-    """
+    resampler: Generates samples of input from whatever distribution you deem fit. """
     self.func = func
     self.resample = resample
   def gen_stats(self,nsamples=1000):
     """ Compute statistics of func results from distribution of resampler. """
     stats = {}
-    mom1 = self.resample()
-    mom2 = self.resample()**2
-    for i in range(nsample-1):
+    mom1 = self.func(self.resample())
+    mom2 = self.func(self.resample())**2
+    for i in range(nsamples-1):
       mom1 += self.func(self.resample())
       mom2 += self.func(self.resample())**2
-    res['mean'] = mom1/nsamples
-    res['variance'] = mom2/nsamples - res['mean']**2
+    stats['mean'] = mom1/nsamples
+    stats['variance'] = mom2/nsamples - stats['mean']**2
     return stats
 
   def gen_stats_parallel(self,nsamples=1000,ncores=8):
@@ -137,9 +136,20 @@ class Bootstrapper_eigh(Bootstrapper):
   """ Bootstrapper for finding eigenvalues of hermitian matrices."""
   def __init__(self,matrix,error,overlap=None,overlap_err=None):
     if overlap_err is None:
-      self.func = lambda mat:eigh(mat,overlap)
+      self.func = lambda mat:lin.eigh(mat,overlap)[0]
       self.resample = lambda: gaussian_matrix_resample(matrix,error)
     else:
-      self.func = lambda mats:eigh(mats[0],mats[1])
+      self.func = lambda mats:lin.eigh(mats[0],mats[1])[0]
+      self.resample = lambda: (gaussian_matrix_resample(matrix,error),
+                                 gaussian_matrix_resample(overlap,overlap_err))
+
+class Bootstrapper_eig(Bootstrapper):
+  """ Bootstrapper for finding eigenvalues of hermitian matrices."""
+  def __init__(self,matrix,error,overlap=None,overlap_err=None):
+    if overlap_err is None:
+      self.func = lambda mat:lin.eig(mat,overlap)[0]
+      self.resample = lambda: gaussian_matrix_resample(matrix,error)
+    else:
+      self.func = lambda mats:lin.eig(mats[0],mats[1])[0]
       self.resample = lambda: (gaussian_matrix_resample(matrix,error),
                                  gaussian_matrix_resample(overlap,overlap_err))
