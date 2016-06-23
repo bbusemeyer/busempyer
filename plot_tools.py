@@ -5,6 +5,37 @@ import os
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Nicer colors for plotting from colorbrewer2.org.
+# Common colors are first letter only, prefix with l or d means light or dark.
+pc = {
+    # 12-Class paired.
+    'lb':'#a6cee3',
+    'b' :'#1f78b4',
+    'lg':'#b2df8a',
+    'g' :'#33a02c',
+    'lr':'#fb9a99',
+    'r' :'#e31a1c',
+    'lo':'#fdbf6f',
+    'o' :'#ff7f00',
+    'lp':'#cab2d6',
+    'p' :'#6a3d9a',
+    'lt':'#ffff99',
+    'tan' :'#b15928',
+    # 8-Class dark.
+    't':    '#1b9e77',
+    'do':   '#d95f02',
+    'pink': '#e7298a',
+    'dy':   '#e6ab02',
+    'dgray':'#a6761d',
+    # 9-class Set1.
+    'dr':    '#e41a1c',
+    'db':    '#377eb8',
+    'y':     '#ffff33',
+    'brown': '#a65628',
+    'gray':  '#999999'
+  }
+
+
 def matplotlib_header(usetex=True,family='serif'):
   sns.set_style("ticks")
   plt.rc('axes.formatter',useoffset=False)
