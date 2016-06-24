@@ -15,5 +15,10 @@ def output_analysis(recfn):
     json.dump(arec,outf)
   print("done.")
 
+# Parallel version (not recommended for debug).
 with mp.Pool(8) as pool:
   arecs = pool.map(output_analysis,reclist)
+
+## Serial version. (debug)
+#for rec in reclist:
+#  output_analysis(rec)

@@ -115,11 +115,11 @@ class Bootstrapper:
   def gen_stats(self,nsamples=1000):
     """ Compute statistics of func results from distribution of resampler. """
     stats = {}
-    mom1 = self.func(self.resample())
-    mom2 = self.func(self.resample())**2
+    mom1 = np.array(self.func(self.resample()))
+    mom2 = np.array(self.func(self.resample()))**2
     for i in range(nsamples-1):
-      mom1 += self.func(self.resample())
-      mom2 += self.func(self.resample())**2
+      mom1 += np.array(self.func(self.resample()))
+      mom2 += np.array(self.func(self.resample()))**2
     stats['mean'] = mom1/nsamples
     stats['variance'] = mom2/nsamples - stats['mean']**2
     return stats

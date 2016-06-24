@@ -26,12 +26,16 @@ def process_record(record):
   for copykey in copykeys:
     if copykey in record.keys():
       res[copykey] = record[copykey]
-  res['dft'] = record['dft']
-  if 'mag_moments' in record['dft'].keys():
-    res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
-  if 'vmc' in record['qmc'].keys():
-    res['vmc'] = _process_vmc(record['qmc']['vmc'])
-  res['dmc'] = _process_dmc(record['qmc']['dmc'])
+  if 'dft' in record.keys():
+    res['dft'] = record['dft']
+    if 'mag_moments' in record['dft'].keys():
+      res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
+  if 'qmc' in record.keys():
+    if 'vmc' in record['qmc'].keys():
+      res['vmc'] = _process_vmc(record['qmc']['vmc'])
+    res['dmc'] = _process_dmc(record['qmc']['dmc'])
+  # Something's not working for nonautogen passes.
+  #if False: #'postprocess' in record['qmc'].keys():
   if 'postprocess' in record['qmc'].keys():
     res['dmc'].update(_process_post(record['qmc']['postprocess']))
     res['dmc'].update(_process_post(record['qmc']['postprocess']))

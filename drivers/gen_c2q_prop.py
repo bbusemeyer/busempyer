@@ -5,12 +5,13 @@ if len(sys.argv) < 2:
   print("Usage: gen_c2q_prop.py crystal_input [prop_outfile]")
   raise AssertionError
 
-cryinp = cryio.read_cryinp(sys.argv[1])
+cryinp = cryio.read_cryinp(open(sys.argv[1],'r'))
 kdens = cryinp['kdens']
 
 outlines = [
     "NEWK",
     "{} {}".format(kdens,2*kdens),
+    "1 0",
     "CRYAPI_OUT",
     "END"
   ]
