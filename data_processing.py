@@ -265,7 +265,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
 
   res  = {}
   res['dft'] = {}
-  res['qmc'] = {'dmc':{},'postprocess':{}}
+  res['qmc'] = {}
 
   res['access_root'] = os.getcwd() + '/' + froot
 
@@ -409,6 +409,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     print("  done." )
 
   if len(dmc_ret) > 0:
+    res['qmc']['dmc'] = {}
     res['qmc']['dmc']['results'] = dmc_ret
     res['qmc']['dmc']['kpoint'] = sysdat['system']['kpoint']
     res['qmc']['dmc']['timestep'] = dmcinp['method']['timestep']
@@ -418,6 +419,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     res['qmc']['dmc']['nblock'] = -1
     res['qmc']['dmc']['excitations'] = "no"
   if len(ppr_ret) > 0:
+    res['qmc']['postprocess'] = {}
     res['qmc']['postprocess']['results'] = ppr_ret
     res['qmc']['postprocess']['kpoint'] = sysdat['system']['kpoint']
     res['qmc']['postprocess']['timestep'] = dmcinp['method']['timestep']
