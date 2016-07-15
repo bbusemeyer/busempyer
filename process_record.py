@@ -23,22 +23,27 @@ def process_record(record):
   processed and more useful results. """
   res = {}
   copykeys = ['dft','supercell','total_spin','charge','xyz','cif','control']
-  for copykey in copykeys:
+  nonautogen_keys = ['a','c','se_height','ordering','pressure']
+  for copykey in copykeys+nonautogen_keys:
     if copykey in record.keys():
       res[copykey] = record[copykey]
   if 'dft' in record.keys():
     res['dft'] = record['dft']
     if 'mag_moments' in record['dft'].keys():
       res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
-  if 'qmc' in record.keys():
-    if 'vmc' in record['qmc'].keys():
-      res['vmc'] = _process_vmc(record['qmc']['vmc'])
+  if 'vmc' in record['qmc'].keys():
+    res['vmc'] = _process_vmc(record['qmc']['vmc'])
+  if 'dmc' in record['qmc'].keys() and record['qmc']['dmc']!={}:
     res['dmc'] = _process_dmc(record['qmc']['dmc'])
-  # Something's not working for nonautogen passes.
-  #if False: #'postprocess' in record['qmc'].keys():
-  if 'postprocess' in record['qmc'].keys():
-    res['dmc'].update(_process_post(record['qmc']['postprocess']))
-    res['dmc'].update(_process_post(record['qmc']['postprocess']))
+  # Second bool is an ugly patch that can be removed after 
+  # rerunning new read_dir_autogen.
+  try:
+    if 'postprocess' in record['qmc'].keys() and \
+        record['qmc']['postprocess']!={} and\
+        record['qmc']['postprocess']['results'][0]['results']['properties']['region_fluctuation']['fluctuation data']!=[]:
+      res['dmc'].update(_process_post(record['qmc']['postprocess']))
+  except KeyError:
+    print("Missing data in postprocess. Skipping postprocess.")
   return res
 
 def _process_post(post_record):
@@ -385,7 +390,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   """ Takes processed autogen json file and organizes it into a Pandas DataFrame."""
   rawdf = pd.read_json(open(inp_json,'r'))
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
-      2*np.linalg.det(np.array(x))
+      2*np.linalg.det(np.array(x).reshape(3,3))
     )
   # Unpacking the energies.
   dftdf = _format_dftdf(rawdf)
@@ -395,7 +400,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
     dmcdf = dmcdf.join(
           unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
         )
-    dmcdf = dmcdf.rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})
+    dmcdf = dmcdf\
+        .rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})\
+        .drop('energy',axis=1)
   alldf = dmcdf.join(dftdf)
   if 'dmc_energy' in dmcdf.columns:
     alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
@@ -421,6 +428,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
+  print("Debug",alldf['se_height'].shape)
   return alldf
 
 def _format_dftdf(rawdf):
@@ -445,7 +453,8 @@ def _format_dftdf(rawdf):
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  for rawinfo in ['supercell','nfu','cif','xyz']:
+  copylist = ['supercell','nfu','cif','xyz','a','c','se_height','pressure','ordering']
+  for rawinfo in copylist:
     if rawinfo in rawdf.columns:
       dftdf = dftdf.join(rawdf[rawinfo])
   funcdf = pd.DataFrame(dftdf['functional'].to_dict()).T

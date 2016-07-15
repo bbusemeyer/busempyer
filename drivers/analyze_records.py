@@ -2,6 +2,7 @@ import process_record as pr
 import json
 import multiprocessing as mp
 import sys
+debug = False
 
 reclist = sys.argv[1:]
 if len(reclist) < 2:
@@ -15,10 +16,9 @@ def output_analysis(recfn):
     json.dump(arec,outf)
   print("done.")
 
-# Parallel version (not recommended for debug).
-with mp.Pool(8) as pool:
-  arecs = pool.map(output_analysis,reclist)
-
-## Serial version. (debug)
-#for rec in reclist:
-#  output_analysis(rec)
+if debug:
+  for rec in reclist:
+    output_analysis(rec)
+else: # Parallelize.
+  with mp.Pool(8) as pool:
+    arecs = pool.map(output_analysis,reclist)
