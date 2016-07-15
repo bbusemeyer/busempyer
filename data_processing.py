@@ -281,10 +281,6 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
       if metad['pressure'] != None:
         res['pressure'] = metad['pressure']
     except KeyError: pass
-    try:
-      if metad['pressure'] != None:
-        res['pressure'] = metad['pressure']
-    except KeyError: pass
   except IOError:
     print("  Didn't find any metadata")
   
