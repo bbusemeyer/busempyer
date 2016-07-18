@@ -300,7 +300,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
       res['dft'][key] = dftdat[key]
     dftdat = cio.read_cryout(open(dftoutf,'r'))
     res['dft']['energy'] = dftdat['dft_energy']
-    res['dft']['moments'] = dftdat['dft_moments']
+    res['dft']['mag_moments'] = dftdat['dft_moments']
   except IOError:
     print("There's no dft in this directory!")
     return res
