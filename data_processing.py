@@ -292,6 +292,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     res['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
     res['supercell'] = dftdat['supercell']
     res['total_spin'] = dftdat['spinlock']
+    res['initial_spin'] = dftdat['atomspin']
     res['charge'] = 0
     res['cif'] = "None"
     res['control'] = {'id':froot}
