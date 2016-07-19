@@ -297,7 +297,7 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     res['cif'] = "None"
     res['control'] = {'id':froot}
     for key in ['mixing','broyden','fmixing','tolinteg',
-                'kdens','tole','basis','atomspin']:
+                'kdens','tole','basis','initial_spin']:
       res['dft'][key] = dftdat[key]
     dftdat = cio.read_cryout(open(dftoutf,'r'))
     res['dft']['energy'] = dftdat['dft_energy']
