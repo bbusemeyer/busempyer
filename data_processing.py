@@ -8,6 +8,9 @@ import qefiles_io as qeio
 import cubetools as ct
 from copy import deepcopy
 
+def mean_err(x):
+  return sum(x**2)**0.5
+
 ###############################################################################
 # Misc. tools.
 def mean_array(ser):
