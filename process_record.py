@@ -35,15 +35,8 @@ def process_record(record):
     res['vmc'] = _process_vmc(record['qmc']['vmc'])
   if 'dmc' in record['qmc'].keys() and record['qmc']['dmc']!={}:
     res['dmc'] = _process_dmc(record['qmc']['dmc'])
-  # Second bool is an ugly patch that can be removed after 
-  # rerunning new read_dir_autogen.
-  try:
-    if 'postprocess' in record['qmc'].keys() and \
-        record['qmc']['postprocess']!={} and\
-        record['qmc']['postprocess']['results'][0]['results']['properties']['region_fluctuation']['fluctuation data']!=[]:
-      res['dmc'].update(_process_post(record['qmc']['postprocess']))
-  except KeyError:
-    print("Missing data in postprocess. Skipping postprocess.")
+  if 'results' in record['qmc']['postprocess'].keys():
+    res['dmc'].update(_process_post(record['qmc']['postprocess']))
   return res
 
 def _process_post(post_record):
@@ -353,6 +346,8 @@ def _check_spins(dft_record,small=1.0):
   moms[up] = 1
   moms[dn] = -1
   moms[zs] = 0
+  if len(init_spins) < len(moms):
+    init_spins = np.append(init_spins,np.zeros(len(moms)-len(init_spins)))
   if len(init_spins)==0:
     if (moms == np.zeros(moms.shape)).all():
       return True
@@ -390,7 +385,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   """ Takes processed autogen json file and organizes it into a Pandas DataFrame."""
   rawdf = pd.read_json(open(inp_json,'r'))
   rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
-      2*np.linalg.det(np.array(x).reshape(3,3))
+      2*abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
   dftdf = _format_dftdf(rawdf)
@@ -428,7 +423,6 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
-  print("Debug",alldf['se_height'].shape)
   return alldf
 
 def _format_dftdf(rawdf):
