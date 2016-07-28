@@ -412,7 +412,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       'initial_charges',
       'energy_trace',
       'initial_spin',
-      'kmesh'
+      'kmesh',
 #      'localization',
 #      'timestep',
 #      'jastrow',
@@ -428,7 +428,6 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
-  print("Debug",alldf['se_height'].shape)
   return alldf
 
 def _format_dftdf(rawdf):
