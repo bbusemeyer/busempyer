@@ -8,6 +8,9 @@ import qefiles_io as qeio
 import cubetools as ct
 from copy import deepcopy
 
+def mean_err(x):
+  return sum(x**2)**0.5
+
 ###############################################################################
 # Misc. tools.
 def mean_array(ser):
@@ -292,11 +295,12 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     res['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
     res['supercell'] = dftdat['supercell']
     res['total_spin'] = dftdat['spinlock']
+    #res['initial_spin'] = dftdat['atomspin']
     res['charge'] = 0
     res['cif'] = "None"
     res['control'] = {'id':froot}
     for key in ['mixing','broyden','fmixing','tolinteg',
-                'kdens','tole','basis']:
+                'kdens','tole','basis','initial_spin']:
       res['dft'][key] = dftdat[key]
     dftdat = cio.read_cryout(open(dftoutf,'r'))
     res['dft']['energy'] = dftdat['dft_energy']

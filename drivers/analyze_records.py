@@ -2,7 +2,7 @@ import process_record as pr
 import json
 import multiprocessing as mp
 import sys
-debug = False
+debug = True
 
 reclist = sys.argv[1:]
 if len(reclist) < 2:

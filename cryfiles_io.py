@@ -145,7 +145,7 @@ def read_cryinp(inpf):
     if 'ATOMSPIN' == inpl[pos]:
       nspin = int(inpl[pos+1])
       spinl = inpl[pos+2:pos+2+2*nspin]
-      res['atomspin'] = [(int(spinl[i]),int(spinl[i+1])) for i in range(nspin)]
+      res['initial_spin'] = [(int(spinl[i]),int(spinl[i+1])) for i in range(nspin)]
 
     pos += 1
   return res
