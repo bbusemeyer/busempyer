@@ -425,6 +425,11 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
 
   return alldf
 
+def cast_supercell(sup):
+  for rix,row in enumerate(sup):
+    sup[rix] = tuple(row)
+  return tuple(sup)
+
 def _format_dftdf(rawdf):
   def desect_basis(basis_info):
     if type(basis_info)==list:
@@ -440,10 +445,6 @@ def _format_dftdf(rawdf):
     else:
       return pd.Series(dict(zip(
         ['basis_lowest','basis_number','basis_factor'],[0,0,0])))
-  def cast_supercell(sup):
-    for rix,row in enumerate(sup):
-      sup[rix] = tuple(row)
-    return tuple(sup)
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
