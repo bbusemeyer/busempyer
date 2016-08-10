@@ -214,13 +214,10 @@ def gaussian_averager(cube,sigma=3,nbr_dist=1,repeat=1):
     cube['data'] = new
 
 #####################################
-def sub_cubes(poscube,negcube,Npos=1,Nneg=1):
+def sub_cubes(poscube,negcube):
   """Subtract two cube files.
+  Note: you may need to normalize these appropriately first."""
 
-  Will normalize first, which requres Nup and Ndn arguments if the number of
-  electrons in the two cubes differs."""
-  normalize_abs(poscube,Npos)
-  normalize_abs(negcube,Nneg)
   subcube = deepcopy(poscube)
   subcube['data'] -= negcube['data']
   return subcube
@@ -228,11 +225,7 @@ def sub_cubes(poscube,negcube,Npos=1,Nneg=1):
 #####################################
 def add_cubes(cube1,cube2,N1=1,N2=1):
   """Add two cube files.
-
-  Will normalize first, which requres N1 and N2 arguments if the number of
-  electrons in the two cubes differs."""
-  normalize_abs(cube1,N1)
-  normalize_abs(cube2,N2)
+  Note: you may need to normalize these appropriately first."""
   addcube = deepcopy(cube1)
   addcube['data'] += cube2['data']
   addcube['data'] /= abs(addcube['data']).sum()
