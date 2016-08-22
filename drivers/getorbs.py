@@ -45,7 +45,41 @@ def produce_inputs(fileroot):
   upoutpf.write('include '+fileroot+'.sys')
   dnoutpf.write('include '+fileroot+'.sys')
 
+def produce_inputs_spinless(fileroot):
+  openf = open(fileroot+'.slater','r')
+  outpf = open('orbplot','w')
+  orbs = []
+
+  outpf.write('method { PLOT\n')
+  outpf.write('  resolution 0.1 \n')
+
+  ln = openf.readline().split()[0]
+
+  while ln.split()[0] != '}': 
+    ln = openf.readline()
+    outpf.write(ln)
+
+  while ln != ['#Spin','up','orbitals']: 
+    ln = openf.readline().split()
+      
+  ln = openf.readline().split()
+  while ln != ['#Spin','down','orbitals']:
+    orbs += ln
+    ln = openf.readline().split()
+
+  ln = openf.readline().split()
+  while ln != []:
+    if ln[-1] == '}': del ln[-1]
+    orbs += ln
+    ln = openf.readline().split()
+
+  outpf.write('PLOTORBITALS{ ')
+  for oi in orbs: outpf.write(oi+' ')
+  outpf.write('}')
+  outpf.write('\n}\n')
+  outpf.write('include '+fileroot+'.sys')
+
 if __name__ == "__main__":
   from sys import argv
   fileroot = argv[1]
-  produce_inputs(fileroot)
+  produce_inputs_spinless(fileroot)
