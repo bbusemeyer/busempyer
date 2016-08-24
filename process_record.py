@@ -423,6 +423,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
+  if 'cif' in alldf.keys():
+    alldf = alldf.join(alldf['cif'].apply(extract_struct))
+
   return alldf
 
 def cast_supercell(sup):
@@ -513,3 +516,12 @@ def extract_struct(cifstr):
       [lat_a,lat_b,lat_c,positions],
       ['a','b','c','positions']
     )
+
+def match(df,cond,keys):
+  match_this = df.loc[cond,keys]
+  if len(match_this)>1:
+    print("Multiple rows match:")
+    print(match_this)
+    raise AssertionError("Row match not unique")
+  match_this = match_this.iloc[0].values
+  return df.set_index(keys).xs(match_this,level=keys).reset_index()
