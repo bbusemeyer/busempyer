@@ -81,5 +81,12 @@ def produce_inputs_spinless(fileroot):
 
 if __name__ == "__main__":
   from sys import argv
+  if len(argv) < 2:
+    raise AssertionError("""
+    Not enough arguements.
+    Usage: getorbs.py qwalk_root [spinless]""")
   fileroot = argv[1]
-  produce_inputs_spinless(fileroot)
+  if len(argv)>2 and argv[2]=="spinless":
+    produce_inputs_spinless(fileroot)
+  else:
+    produce_inputs(fileroot)
