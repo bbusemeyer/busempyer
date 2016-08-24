@@ -1,3 +1,4 @@
+import subprocess as sub
 import numpy as np
 import scipy.linalg as lin
 from base64 import b64encode,b64decode
@@ -153,3 +154,11 @@ class Bootstrapper_eig(Bootstrapper):
       self.func = lambda mats:lin.eig(mats[0],mats[1])[0]
       self.resample = lambda: (gaussian_matrix_resample(matrix,error),
                                  gaussian_matrix_resample(overlap,overlap_err))
+
+def run_output(command,outf=None):
+  completed = sub.run(command,shell=True,
+      stdout=sub.PIPE,stderr=sub.PIPE,universal_newlines=True)
+  if outf is not None:
+    outf.write(completed.stdout)
+    outf.write(completed.stderr)
+  return completed.stdout
