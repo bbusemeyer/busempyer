@@ -335,3 +335,54 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
     print('Interpolation method is not implemented yet.')
   
   return {'points':(X,Y), 'data':Z, 'acoor':np.array(acoor), 'adist':np.array(adist)}
+
+if __name__=="__main__":
+  import sys
+
+  implemented = ['add','sub','xsf']
+
+  if len(sys.argv) < 2:
+    raise AssertionError("""
+    Usage: python cube.py <operation> <list of input cubes> 
+    Operations: {}.""".format(implemented))
+
+  if sys.argv[1] == "add":
+    if len(sys.argv) != 4:
+      raise AssertionError("Add needs two input cubes.")
+    outfn = input("Output cube: ")
+    with open(outfn,'w') as outf:
+      write_cube(
+          add_cubes(
+              read_cube(open(sys.argv[2],'r')),
+              read_cube(open(sys.argv[3],'r'))
+            ),
+          outf
+        )
+  elif sys.argv[1] == "sub":
+    if len(sys.argv) != 4:
+      raise AssertionError("Subtract needs two input cubes.")
+    outfn = input("Output cube: ")
+    with open(outfn,'w') as outf:
+      write_cube(
+          sub_cubes(
+              read_cube(open(sys.argv[2],'r')),
+              read_cube(open(sys.argv[3],'r'))
+            ),
+          outf
+        )
+  elif sys.argv[1] == "xsf":
+    if len(sys.argv) != 3:
+      raise AssertionError("Converter needs exactly one input cube.")
+    outfn = input("Output xsf: ")
+    with open(outfn,'w') as outf:
+      write_xsf(
+          read_cube(open(sys.argv[2],'r')),
+          outf
+        )
+  else:
+    raise AssertionError("""
+        Sorry, '{}' keyword isn't implemented.
+        Implemented operations are {}.
+        It's probably trivial to add this operation yourself, you should do it and
+        push the result!""".format(sys.argv[1],implemented)
+      )
