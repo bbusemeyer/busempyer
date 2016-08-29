@@ -33,4 +33,5 @@ title(sys.argv[1])
 for i in range(len(slabs)):
   annotate(slabs[i], points[i],size='small')
 
-show()
+gcf().savefig("geo_display.pdf")
+
