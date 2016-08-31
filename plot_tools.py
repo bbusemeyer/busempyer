@@ -9,31 +9,72 @@ import seaborn as sns
 # Common colors are first letter only, prefix with l or d means light or dark.
 pc = {
     # 12-Class paired.
-    'lb':'#a6cee3',
-    'b' :'#1f78b4',
-    'lg':'#b2df8a',
-    'g' :'#33a02c',
-    'lr':'#fb9a99',
-    'r' :'#e31a1c',
-    'lo':'#fdbf6f',
-    'o' :'#ff7f00',
-    'lp':'#cab2d6',
-    'p' :'#6a3d9a',
-    'lt':'#ffff99',
-    'tan' :'#b15928',
+    'lb':'#a6cee3', # Light blue.
+    'b' :'#1f78b4', # Blue.
+    'lg':'#b2df8a', # Light green.
+    'g' :'#33a02c', # Green.
+    'lr':'#fb9a99', # Light red.
+    'r' :'#e31a1c', # Red
+    'lo':'#fdbf6f', # Light orange/peach.
+    'o' :'#ff7f00', # Orange.
+    'lp':'#cab2d6', # Light purple/fushia.
+    'p' :'#6a3d9a', # Purple.
+    'lt':'#ffff99', # Light tan
+    'tan' :'#b15928', # Cowhide tan.
     # 8-Class dark.
-    't':    '#1b9e77',
-    'do':   '#d95f02',
-    'pink': '#e7298a',
-    'dy':   '#e6ab02',
-    'dgray':'#a6761d',
+    't':    '#1b9e77', # Teal.
+    'do':   '#d95f02', # Dark orange.
+    'pink': '#e7298a', # Dark pink.
+    'dy':   '#e6ab02', # Dark yellow/gold.
+    'dgray':'#666666', # Dark gray.
     # 9-class Set1.
-    'dr':    '#e41a1c',
-    'db':    '#377eb8',
-    'y':     '#ffff33',
-    'brown': '#a65628',
+    'dr':    '#e41a1c', # Dark red.
+    'db':    '#377eb8', # Dark blue.
+    'y':     '#ffff33', # Yellow.
+    'brown': '#a65628', 
     'gray':  '#999999'
   }
+
+# For reference: all the marker choices for matplotlib:
+#  ”.”         point
+#  ”,”         pixel
+#  “o”         circle
+#  “v”         triangle_down
+#  “^”         triangle_up
+#  “<”         triangle_left
+#  “>”         triangle_right
+#  “1”         tri_down
+#  “2”         tri_up
+#  “3”         tri_left
+#  “4”         tri_right
+#  “8”         octagon
+#  “s”         square
+#  “p”         pentagon
+#  “*”         star
+#  “h”         hexagon1
+#  “H”         hexagon2
+#  “+”         plus
+#  “x”         x
+#  “D”         diamond
+#  “d”         thin_diamond
+#  “|”         vline
+#  “_”         hline
+#  TICKLEFT    tickleft
+#  TICKRIGHT   tickright
+#  TICKUP      tickup
+#  TICKDOWN    tickdown
+#  CARETLEFT   caretleft
+#  CARETRIGHT  caretright
+#  CARETUP     caretup
+#  CARETDOWN   caretdown
+#  “None”      nothing
+#  None        nothing
+#  ” “         nothing
+#  “”          nothing
+# '$...$'      render the string using mathtext.
+# verts        a list of (x, y) pairs used for Path vertices. The center of the
+#              marker is located at (0,0) and the size is normalized.
+# path         a Path instance.
 
 
 def matplotlib_header(usetex=True,family='serif'):
