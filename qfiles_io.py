@@ -58,6 +58,16 @@ def read_qfile(inpf):
     except ValueError:  pass
   return read_section(inp,inpf.name,0)[0]
 
+def find_norbs(orbfile):
+  """ Find the number of orbitals in this orbital file."""
+  orblines = orbfile.read().split('\n')
+  return int(orblines[orblines.index("COEFFICIENTS")-1].split()[0])
+
+def find_nelec(sysfile):
+  """ Find the number of electrons in this system."""
+  sys = read_qfile(sysfile)
+  return int(round(sum(sys['system']['nspin'])))
+
 def convert(s):
   return float(s)
   a=eval(s)
