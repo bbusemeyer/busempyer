@@ -460,6 +460,7 @@ def _format_dftdf(rawdf):
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
   dftdf['spins_consistent'] = dftdf['spins_consistent'].astype(bool)
   dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
+  dftdf['basis_number'] = dftdf['basis_number'].astype(int)
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
       .apply(lambda x:cast_supercell(x))
