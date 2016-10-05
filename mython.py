@@ -104,6 +104,32 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
     qsin.write(outstr)
   return loc+'/qsub.in'
 
+def gen_qsub_general(exelines,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
+    queue='batch', prep_commands=[],final_commands=[]):
+  """ Generate a qsub file.
+  
+  Blank strings will generate useful defaults. 'general' is a new version that
+  allows different execution strings."""
+
+  if stdout=='': stdout='stdout'
+  if loc=='': loc=getcwd()
+  if name=='': name=str(datetime.now()).replace(' ','_')
+  header = []
+  header.append('#!/bin/bash')
+  if np=='allprocs': header.append('#PBS -l nodes=%d,flags=allprocs'%nn)
+  else:              header.append('#PBS -l nodes=%d:ppn=%s'%(nn,str(np)))
+  header.append('#PBS -q %s'%queue)
+  header.append('#PBS -l walltime=%s'%time)
+  header.append('#PBS -j oe')
+  header.append('#PBS -m n')
+  header.append('#PBS -N %s'%name)
+  header.append('#PBS -o {0}'.format(loc+'/qsub.out'))
+  commands = header + ['cd %s'%loc] + prep_commands + exelines + final_commands
+  outstr = '\n'.join(commands)
+  with open(loc+'/qsub.in','w') as qsin:
+    qsin.write(outstr)
+  return loc+'/qsub.in'
+
 class Bootstrapper:
   """ Can be used to resample some function over and over to gain information
   about the statistics. Currenly only computes the variance. """

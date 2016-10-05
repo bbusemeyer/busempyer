@@ -45,9 +45,12 @@ def read_section(inp,key,pos):
 def read_qfile(inpf):
   inpstr = ''
   for line in inpf:
-    if '#' in line: # TODO: Needs to be fixed when '#' isn't the first thing in line.
-      print('Warning, reading commented lines is incomplete!')
-      continue
+    if '#' in line: 
+      spl = line.split()
+      if spl[0] == '#':
+        continue
+      else:
+        inpstr += spl[:spl.index('#')]
     inpstr += line
   # Ensure correct splitting. This is inefficient for large files.
   inpstr = inpstr.replace('{',' { ')
