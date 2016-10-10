@@ -478,5 +478,18 @@ def cif_to_dict(cifstr):
   cifp = CifParser("tmp").as_dict()
   os.remove("tmp")
   return cifp[cifp.keys()[0]]
+
+def load_duplicate_method_keys(key,jsonstr):
+  """ Go through a gosling JSON output, and correct if there are multiple
+  instances of this key. Very hacky."""
+  json_chunks = jsonstr.split('"')
+  key_count = 0
+  for chx,chunk in enumerate(json_chunks):
+    if chunk == key:
+      json_chunks[chx] = "%s_%d"%(key,key_count)
+      key_count+=1
+  jsonstr = '"'.join(json_chunks).replace('\n','')
+  rec = json.loads(jsonstr)
+  return rec
 ###############################################################################
 
