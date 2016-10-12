@@ -305,8 +305,10 @@ class CubicFit(FitFunc):
     # centered around the min or max.
     if yvals[yvals.shape[0]//2] > yvals[0]:
       return (1.0, -1.0, xvals.mean(), yvals.max())
-    if yvals[yvals.shape[0]//2] < yvals[0]:
+    elif yvals[yvals.shape[0]//2] < yvals[0]:
       return (1.0, 1.0, xvals.mean(), yvals.min())
+    else: # It's something flat-ish?
+      return (0.0, 0.0, xvals.mean(), yvals.min())
 
 class CubicFit_fixmin(FitFunc):
   """
