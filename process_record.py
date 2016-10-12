@@ -424,7 +424,10 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
   if 'cif' in alldf.keys():
-    alldf = alldf.join(alldf['cif'].apply(extract_struct))
+    alldf = alldf.join(
+        alldf.loc[alldf['cif']!="None",'cif'].apply(extract_struct),
+        rsuffix="_extract"
+      )
 
   return alldf
 
