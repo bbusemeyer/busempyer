@@ -1,6 +1,6 @@
 def cat_jsons(inplist,outf):
   outf.write('[\n')
-  for jfn in inplist[1:-1]:
+  for jfn in inplist[:-1]:
     outf.write(open(jfn,'r').read())
     outf.write(',\n')
   outf.write(open(inplist[-1],'r').read())
