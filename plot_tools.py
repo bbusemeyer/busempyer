@@ -418,6 +418,18 @@ class EOSFit(FitFunc):
     else:
       return self.derv(x,*self.parm[:-1])
 
+  def _set_default_parms(self,xvals,yvals,evals):
+    # Should be good if you're only after positive pressures.
+    HaA3_GPa = 4359.74434
+    maxyidx = yvals.argmax()
+    return (
+        1.0/HaA3_GPa,   # b: rough scale for bulk modulus.
+        xvals[maxyidx], # V0: Volume at ambient pressure.
+        -2.0,           # n: suggested by Anton et al.
+        yvals[maxyidx]  # Einf: rough energy scale near V0.
+      )
+
+
 class EOSFit_fixV0(EOSFit):
   def __init__(self,V0,pnames=['bulk_mod','n','Einf']):
     def energy(V,b,n,Einf):
@@ -491,7 +503,17 @@ class MorseFit(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+  def _set_default_parms(self,xvals,yvals,evals):
+    # Should be good if you're only after positive pressures.
+    minr = yvals.argmin()
+    return (
+        yvals[-1] - yvals[minr],# Depth = Asytote - min.
+        xvals[minr],            # Position of minimum.
+        0.05,                   # Emperical suggestion.
+        yvals[minr]             # Bottom of potential.
+      )
 
+# Its been a while and I'm not sure how this is different. Delete?
 class MorseFitpp(FitFunc):
   """
   Morse potential for model of bonding.
