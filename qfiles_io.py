@@ -46,11 +46,10 @@ def read_qfile(inpf):
   inpstr = ''
   for line in inpf:
     if '#' in line: 
-      spl = line.split()
-      if spl[0] == '#':
+      if line.replace(" ","")[0] == '#':
         continue
       else:
-        inpstr += spl[:spl.index('#')]
+        inpstr += line[:line.index('#')]
     inpstr += line
   # Ensure correct splitting. This is inefficient for large files.
   inpstr = inpstr.replace('{',' { ')
