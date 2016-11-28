@@ -35,47 +35,46 @@ pc = {
     'gray':  '#999999'
   }
 
-# For reference: all the marker choices for matplotlib:
-#  ”.”         point
-#  ”,”         pixel
-#  “o”         circle
-#  “v”         triangle_down
-#  “^”         triangle_up
-#  “<”         triangle_left
-#  “>”         triangle_right
-#  “1”         tri_down
-#  “2”         tri_up
-#  “3”         tri_left
-#  “4”         tri_right
-#  “8”         octagon
-#  “s”         square
-#  “p”         pentagon
-#  “*”         star
-#  “h”         hexagon1
-#  “H”         hexagon2
-#  “+”         plus
-#  “x”         x
-#  “D”         diamond
-#  “d”         thin_diamond
-#  “|”         vline
-#  “_”         hline
-#  TICKLEFT    tickleft
-#  TICKRIGHT   tickright
-#  TICKUP      tickup
-#  TICKDOWN    tickdown
-#  CARETLEFT   caretleft
-#  CARETRIGHT  caretright
-#  CARETUP     caretup
-#  CARETDOWN   caretdown
-#  “None”      nothing
-#  None        nothing
-#  ” “         nothing
-#  “”          nothing
-# '$...$'      render the string using mathtext.
-# verts        a list of (x, y) pairs used for Path vertices. The center of the
-#              marker is located at (0,0) and the size is normalized.
-# path         a Path instance.
-
+notes = """
+Things I commonly have to look up:
+  For reference: all the marker choices for matplotlib:
+   ”.”         point
+   ”,”         pixel
+   “o”         circle
+   “v”         triangle_down
+   “^”         triangle_up
+   “<”         triangle_left
+   “>”         triangle_right
+   “1”         tri_down
+   “2”         tri_up
+   “3”         tri_left
+   “4”         tri_right
+   “8”         octagon
+   “s”         square
+   “p”         pentagon
+   “*”         star
+   “h”         hexagon1
+   “H”         hexagon2
+   “+”         plus
+   “x”         x
+   “D”         diamond
+   “d”         thin_diamond
+   “|”         vline
+   “_”         hline
+   TICKLEFT    tickleft
+   TICKRIGHT   tickright
+   TICKUP      tickup
+   TICKDOWN    tickdown
+   CARETLEFT   caretleft
+   CARETRIGHT  caretright
+   CARETUP     caretup
+   CARETDOWN   caretdown
+   “None”      nothing
+   None        nothing
+   ” “         nothing
+   “”          nothing
+Color maps:
+"""
 
 def matplotlib_header(usetex=True,family='serif'):
   sns.set_style("ticks")
@@ -123,6 +122,9 @@ def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
   newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
+
+def idxmap(arraylike):
+  return dict(zip(arraylike,range(len(arraylike))))
 
 class FitFunc:
   """
