@@ -1,7 +1,6 @@
-# mython
-Various scripts I use for data analysis for CRYSTAL and Qwalk, which is probably
-too specialized to my personal preferences to include into the Qwalk repository.
-Additionally, other miscillaneous scripts.
+# busempyer
+Various scripts I have used for data analysis for CRYSTAL and Qwalk, much of
+which is useful for all kinds of data analysis.
 
 This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
