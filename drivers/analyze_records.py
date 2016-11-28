@@ -23,7 +23,7 @@ def output_analysis(recfn):
   return arecfn
 
 if __name__=="__main__":
-  if len(sys.argv)-1 < 2:
+  if len(sys.argv)-1 < 1:
     raise AssertionError("""
     Not enough arguements.
     Usage: python analyze_records.py <list of autogen record jsons>
