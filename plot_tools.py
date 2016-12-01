@@ -38,29 +38,29 @@ pc = {
 notes = """
 Things I commonly have to look up:
   For reference: all the marker choices for matplotlib:
-   ”.”         point
-   ”,”         pixel
-   “o”         circle
-   “v”         triangle_down
-   “^”         triangle_up
-   “<”         triangle_left
-   “>”         triangle_right
-   “1”         tri_down
-   “2”         tri_up
-   “3”         tri_left
-   “4”         tri_right
-   “8”         octagon
-   “s”         square
-   “p”         pentagon
-   “*”         star
-   “h”         hexagon1
-   “H”         hexagon2
-   “+”         plus
-   “x”         x
-   “D”         diamond
-   “d”         thin_diamond
-   “|”         vline
-   “_”         hline
+   "."         point
+   ","         pixel
+   "o"         circle
+   "v"         triangle_down
+   "^"         triangle_up
+   "<"         triangle_left
+   ">"         triangle_right
+   "1"         tri_down
+   "2"         tri_up
+   "3"         tri_left
+   "4"         tri_right
+   "8"         octagon
+   "s"         square
+   "p"         pentagon
+   "*"         star
+   "h"         hexagon1
+   "H"         hexagon2
+   "+"         plus
+   "x"         x
+   "D"         diamond
+   "d"         thin_diamond
+   "|"         vline
+   "_"         hline
    TICKLEFT    tickleft
    TICKRIGHT   tickright
    TICKUP      tickup
@@ -69,10 +69,10 @@ Things I commonly have to look up:
    CARETRIGHT  caretright
    CARETUP     caretup
    CARETDOWN   caretdown
-   “None”      nothing
+   "None"      nothing
    None        nothing
-   ” “         nothing
-   “”          nothing
+   " "         nothing
+   ""          nothing
 Color maps:
 """
 
