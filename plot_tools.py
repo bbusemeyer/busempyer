@@ -3,7 +3,6 @@ from inspect import getargspec
 from scipy.optimize import curve_fit
 import os
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Nicer colors for plotting from colorbrewer2.org.
 # Common colors are first letter only, prefix with l or d means light or dark.
@@ -36,7 +35,7 @@ pc = {
   }
 
 ps = {
-    'dark8':['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666']
+    'dark8':['#0b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'],
     'cb12':['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
   }
 
@@ -82,6 +81,7 @@ Color maps:
 """
 
 def matplotlib_header(usetex=True,family='serif'):
+  import seaborn as sns
   sns.set_style("ticks")
   plt.rc('axes.formatter',useoffset=False)
   plt.rc('text',usetex=usetex)
