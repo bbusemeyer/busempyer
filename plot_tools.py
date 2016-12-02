@@ -35,32 +35,37 @@ pc = {
     'gray':  '#999999'
   }
 
+ps = {
+    'dark8':['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666']
+    'cb12':['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
+  }
+
 notes = """
 Things I commonly have to look up:
   For reference: all the marker choices for matplotlib:
-   ”.”         point
-   ”,”         pixel
-   “o”         circle
-   “v”         triangle_down
-   “^”         triangle_up
-   “<”         triangle_left
-   “>”         triangle_right
-   “1”         tri_down
-   “2”         tri_up
-   “3”         tri_left
-   “4”         tri_right
-   “8”         octagon
-   “s”         square
-   “p”         pentagon
-   “*”         star
-   “h”         hexagon1
-   “H”         hexagon2
-   “+”         plus
-   “x”         x
-   “D”         diamond
-   “d”         thin_diamond
-   “|”         vline
-   “_”         hline
+   "."         point
+   ","         pixel
+   "o"         circle
+   "v"         triangle_down
+   "^"         triangle_up
+   "<"         triangle_left
+   ">"         triangle_right
+   "1"         tri_down
+   "2"         tri_up
+   "3"         tri_left
+   "4"         tri_right
+   "8"         octagon
+   "s"         square
+   "p"         pentagon
+   "*"         star
+   "h"         hexagon1
+   "H"         hexagon2
+   "+"         plus
+   "x"         x
+   "D"         diamond
+   "d"         thin_diamond
+   "|"         vline
+   "_"         hline
    TICKLEFT    tickleft
    TICKRIGHT   tickright
    TICKUP      tickup
@@ -69,10 +74,10 @@ Things I commonly have to look up:
    CARETRIGHT  caretright
    CARETUP     caretup
    CARETDOWN   caretdown
-   “None”      nothing
+   "None"      nothing
    None        nothing
-   ” “         nothing
-   “”          nothing
+   " "         nothing
+   ""          nothing
 Color maps:
 """
 
@@ -124,6 +129,7 @@ def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
   return newticks
 
 def idxmap(arraylike):
+  """ Map elements of an array to it's index (reverse mapping of array itself)."""
   return dict(zip(arraylike,range(len(arraylike))))
 
 class FitFunc:
