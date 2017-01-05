@@ -418,8 +418,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
 
   # Convert lists.
   for col in listcols:
-    alldf.loc[alldf[col].notnull(),col] = \
-        alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
+    if col in alldf.columns:
+      alldf.loc[alldf[col].notnull(),col] = \
+          alldf.loc[alldf[col].notnull(),col].apply(lambda x:tuple(x))
   for col in alldf.columns:
     alldf[col] = pd.to_numeric(alldf[col],errors='ignore')
 
