@@ -163,7 +163,7 @@ def _analyze_nfluct(post_record):
   avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
   avgdf['spinchan'] = "minority"
   avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "majority"
-  avgdf['element'] = "Te"
+  avgdf['element'] = "Se"
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
   # Site average.
@@ -372,7 +372,7 @@ def orbinfo(orbnum):
   NbSe = len(Seorbs)
   res = [orbnum]
   if float(orbnum)/(NFe * NbFe) > (1 - 1e-8):
-    res += ['Te',(orbnum - NFe*NbFe) // NbSe + 1 + NFe]
+    res += ['Se',(orbnum - NFe*NbFe) // NbSe + 1 + NFe]
     res.append(Seorbs[orbnum%NbSe])
   else:
     res += ['Fe',orbnum // NbFe + 1]
@@ -455,7 +455,7 @@ def _format_dftdf(rawdf):
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  copylist = ['supercell','nfu','cif','xyz','a','c','se_height','pressure','ordering']
+  copylist = ['supercell','nfu','cif','xyz','a','c','se_height','pressure','ordering','total_spin']
   for rawinfo in copylist:
     if rawinfo in rawdf.columns:
       dftdf = dftdf.join(rawdf[rawinfo])

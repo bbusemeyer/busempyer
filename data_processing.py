@@ -52,6 +52,7 @@ def gen_autogen_defining_columns():
       'basis_lowest',
       'basis_number',
       'a','b','c',
+      'total_spin',
       'correlation',
       'exchange',
       'hybrid',
