@@ -40,6 +40,16 @@ class Ldict(dict):
     else:
       dict.__setitem__(self,key,value)
 
+def display_nested_dict(nested,indent=""):
+  """ Display all keys in a nested dictionary. 
+  Don't use indent if calling on root."""
+  outstr = ""
+  for key in nested.keys():
+    outstr += indent+key+"\n"
+    if type(nested[key])==dict:
+      outstr += display_nested_dict(nested[key],indent="  "+indent)
+  return outstr
+
 # Source (simplified by me):
 # http://stackoverflow.com/questions/3488934/simplejson-and-numpy-array/24375113#24375113
 class NumpyEncoder(JSONEncoder):

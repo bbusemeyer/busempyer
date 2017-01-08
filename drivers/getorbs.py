@@ -87,6 +87,7 @@ if __name__ == "__main__":
     Usage: getorbs.py qwalk_root [spinless]""")
   fileroot = argv[1]
   if len(argv)>2 and argv[2]=="spinless":
+    raise NotImplementedError # TODO
     produce_inputs_spinless(fileroot)
   else:
     produce_inputs(fileroot)

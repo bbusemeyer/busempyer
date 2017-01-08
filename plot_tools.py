@@ -78,6 +78,8 @@ Things I commonly have to look up:
    " "         nothing
    ""          nothing
 Color maps:
+  Good ``uniform'' sequential: viridis,plasma.
+  Good diverging: Spectral,seismic,bwr,BrBG
 """
 
 def matplotlib_header(usetex=True,family='serif'):
