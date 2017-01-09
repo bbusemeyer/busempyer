@@ -103,21 +103,19 @@ def _analyze_nfluct(post_record):
 
   def covar(rec,adf):
     """ Compute covariance. """
-    cov = 0.0
-    pmat = rec['value']
-    nmax = len(pmat)
-    avgi = adf.loc[(rec['spini'],rec['sitei']),'avg']
-    avgj = adf.loc[(rec['spinj'],rec['sitej']),'avg']
+    res={}
+    res['cov']=0.0
+    pmat=rec['value']
+    nmax=len(pmat)
+    avgi=adf.loc[(rec['spini'],rec['sitei']),'avg']
+    avgj=adf.loc[(rec['spinj'],rec['sitej']),'avg']
     for m in range(nmax): 
       for n in range(nmax): 
-        cov += pmat[m][n]*(m-avgi)*(n-avgj)
-    return pd.Series({
-        'spini':rec['spini'],
-        'spinj':rec['spinj'],
-        'sitei':rec['sitei'],
-        'sitej':rec['sitej'],
-        'cov':cov
-      })
+        res['cov']+=pmat[m][n]*(m-avgi)*(n-avgj)
+    for info in ['jastrow','optimizer','localization','timestep',
+        'spini','spinj','sitei','sitej']:
+      res[info] = rec[info]
+    return pd.Series(res)
 
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
@@ -129,14 +127,16 @@ def _analyze_nfluct(post_record):
       })
 
   def siteaverage(sgrp):
-    if sgrp['var'].std() > VARTOL:
-      print("Site average warning: variation in sites larger than expected.")
-      print("%f > 1e-2"%sgrp['var'].std())
+    tol=10*sgrp['varerr'].mean()
+    if sgrp['var'].std() > tol:
+      print("nfluct: Site average warning: variation in sites larger than expected.")
+      print("%f > %f"%(sgrp['var'].std(),tol))
     return pd.Series({
         'variance':sgrp['var'].mean(),
         'variance_err':(sgrp['varerr']**2).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
-        'magmom_err':(sgrp['magmom_err']**2).mean()**0.5
+        'magmom_err':(sgrp['magmom_err']**2).mean()**0.5,
+        'covariance':sgrp['cov'].mean()
       })
 
   # Moments and other arithmatic.
@@ -150,13 +150,17 @@ def _analyze_nfluct(post_record):
     ups = (fluctdf[s] == 0)
     fluctdf[s] = "down"
     fluctdf.loc[ups,s] = "up"
-  diag = ( (fluctdf['spini']==fluctdf['spinj']) &\
-           (fluctdf['sitei']==fluctdf['sitej'])    )
-  avgdf = fluctdf[diag].apply(diag_exp,axis=1)
-  avgdf = avgdf.rename(columns={'spini':'spin','sitei':'site'})
-  #covdf = fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
-  magdf = avgdf.groupby(grouplist+['site']).apply(subspins)
-  avgdf = pd.merge(avgdf,magdf)
+  diag=( (fluctdf['spini']==fluctdf['spinj']) &\
+         (fluctdf['sitei']==fluctdf['sitej'])    )
+  avgdf=fluctdf[diag].apply(diag_exp,axis=1)
+  avgdf=avgdf.rename(columns={'spini':'spin','sitei':'site'})
+  magdf=avgdf.groupby(grouplist+['site']).apply(subspins)
+  avgdf=pd.merge(avgdf,magdf)
+
+  covdf=fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
+  osspsp=((covdf['spini']!=covdf['spinj'])&(covdf['sitei']==covdf['sitej']))
+  ossdf=covdf[osspsp].rename(columns={'sitei':'site','spini':'spin'})
+  avgdf=pd.merge(avgdf,ossdf,on=grouplist+['site','spin'])
 
   # Catagorization.
   avgdf['netmag'] = "down"
@@ -167,28 +171,34 @@ def _analyze_nfluct(post_record):
   avgdf.loc[avgdf['site']<NFE,'element'] = "Fe"
 
   # Site average.
+  ## Debug site averaging (ensure averaging is reasonable).
+  #for lab,df in avgdf.groupby(grouplist+['spinchan','element']):
+  #  print(lab)
+  #  print(df[['avg','avgerr','var','varerr','cov']])
   savgdf = avgdf.groupby(grouplist+['spinchan','element'])\
       .apply(siteaverage)\
       .reset_index()
-  magdf = savgdf.drop(['spinchan','variance','variance_err'],axis=1).drop_duplicates()
-  vardf = savgdf.drop(['magmom','magmom_err'],axis=1)
+  magdf = savgdf.drop(['spinchan','variance','variance_err','covariance'],axis=1).drop_duplicates()
+  covdf = savgdf.drop(['magmom','magmom_err'],axis=1)
   return { 'magmom':json.loads(magdf.to_json()),
-           'variance':json.loads(vardf.to_json()) }
+           'covariance':json.loads(covdf.to_json()) }
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
   def saverage_orb(sgrp):
-    if sgrp['ordm'].std() > VARTOL:
-      print("Site average warning: variation in sites larger than expected.")
-      print("%.3f > %.2f"%(sgrp['ordm'].std(),VARTOL))
+    tol=10*sgrp['ordm_err'].mean()
+    if sgrp['ordm'].std() > tol:
+      print("saverage_orb: Site average warning: variation in sites larger than expected.")
+      print("%.3f > %.3f"%(sgrp['ordm'].std(),tol))
     return pd.Series({
         'ordm':sgrp['ordm'].mean(),
         'ordm_err':(sgrp['ordm_err']**2).mean()**0.5,
       })
   def saverage_hop(sgrp):
-    if sgrp['ordm'].std() > VARTOL:
-      print("Site average warning: variation in sites larger than expected.")
-      print("%.3f > %.2f"%(sgrp['ordm'].std(),VARTOL))
+    tol=10*sgrp['ordm_err'].mean()
+    if sgrp['ordm'].std() > tol:
+      print("saverage_hop: Site average warning: variation in sites larger than expected.")
+      print("%.3f > %.3f"%(sgrp['ordm'].std(),tol))
     return pd.Series({
         'ordm':sgrp['ordm'].mean(),
         'ordm_err':(sgrp['ordm_err']**2).mean()**0.5,
@@ -530,3 +540,9 @@ def match(df,cond,keys):
     raise AssertionError("Row match not unique")
   match_this = match_this.iloc[0].values
   return df.set_index(keys).xs(match_this,level=keys).reset_index()
+
+##############################################################################
+# Testing.
+if __name__=='__main__':
+  datajson=process_record(json.load(open('exampledata/fese_mags_0.record.json','r')))
+  print(datajson['dmc']['fluct'].keys())
