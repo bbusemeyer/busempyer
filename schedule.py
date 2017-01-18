@@ -35,7 +35,7 @@ class RandomScheduler:
       print("{}   {}".format(date,presenter))
 
 if __name__=='__main__':
-  avoid = [["March",15],["March",22]]
+  avoid = [["March",8],["March",15],["March",22]]
   presenters = [
       "Brian",
       "Alex",
@@ -48,6 +48,7 @@ if __name__=='__main__':
   first_date = ["Feb.",15]
   sched=RandomScheduler(first_date,presenters,avoid)
   sched.find_dates()
+  print("Here's a few potential schedules:")
   sched.shuffle_people()
   print()
   sched.shuffle_people()
