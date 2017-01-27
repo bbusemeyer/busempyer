@@ -659,11 +659,14 @@ class CatagoryPlot:
           ) for unique in unique_cols
         ]
     else:
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+        labmap.update(dict(zip(unique_cols,unique_cols)))
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique_mark],
             color=cmap[unique_col],
-            label=labstr%(unique_col,unique_mark)
+            label=labstr%(labmap[unique_col],labmap[unique_mark])
           )
           for unique_col in unique_cols for unique_mark in unique_marks
         ]
