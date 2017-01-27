@@ -34,9 +34,42 @@ pc = {
     'gray':  '#999999'
   }
 
+# Sets of colors to automatically choose from.
 ps = {
     'dark8':['#0b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'],
     'cb12':['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
+  }
+pm = ["o",
+    "s",
+    "p",
+    "h",
+    "H",
+    "D",
+    "d"
+    "v",
+    "^",
+    "<",
+    ">",
+    "*",
+    ".",
+    ",",
+    "1",
+    "2",
+    "3",
+    "4",
+    "8",
+    "+",
+    "x",
+]
+
+# My own plotting defaults.
+myplotdef={
+    'mew':1,
+    'mec':'k'
+  }
+myerrdef={
+    'capthick':1,
+    'capwidth':1
   }
 
 notes = """
@@ -439,7 +472,6 @@ class EOSFit(FitFunc):
         yvals[maxyidx]  # Einf: rough energy scale near V0.
       )
 
-
 class EOSFit_fixV0(EOSFit):
   def __init__(self,V0,pnames=['bulk_mod','n','Einf']):
     def energy(V,b,n,Einf):
@@ -546,3 +578,93 @@ class MorseFitpp(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+class CatagoryPlot: 
+  """ Use a pandas DataFrame to make plots broken down by color, row, column,
+  and marker. Somewhat similar to what ggplot can handle (more elegantly).
+
+  For example: df.columns=[x,y,z],
+  cp=CatagoryPlot(df,color='z',mark='z')
+  cp.plot('x','y')
+
+  Now cp.fig will have a figure of x vs y with color and marker broken down by z.
+  
+  Call self.plot() to actually make a plot. 
+  
+  There are a lot of bugs I know about but haven't bothered to fix. If you find
+  one, I can probably fix it pretty quick, so long as there's a desire to have
+  it fixed.
+  """
+  def __init__(self,df,
+      row='dummy',col='dummy',
+      color='dummy',mark='dummy',
+      cmap=None,mmap=None):
+
+    if 'dummy' in df.columns:
+      print("CatagoryPlot: Warning, I'm not going to use the 'dummy' column!")
+
+
+    self.fulldf=df
+    self.fulldf['dummy']='dummy'
+    self.row=row
+    self.col=col
+    self.color=color
+    self.mark=mark
+    if cmap is None:
+      unique_cols=self.fulldf[color].unique()
+      self.cmap=dict(zip(unique_cols,ps['dark8'][:unique_cols.shape[0]]))
+    else: 
+      self.cmap=cmap
+    if mmap is None:
+      unique_marks=self.fulldf[mark].unique()
+      self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
+    else: 
+      self.cmap=cmap
+
+    self.fig,self.axes=plt.subplots(
+        df[row].unique().shape[0],
+        df[col].unique().shape[0],
+        squeeze=False
+      )
+    self.rowmap=idxmap(df[row].unique())
+    self.colmap=idxmap(df[col].unique())
+
+  def plot(self,xvar,yvar,plotargs={}):
+    for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
+      self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]\
+          .plot(df[xvar],df[yvar],self.mmap[lab[2]],
+          color=self.cmap[lab[3]],**plotargs)
+      self.fig.tight_layout()
+
+  def add_legend(self,axidx=(0,0),labstr="%s,%s",labmap={},args={}):
+    """ Make a legend for the markers and/or colors. labstr controls how the
+    labels combine the two parameters (if they're distict). labmap maps data to
+    pretty labels. locargs is passed to axes.legend(). """
+    unique_cols=self.fulldf[self.color].unique()
+    unique_marks=self.fulldf[self.mark].unique()
+    if self.mark=='dummy': 
+      if labmap=={}:
+        labmap=dict(zip(unique_cols,unique_cols))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap['dummy'],color=self.cmap[unique],label=labmap[unique]
+          ) for unique in unique_cols
+        ]
+    elif self.color=='dummy': 
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique],color=self.cmap['dummy'],label=labmap[unique]
+          ) for unique in unique_cols
+        ]
+    else:
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique_mark],
+            color=cmap[unique_col],
+            label=labstr%(unique_col,unique_mark)
+          )
+          for unique_col in unique_cols for unique_mark in unique_marks
+        ]
+    self.axes[axidx].legend(handles=prox,loc='best')
