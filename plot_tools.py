@@ -34,6 +34,7 @@ pc = {
     'gray':  '#999999'
   }
 
+# Sets of colors to automatically choose from.
 ps = {
     'dark8':['#0b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'],
     'cb12':['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
@@ -60,6 +61,16 @@ pm = ["o",
     "+",
     "x",
 ]
+
+# My own plotting defaults.
+myplotdef={
+    'mew':1,
+    'mec':'k'
+  }
+myerrdef={
+    'capthick':1,
+    'capwidth':1
+  }
 
 notes = """
 Things I commonly have to look up:
@@ -607,6 +618,7 @@ class CatagoryPlot:
 
   def plot(self,xvar,yvar,plotargs={}):
     for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
-      ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
-      ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
+      self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]\
+          .plot(df[xvar],df[yvar],self.mmap[lab[2]],
           color=self.cmap[lab[3]],**plotargs)
+      self.fig.tight_layout()
