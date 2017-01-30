@@ -64,7 +64,7 @@ pm = ["o",
 
 # My own plotting defaults.
 myplotdef={
-    'mew':1,
+    'mew':0.5,
     'mec':'k'
   }
 myerrdef={
@@ -598,7 +598,7 @@ class CatagoryPlot:
   def __init__(self,df,
       row='dummy',col='dummy',
       color='dummy',mark='dummy',
-      cmap=None,mmap=None):
+      cmap=None,mmap=None,sharex=False,sharey=False):
 
     if 'dummy' in df.columns:
       print("CatagoryPlot: Warning, I'm not going to use the 'dummy' column!")
@@ -611,6 +611,7 @@ class CatagoryPlot:
     self.col=col
     self.color=color
     self.mark=mark
+    self.plotargs={}
     if cmap is None:
       unique_cols=self.fulldf[color].unique()
       self.cmap=dict(zip(unique_cols,ps['dark8'][:unique_cols.shape[0]]))
@@ -625,12 +626,13 @@ class CatagoryPlot:
     self.fig,self.axes=plt.subplots(
         self.fulldf[row].unique().shape[0],
         self.fulldf[col].unique().shape[0],
-        squeeze=False
+        squeeze=False,sharex=sharex,sharey=sharey
       )
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
   def plot(self,xvar,yvar,plotargs={}):
+    self.plotargs=plotargs
     for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
       self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]\
           .plot(df[xvar],df[yvar],self.mmap[lab[2]],
@@ -648,7 +650,8 @@ class CatagoryPlot:
         labmap=dict(zip(unique_cols,unique_cols))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['dummy'],color=self.cmap[unique],label=labmap[unique]
+            marker=self.mmap['dummy'],color=self.cmap[unique],label=labmap[unique],
+            **self.plotargs
           ) for unique in unique_cols
         ]
     elif self.color=='dummy': 
@@ -656,7 +659,8 @@ class CatagoryPlot:
         labmap=dict(zip(unique_marks,unique_marks))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['dummy'],label=labmap[unique]
+            marker=self.mmap[unique],color=self.cmap['dummy'],label=labmap[unique],
+            **self.plotargs
           ) for unique in unique_cols
         ]
     else:
@@ -667,7 +671,8 @@ class CatagoryPlot:
             linestyle='',
             marker=self.mmap[unique_mark],
             color=cmap[unique_col],
-            label=labstr%(labmap[unique_col],labmap[unique_mark])
+            label=labstr%(labmap[unique_col],labmap[unique_mark]),
+            **self.plotargs
           )
           for unique_col in unique_cols for unique_mark in unique_marks
         ]
