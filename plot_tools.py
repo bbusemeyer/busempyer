@@ -604,6 +604,7 @@ class CatagoryPlot:
       print("CatagoryPlot: Warning, I'm not going to use the 'dummy' column!")
 
 
+    assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
     self.fulldf=df
     self.fulldf['dummy']='dummy'
     self.row=row
@@ -622,8 +623,8 @@ class CatagoryPlot:
       self.cmap=cmap
 
     self.fig,self.axes=plt.subplots(
-        df[row].unique().shape[0],
-        df[col].unique().shape[0],
+        self.fulldf[row].unique().shape[0],
+        self.fulldf[col].unique().shape[0],
         squeeze=False
       )
     self.rowmap=idxmap(df[row].unique())
