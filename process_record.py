@@ -394,8 +394,8 @@ def orbinfo(orbnum):
 def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   """ Takes processed autogen json file and organizes it into a Pandas DataFrame."""
   rawdf = pd.read_json(open(inp_json,'r'))
-  rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
-      2*abs(np.linalg.det(np.array(x).reshape(3,3)))
+  rawdf['ncell'] = rawdf['supercell'].apply(lambda x:
+      abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
   dftdf = _format_dftdf(rawdf)
@@ -410,8 +410,8 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
         .drop('energy',axis=1)
   alldf = dmcdf.join(dftdf)
   if 'dmc_energy' in dmcdf.columns:
-    alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
-    alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
+    alldf['dmc_energy'] = alldf['dmc_energy']
+    alldf['dmc_energy_err'] = alldf['dmc_energy_err']
   listcols = [
       'broyden',
       'initial_charges',
@@ -465,7 +465,7 @@ def _format_dftdf(rawdf):
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  copylist = ['supercell','nfu','cif','xyz','a','c','se_height','pressure','ordering','total_spin']
+  copylist = ['supercell','ncell','cif','xyz','a','c','se_height','pressure','ordering','total_spin']
   for rawinfo in copylist:
     if rawinfo in rawdf.columns:
       dftdf = dftdf.join(rawdf[rawinfo])
@@ -484,7 +484,7 @@ def _format_dftdf(rawdf):
         dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
             max(abs(np.array(x)))
           )
-  dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
+  dftdf['dft_energy'] = dftdf['total_energy']
   for redundant in ['basis','functional']:
     del dftdf[redundant]
   return dftdf

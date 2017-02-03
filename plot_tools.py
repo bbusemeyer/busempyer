@@ -288,6 +288,15 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_cols
         ]
+    elif self.color==self.mark:
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
+            **self.plotargs
+          ) for unique in unique_cols
+        ]
     else:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -295,7 +304,7 @@ class CatagoryPlot:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique_mark],
-            color=cmap[unique_col],
+            color=self.cmap[unique_col],
             label=labstr%(labmap[unique_col],labmap[unique_mark]),
             **self.plotargs
           )
