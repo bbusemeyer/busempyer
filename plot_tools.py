@@ -221,7 +221,7 @@ class CatagoryPlot:
       unique_marks=self.fulldf[mark].unique()
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
     else: 
-      self.cmap=cmap
+      self.mmap=mmap
 
     self.labmap=lambda x:safemap(labmap,x)
 
