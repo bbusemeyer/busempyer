@@ -705,5 +705,5 @@ class CatagoryPlot:
           )
           for unique_col in unique_cols for unique_mark in unique_marks
         ]
-    self.axes[axidx].legend(handles=prox,loc='best')
+    self.axes[axidx].legend(handles=prox,**args)
     return prox
