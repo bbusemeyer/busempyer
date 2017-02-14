@@ -398,20 +398,26 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
-  dftdf = _format_dftdf(rawdf)
-  rawdf = rawdf[dftdf['id'].apply(filterfunc)]
-  dmcdf = unpack(rawdf['dmc'])
-  if 'energy' in dmcdf.columns:
-    dmcdf = dmcdf.join(
-          unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
-        )
-    dmcdf = dmcdf\
-        .rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})\
-        .drop('energy',axis=1)
-  alldf = dmcdf.join(dftdf)
-  if 'dmc_energy' in dmcdf.columns:
-    alldf['dmc_energy'] = alldf['dmc_energy']
-    alldf['dmc_energy_err'] = alldf['dmc_energy_err']
+  alldf = _format_dftdf(rawdf)
+  rawdf = rawdf[alldf['id'].apply(filterfunc)]
+  for qmc in ['vmc','dmc']:
+    qmcdf = unpack(rawdf[qmc])
+    if 'energy' in qmcdf.columns:
+      qmcdf = qmcdf.join(
+            unpack(qmcdf['energy'].dropna()).applymap(dp.undict)
+          )
+      qmcdf = qmcdf\
+          .rename(columns={'value':"%s_energy"%qmc,'error':"%s_energy_err"%qmc})\
+          .drop('energy',axis=1)
+    alldf = alldf.join(qmcdf,lsuffix='',rsuffix='_new')
+    for col in alldf.columns:
+      if '_new' in col:
+        sel=alldf[col].notnull()
+        assert all(alldf.loc[sel,col.replace('_new','')]==alldf.loc[sel,col])
+        del alldf[col]
+    if "%s_energy"%qmc in qmcdf.columns:
+      alldf["%s_energy"%qmc] = alldf["%s_energy"%qmc]
+      alldf["%s_energy_err"%qmc] = alldf["%s_energy_err"%qmc]
   listcols = [
       'broyden',
       'initial_charges',
