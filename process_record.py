@@ -418,6 +418,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       'energy_trace',
       'initial_spin',
       'kmesh',
+      'levshift',
 #      'localization',
 #      'timestep',
 #      'jastrow',
@@ -478,6 +479,10 @@ def _format_dftdf(rawdf):
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
       .apply(lambda x:cast_supercell(x))
+  dftdf.loc[dftdf['levshift'].isnull(),'levshift']=\
+    dftdf.loc[dftdf['levshift'].isnull(),'levshift']\
+    .apply(lambda x:(0.0,0))
+  dftdf['levshift_shift']=dftdf['levshift'].apply(lambda x: x[0])
   if 'mag_moments' in dftdf.columns:
     dftdf['max_mag_moment'] = np.nan
     dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
