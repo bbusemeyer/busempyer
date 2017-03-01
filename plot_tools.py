@@ -255,9 +255,11 @@ class CatagoryPlot:
             color=self.cmap[lab[3]],**plotargs)
       else:
         if 'mew' not in self.plotargs: self.plotargs['mew']=1
+        if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
         ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
             color='none',
             mec=self.cmap[lab[3]],**self.plotargs)
+        self.plotargs['mec']=save
 
       self.fig.tight_layout()
 

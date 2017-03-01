@@ -77,6 +77,91 @@ def _process_dmc(dmc_record):
     )
   return res
 
+def analyze_nfluct(post_record):
+  """ Version of _analyze_nfluct where no site-averaging is done.
+    Useful for external versions. """
+  def diag_exp(rec):
+    """ Compute mean and variance. """
+    res = {}
+    for dat in ['avg','var','avgerr','varerr']:
+      res[dat] = 0.0
+    for info in ['jastrow', 'optimizer', 'localization', 
+                 'timestep', 'spini', 'sitei']:
+      res[info] = rec[info]
+    pmat     =  rec['value']
+    perr     =  rec['error']
+    nmax = len(pmat)
+    for n in range(nmax): 
+      res['avg']    += n*pmat[n][n]
+      res['avgerr'] += (n*perr[n][n])**2
+    res['avgerr']= res['avgerr']**0.5
+    for n in range(nmax): 
+      res['var']    += (n-res['avg'])**2*pmat[n][n]
+      res['varerr'] += (perr[n][n]*(n-res['avg'])**2)**2 +\
+          (2*pmat[n][n]*res['avgerr']*(n-res['avg']))**2
+    res['varerr'] = res['varerr']**0.5
+    return pd.Series(res)
+
+  def covar(rec,adf):
+    """ Compute covariance. """
+    res={}
+    res['cov']=0.0
+    pmat=rec['value']
+    nmax=len(pmat)
+    avgi=adf.loc[(rec['spini'],rec['sitei']),'avg']
+    avgj=adf.loc[(rec['spinj'],rec['sitej']),'avg']
+    for m in range(nmax): 
+      for n in range(nmax): 
+        res['cov']+=pmat[m][n]*(m-avgi)*(n-avgj)
+    for info in ['jastrow','optimizer','localization','timestep',
+        'spini','spinj','sitei','sitej']:
+      res[info] = rec[info]
+    return pd.Series(res)
+
+  def subspins(siterec):
+    tmpdf = siterec.set_index('spin')
+    magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
+    return pd.Series({
+        'site':siterec['site'].values[0],
+        'magmom':magmom, 'magmom_err':magerr
+      })
+
+  # Moments and other arithmatic.
+  #fluctdf = _kaverage_fluct(post_record['results'])
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  fluctdf = pd.DataFrame(post_record['results'])\
+      .groupby(grouplist)\
+      .apply(_kaverage_fluct)\
+      .reset_index()
+  for s in ['spini','spinj']:
+    ups = (fluctdf[s] == 0)
+    fluctdf[s] = "down"
+    fluctdf.loc[ups,s] = "up"
+  diag=( (fluctdf['spini']==fluctdf['spinj']) &\
+         (fluctdf['sitei']==fluctdf['sitej'])    )
+  avgdf=fluctdf[diag].apply(diag_exp,axis=1)
+  avgdf=avgdf.rename(columns={'spini':'spin','sitei':'site'})
+  magdf=avgdf.groupby(grouplist+['site']).apply(subspins)
+  avgdf=pd.merge(avgdf,magdf)
+
+  covdf=fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
+  osspsp=((covdf['spini']!=covdf['spinj'])&(covdf['sitei']==covdf['sitej']))
+  ossdf=covdf[osspsp].rename(columns={'sitei':'site','spini':'spin'})
+  avgdf=pd.merge(avgdf,ossdf,on=grouplist+['site','spin'])
+
+  del avgdf['sitej']
+
+  # Catagorization.
+  avgdf['netmag'] = "down"
+  avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
+  avgdf['spinchan'] = "minority"
+  avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "majority"
+  avgdf['element'] = "Se"
+
+  return avgdf
+
+
 def _analyze_nfluct(post_record):
   """ Compute physical values and site-average number fluctuation. """
   def diag_exp(rec):
