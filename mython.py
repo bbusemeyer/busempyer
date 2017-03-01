@@ -192,9 +192,15 @@ class Bootstrapper_eig(Bootstrapper):
                                  gaussian_matrix_resample(overlap,overlap_err))
 
 def run_output(command,outf=None):
-  completed = sub.run(command,shell=True,
-      stdout=sub.PIPE,stderr=sub.PIPE,universal_newlines=True)
+  # Python 3.5
+  #completed = sub.run(command,shell=True,
+  #    stdout=sub.PIPE,stderr=sub.PIPE,universal_newlines=True)
+  #if outf is not None:
+  #  outf.write(completed.stdout)
+  #  outf.write(completed.stderr)
+  # Python 3.4
+  completed = sub.check_output(command,shell=True,
+      stderr=sub.STDOUT,universal_newlines=True)
   if outf is not None:
-    outf.write(completed.stdout)
-    outf.write(completed.stderr)
-  return completed.stdout
+    outf.write(completed)
+  return completed
