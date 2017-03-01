@@ -77,6 +77,91 @@ def _process_dmc(dmc_record):
     )
   return res
 
+def analyze_nfluct(post_record):
+  """ Version of _analyze_nfluct where no site-averaging is done.
+    Useful for external versions. """
+  def diag_exp(rec):
+    """ Compute mean and variance. """
+    res = {}
+    for dat in ['avg','var','avgerr','varerr']:
+      res[dat] = 0.0
+    for info in ['jastrow', 'optimizer', 'localization', 
+                 'timestep', 'spini', 'sitei']:
+      res[info] = rec[info]
+    pmat     =  rec['value']
+    perr     =  rec['error']
+    nmax = len(pmat)
+    for n in range(nmax): 
+      res['avg']    += n*pmat[n][n]
+      res['avgerr'] += (n*perr[n][n])**2
+    res['avgerr']= res['avgerr']**0.5
+    for n in range(nmax): 
+      res['var']    += (n-res['avg'])**2*pmat[n][n]
+      res['varerr'] += (perr[n][n]*(n-res['avg'])**2)**2 +\
+          (2*pmat[n][n]*res['avgerr']*(n-res['avg']))**2
+    res['varerr'] = res['varerr']**0.5
+    return pd.Series(res)
+
+  def covar(rec,adf):
+    """ Compute covariance. """
+    res={}
+    res['cov']=0.0
+    pmat=rec['value']
+    nmax=len(pmat)
+    avgi=adf.loc[(rec['spini'],rec['sitei']),'avg']
+    avgj=adf.loc[(rec['spinj'],rec['sitej']),'avg']
+    for m in range(nmax): 
+      for n in range(nmax): 
+        res['cov']+=pmat[m][n]*(m-avgi)*(n-avgj)
+    for info in ['jastrow','optimizer','localization','timestep',
+        'spini','spinj','sitei','sitej']:
+      res[info] = rec[info]
+    return pd.Series(res)
+
+  def subspins(siterec):
+    tmpdf = siterec.set_index('spin')
+    magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
+    return pd.Series({
+        'site':siterec['site'].values[0],
+        'magmom':magmom, 'magmom_err':magerr
+      })
+
+  # Moments and other arithmatic.
+  #fluctdf = _kaverage_fluct(post_record['results'])
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  fluctdf = pd.DataFrame(post_record['results'])\
+      .groupby(grouplist)\
+      .apply(_kaverage_fluct)\
+      .reset_index()
+  for s in ['spini','spinj']:
+    ups = (fluctdf[s] == 0)
+    fluctdf[s] = "down"
+    fluctdf.loc[ups,s] = "up"
+  diag=( (fluctdf['spini']==fluctdf['spinj']) &\
+         (fluctdf['sitei']==fluctdf['sitej'])    )
+  avgdf=fluctdf[diag].apply(diag_exp,axis=1)
+  avgdf=avgdf.rename(columns={'spini':'spin','sitei':'site'})
+  magdf=avgdf.groupby(grouplist+['site']).apply(subspins)
+  avgdf=pd.merge(avgdf,magdf)
+
+  covdf=fluctdf.apply(lambda x: covar(x,avgdf.set_index(['spin','site'])),axis=1)
+  osspsp=((covdf['spini']!=covdf['spinj'])&(covdf['sitei']==covdf['sitej']))
+  ossdf=covdf[osspsp].rename(columns={'sitei':'site','spini':'spin'})
+  avgdf=pd.merge(avgdf,ossdf,on=grouplist+['site','spin'])
+
+  del avgdf['sitej']
+
+  # Catagorization.
+  avgdf['netmag'] = "down"
+  avgdf.loc[avgdf['magmom']>0,'netmag'] = "up"
+  avgdf['spinchan'] = "minority"
+  avgdf.loc[avgdf['netmag']==avgdf['spin'],'spinchan'] = "majority"
+  avgdf['element'] = "Se"
+
+  return avgdf
+
+
 def _analyze_nfluct(post_record):
   """ Compute physical values and site-average number fluctuation. """
   def diag_exp(rec):
@@ -394,30 +479,37 @@ def orbinfo(orbnum):
 def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
   """ Takes processed autogen json file and organizes it into a Pandas DataFrame."""
   rawdf = pd.read_json(open(inp_json,'r'))
-  rawdf['nfu'] = rawdf['supercell'].apply(lambda x:
-      2*abs(np.linalg.det(np.array(x).reshape(3,3)))
+  rawdf['ncell'] = rawdf['supercell'].apply(lambda x:
+      abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
-  dftdf = _format_dftdf(rawdf)
-  rawdf = rawdf[dftdf['id'].apply(filterfunc)]
-  dmcdf = unpack(rawdf['dmc'])
-  if 'energy' in dmcdf.columns:
-    dmcdf = dmcdf.join(
-          unpack(dmcdf['energy'].dropna()).applymap(dp.undict)
-        )
-    dmcdf = dmcdf\
-        .rename(columns={'value':'dmc_energy','error':'dmc_energy_err'})\
-        .drop('energy',axis=1)
-  alldf = dmcdf.join(dftdf)
-  if 'dmc_energy' in dmcdf.columns:
-    alldf['dmc_energy'] = alldf['dmc_energy']/alldf['nfu']
-    alldf['dmc_energy_err'] = alldf['dmc_energy_err']/alldf['nfu']
+  alldf = _format_dftdf(rawdf)
+  rawdf = rawdf[alldf['id'].apply(filterfunc)]
+  for qmc in ['vmc','dmc']:
+    qmcdf = unpack(rawdf[qmc])
+    if 'energy' in qmcdf.columns:
+      qmcdf = qmcdf.join(
+            unpack(qmcdf['energy'].dropna()).applymap(dp.undict)
+          )
+      qmcdf = qmcdf\
+          .rename(columns={'value':"%s_energy"%qmc,'error':"%s_energy_err"%qmc})\
+          .drop('energy',axis=1)
+    alldf = alldf.join(qmcdf,lsuffix='',rsuffix='_new')
+    for col in alldf.columns:
+      if '_new' in col:
+        sel=alldf[col].notnull()
+        assert all(alldf.loc[sel,col.replace('_new','')]==alldf.loc[sel,col])
+        del alldf[col]
+    if "%s_energy"%qmc in qmcdf.columns:
+      alldf["%s_energy"%qmc] = alldf["%s_energy"%qmc]
+      alldf["%s_energy_err"%qmc] = alldf["%s_energy_err"%qmc]
   listcols = [
       'broyden',
       'initial_charges',
       'energy_trace',
       'initial_spin',
       'kmesh',
+      'levshift',
 #      'localization',
 #      'timestep',
 #      'jastrow',
@@ -465,7 +557,7 @@ def _format_dftdf(rawdf):
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
-  copylist = ['supercell','nfu','cif','xyz','a','c','se_height','pressure','ordering','total_spin']
+  copylist = ['supercell','ncell','cif','xyz','a','c','se_height','pressure','ordering','total_spin']
   for rawinfo in copylist:
     if rawinfo in rawdf.columns:
       dftdf = dftdf.join(rawdf[rawinfo])
@@ -478,13 +570,17 @@ def _format_dftdf(rawdf):
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
       .apply(lambda x:cast_supercell(x))
+  dftdf.loc[dftdf['levshift'].isnull(),'levshift']=\
+    dftdf.loc[dftdf['levshift'].isnull(),'levshift']\
+    .apply(lambda x:(0.0,0))
+  dftdf['levshift_shift']=dftdf['levshift'].apply(lambda x: x[0])
   if 'mag_moments' in dftdf.columns:
     dftdf['max_mag_moment'] = np.nan
     dftdf.loc[dftdf['mag_moments'].notnull(),'max_mag_moment'] =\
         dftdf.loc[dftdf['mag_moments'].notnull(),'mag_moments'].apply(lambda x:
             max(abs(np.array(x)))
           )
-  dftdf['dft_energy'] = dftdf['total_energy']/dftdf['nfu']
+  dftdf['dft_energy'] = dftdf['total_energy']
   for redundant in ['basis','functional']:
     del dftdf[redundant]
   return dftdf

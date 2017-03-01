@@ -4,6 +4,8 @@ from scipy.optimize import curve_fit
 import os
 import matplotlib.pyplot as plt
 
+### Matplotlib tools.
+
 # Nicer colors for plotting from colorbrewer2.org.
 # Common colors are first letter only, prefix with l or d means light or dark.
 pc = {
@@ -166,6 +168,154 @@ def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
 def idxmap(arraylike):
   """ Map elements of an array to it's index (reverse mapping of array itself)."""
   return dict(zip(arraylike,range(len(arraylike))))
+
+def safemap(di,key):
+  if key in di.keys():
+    return di[key]
+  else:
+    return key
+
+# The mother of all plotting tools.
+class CatagoryPlot: 
+  """ Use a pandas DataFrame to make plots broken down by color, row, column,
+  and marker. Somewhat similar to what ggplot can handle (more elegantly).
+
+  For example: df.columns=[x,y,z],
+  cp=CatagoryPlot(df,color='z',mark='z')
+  cp.plot('x','y')
+
+  Now cp.fig will have a figure of x vs y with color and marker broken down by z.
+  
+  Call self.plot() to actually make a plot. 
+  
+  There are a lot of bugs I know about but haven't bothered to fix. If you find
+  one, I can probably fix it pretty quick, so long as there's a desire to have
+  it fixed.
+  """
+  def __init__(self,df,
+      row='catagoryplotdummy',col='catagoryplotdummy',
+      color='catagoryplotdummy',mark='catagoryplotdummy',
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
+
+    if 'catagoryplotdummy' in df.columns:
+      print("CatagoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
+
+
+    assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
+    self.fulldf=df
+    self.fulldf['catagoryplotdummy']='catagoryplotdummy'
+    self.row=row
+    self.col=col
+    self.color=color
+    self.mark=mark
+    self.labmap=labmap
+    self.plotargs={}
+
+    if cmap is None:
+      unique_cols=self.fulldf[color].unique()
+      self.cmap=dict(zip(unique_cols,ps['dark8'][:unique_cols.shape[0]]))
+    else: 
+      self.cmap=cmap
+
+    if mmap is None:
+      unique_marks=self.fulldf[mark].unique()
+      self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
+    else: 
+      self.mmap=mmap
+
+    self.labmap=lambda x:safemap(labmap,x)
+
+    self.fig,self.axes=plt.subplots(
+        self.fulldf[row].unique().shape[0],
+        self.fulldf[col].unique().shape[0],
+        squeeze=False,sharex=sharex,sharey=sharey
+      )
+    self.rowmap=idxmap(df[row].unique())
+    self.colmap=idxmap(df[col].unique())
+
+  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
+      labrow=False,labcol=False,labloc=(0.1,0.9),fill=True):
+    ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
+    row-and col-seperated plots. '''
+
+    self.plotargs=plotargs
+    for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
+      annotation=[]
+      ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
+      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
+      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
+      ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
+
+      if evar is not None:
+        ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
+            ecolor=self.cmap[lab[3]],capthick=1,capsize=2,**errargs)
+
+      if fill:
+        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
+            color=self.cmap[lab[3]],**plotargs)
+      else:
+        if 'mew' not in self.plotargs: self.plotargs['mew']=1
+        if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
+        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
+            color='none',
+            mec=self.cmap[lab[3]],**self.plotargs)
+        self.plotargs['mec']=save
+
+      self.fig.tight_layout()
+
+  def add_legend(self,axidx=(0,0),labstr="%s,%s",labmap={},args={}):
+    """ Make a legend for the markers and/or colors. labstr controls how the
+    labels combine the two parameters (if they're distict). labmap maps data to
+    pretty labels. locargs is passed to axes.legend(). Returns prox for legend
+    handles."""
+    unique_cols=self.fulldf[self.color].unique()
+    unique_marks=self.fulldf[self.mark].unique()
+
+    # Minimize needed labels:
+    if self.mark=='catagoryplotdummy': 
+      if labmap=={}:
+        labmap=dict(zip(unique_cols,unique_cols))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
+            **self.plotargs
+          ) for unique in unique_cols
+        ]
+    elif self.color=='catagoryplotdummy': 
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
+            **self.plotargs
+          ) for unique in unique_cols
+        ]
+    elif self.color==self.mark:
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
+            **self.plotargs
+          ) for unique in unique_cols
+        ]
+    else:
+      if labmap=={}:
+        labmap=dict(zip(unique_marks,unique_marks))
+        labmap.update(dict(zip(unique_cols,unique_cols)))
+      prox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique_mark],
+            color=self.cmap[unique_col],
+            label=labstr%(labmap[unique_col],labmap[unique_mark]),
+            **self.plotargs
+          )
+          for unique_col in unique_cols for unique_mark in unique_marks
+        ]
+    self.axes[axidx].legend(handles=prox,**args)
+    return prox
+
+### Fitting tools.
 
 class FitFunc:
   """
@@ -578,132 +728,3 @@ class MorseFitpp(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
-
-def safemap(di,key):
-  if key in di.keys():
-    return di[key]
-  else:
-    return key
-
-class CatagoryPlot: 
-  """ Use a pandas DataFrame to make plots broken down by color, row, column,
-  and marker. Somewhat similar to what ggplot can handle (more elegantly).
-
-  For example: df.columns=[x,y,z],
-  cp=CatagoryPlot(df,color='z',mark='z')
-  cp.plot('x','y')
-
-  Now cp.fig will have a figure of x vs y with color and marker broken down by z.
-  
-  Call self.plot() to actually make a plot. 
-  
-  There are a lot of bugs I know about but haven't bothered to fix. If you find
-  one, I can probably fix it pretty quick, so long as there's a desire to have
-  it fixed.
-  """
-  def __init__(self,df,
-      row='catagoryplotdummy',col='catagoryplotdummy',
-      color='catagoryplotdummy',mark='catagoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
-
-    if 'catagoryplotdummy' in df.columns:
-      print("CatagoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
-
-
-    assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
-    self.fulldf=df
-    self.fulldf['catagoryplotdummy']='catagoryplotdummy'
-    self.row=row
-    self.col=col
-    self.color=color
-    self.mark=mark
-    self.labmap=labmap
-    self.plotargs={}
-
-    if cmap is None:
-      unique_cols=self.fulldf[color].unique()
-      self.cmap=dict(zip(unique_cols,ps['dark8'][:unique_cols.shape[0]]))
-    else: 
-      self.cmap=cmap
-
-    if mmap is None:
-      unique_marks=self.fulldf[mark].unique()
-      self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
-    else: 
-      self.cmap=cmap
-
-    self.labmap=lambda x:safemap(labmap,x)
-
-    self.fig,self.axes=plt.subplots(
-        self.fulldf[row].unique().shape[0],
-        self.fulldf[col].unique().shape[0],
-        squeeze=False,sharex=sharex,sharey=sharey
-      )
-    self.rowmap=idxmap(df[row].unique())
-    self.colmap=idxmap(df[col].unique())
-
-  def plot(self,xvar,yvar,plotargs={},labrow=False,labcol=False,labloc=(0.1,0.9),fill=True):
-    ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
-    row-and col-seperated plots. '''
-
-    self.plotargs=plotargs
-    for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
-      annotation=[]
-      ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
-      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
-      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
-      ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
-
-      if fill:
-        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
-            color=self.cmap[lab[3]],**plotargs)
-      else:
-        if 'mew' not in self.plotargs: self.plotargs['mew']=1
-        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
-            color='none',
-            mec=self.cmap[lab[3]],**self.plotargs)
-
-      self.fig.tight_layout()
-
-  def add_legend(self,axidx=(0,0),labstr="%s,%s",labmap={},args={}):
-    """ Make a legend for the markers and/or colors. labstr controls how the
-    labels combine the two parameters (if they're distict). labmap maps data to
-    pretty labels. locargs is passed to axes.legend(). Returns prox for legend
-    handles."""
-    unique_cols=self.fulldf[self.color].unique()
-    unique_marks=self.fulldf[self.mark].unique()
-
-    # Minimize needed labels:
-    if self.mark=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_cols,unique_cols))
-      prox=[plt.Line2D([],[],
-            linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_cols
-        ]
-    elif self.color=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
-      prox=[plt.Line2D([],[],
-            linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_cols
-        ]
-    else:
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
-        labmap.update(dict(zip(unique_cols,unique_cols)))
-      prox=[plt.Line2D([],[],
-            linestyle='',
-            marker=self.mmap[unique_mark],
-            color=cmap[unique_col],
-            label=labstr%(labmap[unique_col],labmap[unique_mark]),
-            **self.plotargs
-          )
-          for unique_col in unique_cols for unique_mark in unique_marks
-        ]
-    self.axes[axidx].legend(handles=prox,loc='best')
-    return prox
