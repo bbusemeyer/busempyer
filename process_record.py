@@ -484,7 +484,6 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
     )
   # Unpacking the energies.
   alldf = _format_dftdf(rawdf)
-  rawdf = rawdf[alldf['id'].apply(filterfunc)]
   for qmc in ['vmc','dmc']:
     qmcdf = unpack(rawdf[qmc])
     if 'energy' in qmcdf.columns:
@@ -516,7 +515,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
 #      'optimizer'
     ]
 
-  if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
+  alldf=alldf[alldf['id'].apply(filterfunc)]
+
+  if 'mag_moments' in alldf.columns: listcols.append('mag_moments')
 
   # Convert lists.
   for col in listcols:
@@ -636,6 +637,12 @@ def match(df,cond,keys):
     raise AssertionError("Row match not unique")
   match_this = match_this.iloc[0].values
   return df.set_index(keys).xs(match_this,level=keys).reset_index()
+
+def find_duplicates(df,def_cols):
+  #TODO hard to compare arrays with NANs correctly.
+  duped=df[def_cols]
+  clean=df.drop_duplicates()
+  duped.drop(clean.index)
 
 ##############################################################################
 # Testing.
