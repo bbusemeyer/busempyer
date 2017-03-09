@@ -121,10 +121,12 @@ def analyze_nfluct(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    totchg = tmpdf.loc['up','avg'] + tmpdf.loc['down','avg']
     magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
-        'magmom':magmom, 'magmom_err':magerr
+        'magmom':magmom, 'magmom_err':magerr,
+        'totchg':totchg, 'totchg_err':magerr
       })
 
   # Moments and other arithmatic.
@@ -204,10 +206,12 @@ def _analyze_nfluct(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    totchg = tmpdf.loc['up','avg'] + tmpdf.loc['down','avg']
     magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
-        'magmom':magmom, 'magmom_err':magerr
+        'magmom':magmom, 'magmom_err':magerr,
+        'totchg':totchg, 'totchg_err':magerr
       })
 
   def siteaverage(sgrp):
