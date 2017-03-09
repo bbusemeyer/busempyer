@@ -101,7 +101,7 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
   header.append('#PBS -j oe')
   header.append('#PBS -m n')
   header.append('#PBS -N %s'%name)
-  header.append('#PBS -o {0}'.format(loc+'/qsub.out'))
+  header.append('#PBS -o %s/%s.qsub.out'%(loc,name))
   if np=='allprocs':
     exeline = 'mpirun %s &> %s'%(exe, stdout)
   elif nn*np > 1:
@@ -133,7 +133,7 @@ def gen_qsub_general(exelines,stdout='',loc='',name='',time='72:00:00',nn=1,np='
   header.append('#PBS -j oe')
   header.append('#PBS -m n')
   header.append('#PBS -N %s'%name)
-  header.append('#PBS -o {0}'.format(loc+'/qsub.out'))
+  header.append('#PBS -o %s/%s.qsub.out'%(loc,name))
   commands = header + ['cd %s'%loc] + prep_commands + exelines + final_commands
   outstr = '\n'.join(commands)
   with open(loc+'/qsub.in','w') as qsin:
