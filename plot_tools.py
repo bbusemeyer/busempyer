@@ -265,7 +265,7 @@ class CatagoryPlot:
         ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
             color='none',
             mec=self.cmap[lab[3]],**self.plotargs)
-        self.plotargs['mec']=save
+        if 'mec' in self.plotargs: self.plotargs['mec']=save
 
       self.fig.tight_layout()
 
