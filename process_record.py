@@ -161,7 +161,6 @@ def analyze_nfluct(post_record):
 
   return avgdf
 
-
 def _analyze_nfluct(post_record):
   """ Compute physical values and site-average number fluctuation. """
   def diag_exp(rec):
@@ -267,6 +266,62 @@ def _analyze_nfluct(post_record):
   covdf = savgdf.drop(['magmom','magmom_err'],axis=1)
   return { 'magmom':json.loads(magdf.to_json()),
            'covariance':json.loads(covdf.to_json()) }
+
+def analyze_ordm(post_record,orbmap):
+  """ Compute physical values and site-average 1-body RDM. """
+
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  # k-average (currently selects gamma-only due to bug).
+  ordmdf = pd.DataFrame(post_record['results'])\
+      .groupby(['timestep','jastrow','localization','optimizer'])\
+      .apply(_kaverage_ordm)\
+      .reset_index()
+  # Classify orbitals based on index.
+  infodf = ordmdf['orbni'].drop_duplicates().apply(lambda orbnum:
+      pd.Series(dict(zip(['orbnum','elem','atom','orb'],orbmap[orbnum]))))
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbni',right_on='orbnum')
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbnj',right_on='orbnum',
+      suffixes=("i","j"))
+  ordmdf = ordmdf.drop(['orbnumi','orbnumj'],axis=1)
+  # Classify atoms based on spin occupations.
+  occdf = ordmdf[ordmdf['orbni']==ordmdf['orbnj']]\
+      .groupby(grouplist+['atomi'])\
+      .agg({'up':np.sum,'down':np.sum})\
+      .reset_index()\
+      .rename(columns={'atomi':'at'})
+  occdf['net']  = occdf['up'] - occdf['down']
+  occdf = occdf.drop(['up','down'],axis=1)
+  occdf['atspin'] = 'up'
+  occdf.loc[occdf['net'] < 0,'atspin'] = 'down'
+  occdf.loc[occdf['net'].abs() < 1e-1,'atspin'] = 'zero'
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomi'],right_on=grouplist+['at'])
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomj'],right_on=grouplist+['at'],
+      suffixes=('i','j'))\
+      .drop(['ati','atj'],axis=1)
+  ordmdf['rel_atspin'] = "antiparallel"
+  ordmdf.loc[ordmdf['atspini']==ordmdf['atspinj'],'rel_atspin'] = "parallel"
+  ordmdf.loc[ordmdf['atspini']=='zero','rel_atspin'] = "zero"
+  ordmdf.loc[ordmdf['atspinj']=='zero','rel_atspin'] = "zero"
+  # Classify spin channels based on minority and majority channels.
+  ordmdf = ordmdf.set_index([c for c in ordmdf.columns 
+    if c not in ['up','down','up_err','down_err']])
+  vals = ordmdf[['up','down']].stack()
+  vals.index.names = vals.index.names[:-1]+['spin']
+  errs = ordmdf[['up_err','down_err']]\
+      .rename(columns={'up_err':'up','down_err':'down'})\
+      .stack()
+  errs.index.names = errs.index.names[:-1]+['spin']
+  ordmdf = pd.DataFrame({'ordm':vals,'ordm_err':errs}).reset_index()
+  ordmdf['spini'] = "minority"
+  ordmdf['spinj'] = "minority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspini'],'spini'] = "majority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspinj'],'spinj'] = "majority"
+  ordmdf.loc[ordmdf['atspini'] == 'zero','spini'] = 'neither'
+  ordmdf.loc[ordmdf['atspinj'] == 'zero','spinj'] = 'neither'
+
+  return ordmdf
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
