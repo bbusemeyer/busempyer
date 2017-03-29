@@ -114,14 +114,13 @@ def gen_qsub(exe,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
     qsin.write(outstr)
   return loc+'/qsub.in'
 
-def gen_qsub_general(exelines,stdout='',loc='',name='',time='72:00:00',nn=1,np='allprocs',
+def gen_qsub_general(exelines,loc='',name='',time='72:00:00',nn=1,np='allprocs',
     queue='batch', prep_commands=[],final_commands=[]):
   """ Generate a qsub file.
   
   Blank strings will generate useful defaults. 'general' is a new version that
   allows different execution strings."""
 
-  if stdout=='': stdout='stdout'
   if loc=='': loc=getcwd()
   if name=='': name=str(datetime.now()).replace(' ','_')
   header = []
