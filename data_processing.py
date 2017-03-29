@@ -51,6 +51,7 @@ def gen_autogen_defining_columns():
       'basis_factor',
       'basis_lowest',
       'basis_number',
+      'levshift',
       'a','b','c',
       'total_spin',
       'correlation',
