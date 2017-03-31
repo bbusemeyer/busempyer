@@ -240,7 +240,7 @@ class CatagoryPlot:
     self.colmap=idxmap(df[col].unique())
 
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc=(0.1,0.9),line=False,fill=True):
+      labrow=False,labcol=False,labloc=(0.1,0.9),fill=True):
     ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
     row-and col-seperated plots. '''
 
@@ -256,9 +256,6 @@ class CatagoryPlot:
         ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
             ecolor=self.cmap[lab[3]],capthick=1,capsize=2,**errargs)
 
-      if line:
-        ax.plot(df[xvar],df[yvar],'-',
-            color=self.cmap[lab[3]],**plotargs)
       if fill:
         ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
             color=self.cmap[lab[3]],**plotargs)

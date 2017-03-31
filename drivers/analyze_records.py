@@ -5,7 +5,7 @@ import sys
 from cat_jsons import cat_jsons
 
 # Parallel only worth it for RDM analysis.
-def analyze_records(reclist,parallel=True):
+def analyze_records(reclist,parallel=False):
   if not parallel:
     arecs = [output_analysis(rec) for rec in reclist]
   else: # Parallelize.
