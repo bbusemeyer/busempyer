@@ -223,6 +223,7 @@ def _analyze_nfluct(post_record):
         'variance':sgrp['var'].mean(),
         'variance_err':(sgrp['varerr']**2).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
+        'totchg':abs(sgrp['totchg'].values).mean(),
         'magmom_err':(sgrp['magmom_err']**2).mean()**0.5,
         'covariance':sgrp['cov'].mean()
       })
