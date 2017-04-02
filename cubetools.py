@@ -339,7 +339,7 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
 if __name__=="__main__":
   import sys
 
-  implemented = ['add','sub','xsf']
+  implemented = ['add','sub','xsf','integrate_abs']
 
   if len(sys.argv) < 2:
     raise AssertionError("""
@@ -379,6 +379,11 @@ if __name__=="__main__":
           read_cube(open(sys.argv[2],'r')),
           outf
         )
+  elif sys.argv[1] == "integrate_abs":
+    if len(sys.argv) != 3:
+      raise AssertionError("Integration needs exactly one input cube.")
+    print("Abs. integral: ",integrate_abs(read_cube(open(sys.argv[2],'r'))))
+
   else:
     raise AssertionError("""
         Sorry, '{}' keyword isn't implemented.

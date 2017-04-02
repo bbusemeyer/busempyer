@@ -77,29 +77,37 @@ def _process_dmc(dmc_record):
     )
   return res
 
+def mat_diag_exp(pmat,perr):
+  ''' Mean and variance of diagonal of a matrix (diagonal indices are the
+  elements of the probability distribution). '''
+  # Not double-checked yet!
+  avg,avgerr=0.0,0.0
+  var,varerr=0.0,0.0
+  nmax = len(pmat)
+  for n in range(nmax): 
+    avg    += n*pmat[n][n]
+    avgerr += (n*perr[n][n])**2
+  avgerr=avgerr**0.5
+  for n in range(nmax): 
+    var    += (n-avg)**2*pmat[n][n]
+    varerr += (perr[n][n]*(n-avg)**2)**2 +\
+        (2*pmat[n][n]*avgerr*(n-avg))**2
+  varerr=varerr**0.5
+  return avg,avgerr,var,varerr
+
+
 def analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
     Useful for external versions. """
   def diag_exp(rec):
     """ Compute mean and variance. """
-    res = {}
-    for dat in ['avg','var','avgerr','varerr']:
-      res[dat] = 0.0
+    res = dict(zip(
+        ('avg','avgerr','var','varerr'),
+        mat_diag_exp(rec['value'],rec['error'])
+      ))
     for info in ['jastrow', 'optimizer', 'localization', 
                  'timestep', 'spini', 'sitei']:
       res[info] = rec[info]
-    pmat     =  rec['value']
-    perr     =  rec['error']
-    nmax = len(pmat)
-    for n in range(nmax): 
-      res['avg']    += n*pmat[n][n]
-      res['avgerr'] += (n*perr[n][n])**2
-    res['avgerr']= res['avgerr']**0.5
-    for n in range(nmax): 
-      res['var']    += (n-res['avg'])**2*pmat[n][n]
-      res['varerr'] += (perr[n][n]*(n-res['avg'])**2)**2 +\
-          (2*pmat[n][n]*res['avgerr']*(n-res['avg']))**2
-    res['varerr'] = res['varerr']**0.5
     return pd.Series(res)
 
   def covar(rec,adf):
