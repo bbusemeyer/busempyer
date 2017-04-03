@@ -161,6 +161,12 @@ def fix_lims(ax_inp,factor=0.04):
 
 def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 
+def fix_xticks(ax,**kwargs):
+  ax.set_xticks(thin_ticks(ax.get_xticks(),kwargs))
+
+def fix_yticks(ax,**kwargs):
+  ax.set_yticks(thin_ticks(ax.get_yticks(),kwargs))
+
 def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
   newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
@@ -259,7 +265,7 @@ class CatagoryPlot:
         ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
             color='none',
             mec=self.cmap[lab[3]],**self.plotargs)
-        self.plotargs['mec']=save
+        if 'mec' in self.plotargs: self.plotargs['mec']=save
 
       self.fig.tight_layout()
 

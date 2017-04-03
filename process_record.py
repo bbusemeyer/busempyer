@@ -77,29 +77,37 @@ def _process_dmc(dmc_record):
     )
   return res
 
+def mat_diag_exp(pmat,perr):
+  ''' Mean and variance of diagonal of a matrix (diagonal indices are the
+  elements of the probability distribution). '''
+  # Not double-checked yet!
+  avg,avgerr=0.0,0.0
+  var,varerr=0.0,0.0
+  nmax = len(pmat)
+  for n in range(nmax): 
+    avg    += n*pmat[n][n]
+    avgerr += (n*perr[n][n])**2
+  avgerr=avgerr**0.5
+  for n in range(nmax): 
+    var    += (n-avg)**2*pmat[n][n]
+    varerr += (perr[n][n]*(n-avg)**2)**2 +\
+        (2*pmat[n][n]*avgerr*(n-avg))**2
+  varerr=varerr**0.5
+  return avg,avgerr,var,varerr
+
+
 def analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
     Useful for external versions. """
   def diag_exp(rec):
     """ Compute mean and variance. """
-    res = {}
-    for dat in ['avg','var','avgerr','varerr']:
-      res[dat] = 0.0
+    res = dict(zip(
+        ('avg','avgerr','var','varerr'),
+        mat_diag_exp(rec['value'],rec['error'])
+      ))
     for info in ['jastrow', 'optimizer', 'localization', 
                  'timestep', 'spini', 'sitei']:
       res[info] = rec[info]
-    pmat     =  rec['value']
-    perr     =  rec['error']
-    nmax = len(pmat)
-    for n in range(nmax): 
-      res['avg']    += n*pmat[n][n]
-      res['avgerr'] += (n*perr[n][n])**2
-    res['avgerr']= res['avgerr']**0.5
-    for n in range(nmax): 
-      res['var']    += (n-res['avg'])**2*pmat[n][n]
-      res['varerr'] += (perr[n][n]*(n-res['avg'])**2)**2 +\
-          (2*pmat[n][n]*res['avgerr']*(n-res['avg']))**2
-    res['varerr'] = res['varerr']**0.5
     return pd.Series(res)
 
   def covar(rec,adf):
@@ -121,10 +129,12 @@ def analyze_nfluct(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    totchg = tmpdf.loc['up','avg'] + tmpdf.loc['down','avg']
     magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
-        'magmom':magmom, 'magmom_err':magerr
+        'magmom':magmom, 'magmom_err':magerr,
+        'totchg':totchg, 'totchg_err':magerr
       })
 
   # Moments and other arithmatic.
@@ -160,7 +170,6 @@ def analyze_nfluct(post_record):
   avgdf['element'] = "Se"
 
   return avgdf
-
 
 def _analyze_nfluct(post_record):
   """ Compute physical values and site-average number fluctuation. """
@@ -205,10 +214,12 @@ def _analyze_nfluct(post_record):
   def subspins(siterec):
     tmpdf = siterec.set_index('spin')
     magmom = tmpdf.loc['up','avg'] - tmpdf.loc['down','avg']
+    totchg = tmpdf.loc['up','avg'] + tmpdf.loc['down','avg']
     magerr = (tmpdf.loc['up','avgerr']**2 + tmpdf.loc['down','avgerr']**2)**0.5
     return pd.Series({
         'site':siterec['site'].values[0],
-        'magmom':magmom, 'magmom_err':magerr
+        'magmom':magmom, 'magmom_err':magerr,
+        'totchg':totchg, 'totchg_err':magerr
       })
 
   def siteaverage(sgrp):
@@ -220,6 +231,7 @@ def _analyze_nfluct(post_record):
         'variance':sgrp['var'].mean(),
         'variance_err':(sgrp['varerr']**2).mean()**0.5,
         'magmom':abs(sgrp['magmom'].values).mean(),
+        'totchg':abs(sgrp['totchg'].values).mean(),
         'magmom_err':(sgrp['magmom_err']**2).mean()**0.5,
         'covariance':sgrp['cov'].mean()
       })
@@ -267,6 +279,62 @@ def _analyze_nfluct(post_record):
   covdf = savgdf.drop(['magmom','magmom_err'],axis=1)
   return { 'magmom':json.loads(magdf.to_json()),
            'covariance':json.loads(covdf.to_json()) }
+
+def analyze_ordm(post_record,orbmap):
+  """ Compute physical values and site-average 1-body RDM. """
+
+  grouplist = ['timestep','jastrow','localization','optimizer']
+  # k-average (currently selects gamma-only due to bug).
+  ordmdf = pd.DataFrame(post_record['results'])\
+      .groupby(['timestep','jastrow','localization','optimizer'])\
+      .apply(_kaverage_ordm)\
+      .reset_index()
+  # Classify orbitals based on index.
+  infodf = ordmdf['orbni'].drop_duplicates().apply(lambda orbnum:
+      pd.Series(dict(zip(['orbnum','elem','atom','orb'],orbmap[orbnum]))))
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbni',right_on='orbnum')
+  ordmdf = pd.merge(ordmdf,infodf,how='outer',left_on='orbnj',right_on='orbnum',
+      suffixes=("i","j"))
+  ordmdf = ordmdf.drop(['orbnumi','orbnumj'],axis=1)
+  # Classify atoms based on spin occupations.
+  occdf = ordmdf[ordmdf['orbni']==ordmdf['orbnj']]\
+      .groupby(grouplist+['atomi'])\
+      .agg({'up':np.sum,'down':np.sum})\
+      .reset_index()\
+      .rename(columns={'atomi':'at'})
+  occdf['net']  = occdf['up'] - occdf['down']
+  occdf = occdf.drop(['up','down'],axis=1)
+  occdf['atspin'] = 'up'
+  occdf.loc[occdf['net'] < 0,'atspin'] = 'down'
+  occdf.loc[occdf['net'].abs() < 1e-1,'atspin'] = 'zero'
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomi'],right_on=grouplist+['at'])
+  ordmdf = pd.merge(ordmdf,occdf,
+      left_on=grouplist+['atomj'],right_on=grouplist+['at'],
+      suffixes=('i','j'))\
+      .drop(['ati','atj'],axis=1)
+  ordmdf['rel_atspin'] = "antiparallel"
+  ordmdf.loc[ordmdf['atspini']==ordmdf['atspinj'],'rel_atspin'] = "parallel"
+  ordmdf.loc[ordmdf['atspini']=='zero','rel_atspin'] = "zero"
+  ordmdf.loc[ordmdf['atspinj']=='zero','rel_atspin'] = "zero"
+  # Classify spin channels based on minority and majority channels.
+  ordmdf = ordmdf.set_index([c for c in ordmdf.columns 
+    if c not in ['up','down','up_err','down_err']])
+  vals = ordmdf[['up','down']].stack()
+  vals.index.names = vals.index.names[:-1]+['spin']
+  errs = ordmdf[['up_err','down_err']]\
+      .rename(columns={'up_err':'up','down_err':'down'})\
+      .stack()
+  errs.index.names = errs.index.names[:-1]+['spin']
+  ordmdf = pd.DataFrame({'ordm':vals,'ordm_err':errs}).reset_index()
+  ordmdf['spini'] = "minority"
+  ordmdf['spinj'] = "minority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspini'],'spini'] = "majority"
+  ordmdf.loc[ordmdf['spin'] == ordmdf['atspinj'],'spinj'] = "majority"
+  ordmdf.loc[ordmdf['atspini'] == 'zero','spini'] = 'neither'
+  ordmdf.loc[ordmdf['atspinj'] == 'zero','spinj'] = 'neither'
+
+  return ordmdf
 
 def _analyze_ordm(post_record):
   """ Compute physical values and site-average 1-body RDM. """
@@ -484,7 +552,6 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
     )
   # Unpacking the energies.
   alldf = _format_dftdf(rawdf)
-  rawdf = rawdf[alldf['id'].apply(filterfunc)]
   for qmc in ['vmc','dmc']:
     qmcdf = unpack(rawdf[qmc])
     if 'energy' in qmcdf.columns:
@@ -516,7 +583,9 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
 #      'optimizer'
     ]
 
-  if 'mag_moments' in rawdf.columns: listcols.append('mag_moments')
+  alldf=alldf[alldf['id'].apply(filterfunc)]
+
+  if 'mag_moments' in alldf.columns: listcols.append('mag_moments')
 
   # Convert lists.
   for col in listcols:
@@ -636,6 +705,12 @@ def match(df,cond,keys):
     raise AssertionError("Row match not unique")
   match_this = match_this.iloc[0].values
   return df.set_index(keys).xs(match_this,level=keys).reset_index()
+
+def find_duplicates(df,def_cols):
+  #TODO hard to compare arrays with NANs correctly.
+  duped=df[def_cols]
+  clean=df.drop_duplicates()
+  duped.drop(clean.index)
 
 ##############################################################################
 # Testing.
