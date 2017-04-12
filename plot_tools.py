@@ -222,12 +222,14 @@ class CatagoryPlot:
       self.cmap=dict(zip(unique_colors,ps['dark8'][:unique_colors.shape[0]]))
     else: 
       self.cmap=cmap
-
+    self.cmap['catagoryplotdummy']='k'
+    
     if mmap is None:
       unique_marks=self.fulldf[mark].unique()
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
     else: 
       self.mmap=mmap
+    self.mmap['catagoryplotdummy']='o'
 
     self.labmap=lambda x:safemap(labmap,x)
 
@@ -286,6 +288,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
+      self.axes[axidx].legend(handles=prox,**args)
     elif self.color=='catagoryplotdummy': 
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -293,8 +296,9 @@ class CatagoryPlot:
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
             **self.plotargs
-          ) for unique in unique_colors
+          ) for unique in unique_marks
         ]
+      self.axes[axidx].legend(handles=prox,**args)
     elif self.color==self.mark:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -304,20 +308,27 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
+      self.axes[axidx].legend(handles=prox,**args)
     else:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
         labmap.update(dict(zip(unique_colors,unique_colors)))
-      prox=[plt.Line2D([],[],
+      cprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique_mark],
-            color=self.cmap[unique_color],
-            label=labstr%(labmap[unique_color],labmap[unique_mark]),
+            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
             **self.plotargs
-          )
-          for unique_color in unique_colors for unique_mark in unique_marks
+          ) for unique in unique_colors
         ]
-    self.axes[axidx].legend(handles=prox,**args)
+      mprox=[plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
+            **self.plotargs
+          ) for unique in unique_marks
+        ]
+      prox=cprox,mprox
+      mlegend=self.axes[axidx].legend(handles=mprox,**(args[1]))
+      self.axes[axidx].add_artist(mlegend)
+      self.axes[axidx].legend(handles=cprox,**args[0])
     return prox
 
 ### Fitting tools.
