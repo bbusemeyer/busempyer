@@ -218,8 +218,8 @@ class CatagoryPlot:
     self.plotargs={}
 
     if cmap is None:
-      unique_cols=self.fulldf[color].unique()
-      self.cmap=dict(zip(unique_cols,ps['dark8'][:unique_cols.shape[0]]))
+      unique_colors=self.fulldf[color].unique()
+      self.cmap=dict(zip(unique_colors,ps['dark8'][:unique_colors.shape[0]]))
     else: 
       self.cmap=cmap
 
@@ -269,23 +269,22 @@ class CatagoryPlot:
 
       self.fig.tight_layout()
 
-  def add_legend(self,axidx=(0,0),labstr="%s,%s",labmap={},args={}):
-    """ Make a legend for the markers and/or colors. labstr controls how the
-    labels combine the two parameters (if they're distict). labmap maps data to
+  def add_legend(self,axidx=(0,0),labmap={},args={}):
+    """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
-    handles."""
-    unique_cols=self.fulldf[self.color].unique()
+    handles. If there are two legends, the args should be a list."""
+    unique_colors=self.fulldf[self.color].unique()
     unique_marks=self.fulldf[self.mark].unique()
 
     # Minimize needed labels:
     if self.mark=='catagoryplotdummy': 
       if labmap=={}:
-        labmap=dict(zip(unique_cols,unique_cols))
+        labmap=dict(zip(unique_colors,unique_colors))
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
             **self.plotargs
-          ) for unique in unique_cols
+          ) for unique in unique_colors
         ]
     elif self.color=='catagoryplotdummy': 
       if labmap=={}:
@@ -294,7 +293,7 @@ class CatagoryPlot:
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
             **self.plotargs
-          ) for unique in unique_cols
+          ) for unique in unique_colors
         ]
     elif self.color==self.mark:
       if labmap=={}:
@@ -303,20 +302,20 @@ class CatagoryPlot:
             linestyle='',
             marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
             **self.plotargs
-          ) for unique in unique_cols
+          ) for unique in unique_colors
         ]
     else:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
-        labmap.update(dict(zip(unique_cols,unique_cols)))
+        labmap.update(dict(zip(unique_colors,unique_colors)))
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique_mark],
-            color=self.cmap[unique_col],
-            label=labstr%(labmap[unique_col],labmap[unique_mark]),
+            color=self.cmap[unique_color],
+            label=labstr%(labmap[unique_color],labmap[unique_mark]),
             **self.plotargs
           )
-          for unique_col in unique_cols for unique_mark in unique_marks
+          for unique_color in unique_colors for unique_mark in unique_marks
         ]
     self.axes[axidx].legend(handles=prox,**args)
     return prox
@@ -710,6 +709,31 @@ class MorseFit(FitFunc):
         0.05,                   # Emperical suggestion.
         yvals[minr]             # Bottom of potential.
       )
+
+class LogFit(FitFunc):
+  ''' 
+  Logarithmic fit of the form:
+
+  y=y0 + b log(x0-x)
+
+  Note that if x0=0 for you, then you should just use the linear fit!
+  '''
+  def __init__(self,pnames=['intercept','slope','shift']):
+    def logform(x,y0,b,x0):
+      return y0 + b*np.log(x0-x)
+    def logjac(x,y0,b,x0):
+      return np.array((1,np.log(x0-x),-b/(x0-x)))
+    self.form = logform
+    self.jac  = logjac
+    self.pnms = pnames
+    self.pmap = {}
+    self.emap = {}
+    self.parm = None
+    self.perr = None
+    self.cov  = None
+  def _set_default_parms(self,xvals,yvals,evals):
+    ''' Start by assuming the shift is zero. '''
+    return (yvals[abs(xvals).argmin()],slope(np.log(xvals),yvals),0)
 
 # Its been a while and I'm not sure how this is different. Delete?
 class MorseFitpp(FitFunc):
