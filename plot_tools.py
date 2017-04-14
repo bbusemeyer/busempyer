@@ -250,9 +250,6 @@ class CatagoryPlot:
     for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
       annotation=[]
       ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
-      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
-      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
-      ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
 
       if evar is not None:
         ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
@@ -268,6 +265,10 @@ class CatagoryPlot:
             color='none',
             mec=self.cmap[lab[3]],**self.plotargs)
         if 'mec' in self.plotargs: self.plotargs['mec']=save
+
+      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
+      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
+      ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
 
       self.fig.tight_layout()
 
