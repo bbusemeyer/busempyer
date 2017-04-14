@@ -222,14 +222,14 @@ class CatagoryPlot:
       self.cmap=dict(zip(unique_colors,ps['dark8'][:unique_colors.shape[0]]))
     else: 
       self.cmap=cmap
-    self.cmap['catagoryplotdummy']='k'
+    self.cmap['catagoryplotdummy']='none'
     
     if mmap is None:
       unique_marks=self.fulldf[mark].unique()
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
     else: 
       self.mmap=mmap
-    self.mmap['catagoryplotdummy']='o'
+    self.mmap['catagoryplotdummy']='s'
 
     self.labmap=lambda x:safemap(labmap,x)
 
@@ -322,7 +322,7 @@ class CatagoryPlot:
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
+            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],mew=1.0,
             **self.plotargs
           ) for unique in unique_marks
         ]
