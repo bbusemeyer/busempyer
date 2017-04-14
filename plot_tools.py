@@ -219,7 +219,7 @@ class CatagoryPlot:
 
     if cmap is None:
       unique_colors=self.fulldf[color].unique()
-      self.cmap=dict(zip(unique_colors,ps['dark8'][:unique_colors.shape[0]]))
+      self.cmap=dict(zip(unique_colors,(ps['dark8']+ps['cb12'])[:unique_colors.shape[0]]))
     else: 
       self.cmap=cmap
     self.cmap['catagoryplotdummy']='none'
