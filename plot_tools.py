@@ -13,7 +13,6 @@ pc = {
     'lb':'#a6cee3', # Light blue.
     'b' :'#1f78b4', # Blue.
     'lg':'#b2df8a', # Light green.
-    'g' :'#33a02c', # Green.
     'lr':'#fb9a99', # Light red.
     'r' :'#e31a1c', # Red
     'lo':'#fdbf6f', # Light orange/peach.
@@ -26,6 +25,8 @@ pc = {
     't':    '#1b9e77', # Teal.
     'do':   '#d95f02', # Dark orange.
     'pink': '#e7298a', # Dark pink.
+    'g' :   '#66a61e', # Green.
+    'lp':   '#7570b3', # light purple.
     'dy':   '#e6ab02', # Dark yellow/gold.
     'dgray':'#666666', # Dark gray.
     # 9-class Set1.
@@ -112,6 +113,18 @@ Things I commonly have to look up:
    None        nothing
    " "         nothing
    ""          nothing
+
+Favorite colors to use from pc:
+  't':    '#1b9e77', # Teal.
+  'do':   '#d95f02', # Dark orange.
+  'g' :   '#66a61e', # Green.
+  'pink': '#e7298a', # Dark pink.
+  'dy':   '#e6ab02', # Dark yellow/gold.
+  'dgray':'#666666', # Dark gray.
+  'tan' :' #b15928', # Cowhide tan.
+  'lp':   '#7570b3', # light purple.
+
+
 Color maps:
   Good ``uniform'' sequential: viridis,plasma.
   Good diverging: Spectral,seismic,bwr,BrBG
