@@ -286,7 +286,7 @@ class CatagoryPlot:
       if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
       if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
       if labloc=='title':
-        ax.set_title(', '.join(annotation))
+        ax.set_title('\n'.join(annotation))
       else:
         ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
 
