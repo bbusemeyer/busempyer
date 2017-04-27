@@ -2,6 +2,7 @@ import numpy as np
 from inspect import getargspec
 from scipy.optimize import curve_fit
 import os
+from copy import deepcopy as copy
 import matplotlib.pyplot as plt
 
 ### Matplotlib tools.
@@ -299,6 +300,9 @@ class CatagoryPlot:
     unique_colors=self.fulldf[self.color].unique()
     unique_marks=self.fulldf[self.mark].unique()
 
+    safeargs=copy(self.plotargs)
+    safeargs.pop('mew')
+
     # Minimize needed labels:
     if self.mark=='catagoryplotdummy': 
       if labmap=={}:
@@ -343,7 +347,7 @@ class CatagoryPlot:
       mprox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],mew=1.0,
-            **self.plotargs
+            **safeargs
           ) for unique in unique_marks
         ]
       prox=cprox,mprox
