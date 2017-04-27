@@ -255,7 +255,7 @@ class CatagoryPlot:
     self.colmap=idxmap(df[col].unique())
 
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc=(0.1,0.9),fill=True):
+      labrow=False,labcol=False,labloc='title',fill=True,line=False):
     ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
     row-and col-seperated plots. '''
 
@@ -279,9 +279,16 @@ class CatagoryPlot:
             mec=self.cmap[lab[3]],**self.plotargs)
         if 'mec' in self.plotargs: self.plotargs['mec']=save
 
+      if line:
+        ax.plot(df[xvar],df[yvar],'-',
+            color=self.cmap[lab[3]],**plotargs)
+
       if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
       if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
-      ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
+      if labloc=='title':
+        ax.set_title(', '.join(annotation))
+      else:
+        ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
 
       self.fig.tight_layout()
 
