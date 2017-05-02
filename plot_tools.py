@@ -301,7 +301,8 @@ class CatagoryPlot:
     unique_marks=self.fulldf[self.mark].unique()
 
     safeargs=copy(self.plotargs)
-    safeargs.pop('mew')
+    if 'mew' in self.plotargs:
+      safeargs.pop('mew')
 
     # Minimize needed labels:
     if self.mark=='catagoryplotdummy': 
