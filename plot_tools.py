@@ -336,6 +336,8 @@ class CatagoryPlot:
         ]
       self.axes[axidx].legend(handles=prox,**args)
     else:
+      if dtype(args)==dict:
+        args=[args,args]
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
         labmap.update(dict(zip(unique_colors,unique_colors)))
