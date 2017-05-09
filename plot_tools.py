@@ -254,8 +254,6 @@ class CatagoryPlot:
       )
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
-    print(pm)
-    print(self.mmap)
 
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
       labrow=False,labcol=False,labloc='title',fill=True,line=False):
