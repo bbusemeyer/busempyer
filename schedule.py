@@ -35,19 +35,11 @@ class RandomScheduler:
       print("{}   {}".format(date,presenter))
 
 if __name__=='__main__':
-  avoid = [["July",12],["July",19]]
+  avoid = []
   presenters = [
-      "Alex",
-      "Brian",
-      "Chong",
-      "Kiel",
-      "Li",
-      "Paul",
-      "Shivesh",
-      "Will",
-      "Yueqing"
+      'Alex','Christian','Kiel','Li','Mick','Shubhang','Will','Yueqing'
     ]
-  first_date = ["May",3]
+  first_date = ["June",1]
   sched=RandomScheduler(first_date,presenters,avoid)
   sched.find_dates()
   print("Here's a few potential schedules:")
