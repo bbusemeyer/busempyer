@@ -254,8 +254,6 @@ class CatagoryPlot:
       )
     self.fig.set_size_inches(3.5*self.axes.shape[1]+0.5,
                          2.5*self.axes.shape[0]+0.5)
-    self.axes[0,0].set_xlabel('set xlabel')
-    self.axes[0,0].set_ylabel('set ylabel')
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
