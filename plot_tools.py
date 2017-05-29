@@ -288,6 +288,10 @@ class CatagoryPlot:
       annotation=[]
       ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
 
+      if line:
+        ax.plot(df[xvar],df[yvar],'-',
+            color=self.cmap[lab[3]],**plotargs)
+
       if evar is not None:
         ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
             ecolor=self.cmap[lab[3]],capthick=1,capsize=2,**errargs)
@@ -302,10 +306,6 @@ class CatagoryPlot:
             color='none',
             mec=self.cmap[lab[3]],**self.plotargs)
         if 'mec' in self.plotargs: self.plotargs['mec']=save
-
-      if line:
-        ax.plot(df[xvar],df[yvar],'-',
-            color=self.cmap[lab[3]],**plotargs)
 
       if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
       if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
