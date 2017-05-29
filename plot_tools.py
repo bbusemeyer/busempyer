@@ -74,7 +74,6 @@ def gen_rgb(hexstr):
 def gen_hex(rgb):
   ''' Take an RGB tuple and convert to a #XXXXXX string.'''
   digits=[('0'+hex(rgb[i]).replace('0x',''))[-2:] for i in range(3)]
-  print(rgb,digits)
   return '#{}{}{}'.format(*digits)
 
 def gen_spectrum(start,end,numpoints):
