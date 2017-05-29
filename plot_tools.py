@@ -90,7 +90,9 @@ def gen_spectrum(start,end,numpoints):
 # My own plotting defaults.
 myplotdef={
     'mew':0.5,
-    'mec':'k'
+    'mec':'k',
+    'ms':5,
+    'lw':1
   }
 myerrdef={
     'capthick':1,
