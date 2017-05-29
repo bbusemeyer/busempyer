@@ -66,6 +66,28 @@ pm = ["o",
     "x",
 ]
 
+def gen_rgb(hexstr):
+  ''' Make a tuple of RGB values from a hex string. '''
+  hstr=hexstr.lstrip('#')
+  return tuple(int(hstr[i:i+2], 16) for i in (0, 2 ,4))
+
+def gen_hex(rgb):
+  ''' Take an RGB tuple and convert to a #XXXXXX string.'''
+  digits=[('0'+hex(rgb[i]).replace('0x',''))[-2:] for i in range(3)]
+  print(rgb,digits)
+  return '#{}{}{}'.format(*digits)
+
+def gen_spectrum(start,end,numpoints):
+  ''' Sequential colors can be chosen automatically.'''
+  start=np.array(gen_rgb(start))
+  end=np.array(gen_rgb(end))
+  dom=np.linspace(0,1,numpoints)[:,None]
+  spectrum=(1-dom)*start[None,:] + dom*end[None,:]
+  spectrum=spectrum.round().astype(int)
+  spectrum=[gen_hex(spectrum[i,:]) for i in range(numpoints)]
+  return spectrum
+
+
 # My own plotting defaults.
 myplotdef={
     'mew':0.5,
@@ -799,3 +821,7 @@ class MorseFitpp(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+if __name__=='__main__':
+  spec=gen_spectrum('#010203','#faafef',10)
+  print(spec)
