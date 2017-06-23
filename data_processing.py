@@ -3,7 +3,7 @@ import os
 import json
 import cryfiles_io as cio
 import qfiles_io as qio
-import read_numberfluct as rn
+#import read_numberfluct as rn
 import qefiles_io as qeio
 import cubetools as ct
 from copy import deepcopy
@@ -381,7 +381,10 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
     print("  Postprocessing results..." )
     try:
       inpf = open(kroot+'.ppr.o','r')
-      fludat = rn.read_number_dens_likejson(inpf)
+      # TODO
+      # Apparently this directory is now missing, so you should fix this if
+      # needed.
+      #fludat = rn.read_number_dens_likejson(inpf)
       if fludat is None:
         print("  (Error in number fluctuation output, skipping)")
       else:
