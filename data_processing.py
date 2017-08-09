@@ -48,9 +48,7 @@ def gen_autogen_defining_columns():
   calculation? Defined as a function to make it more readable when importing.
   Pls keep alphabetize (<range> sort u).  """
   return [
-      'basis_factor',
-      'basis_lowest',
-      'basis_number',
+      'basis',
       'levshift',
       'a','b','c',
       'total_spin',
