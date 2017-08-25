@@ -34,15 +34,21 @@ class RandomScheduler:
     for date,presenter in zip(self.dates,self.presenters):
       print("{}   {}".format(date,presenter))
 
+  def assign_dates(self):
+    ''' Assigns presentation dates to people in order. '''
+    for date,presenter in zip(self.dates,self.presenters):
+      print("{}   {}".format(date,presenter))
+
 if __name__=='__main__':
   avoid = []
   presenters = [
-      'Alex','Christian','Kiel','Li','Mick','Shubhang','Will','Yueqing'
+      'Brian','Alex','Will','Kiel','Paul','Christian','Yueqing','Li'
     ]
-  first_date = ["June",1]
+  first_date = ["July",27]
   sched=RandomScheduler(first_date,presenters,avoid)
   sched.find_dates()
-  print("Here's a few potential schedules:")
-  for i in range(10):
-    print()
-    sched.shuffle_people()
+  sched.assign_dates()
+  #print("Here's a few potential schedules:")
+  #for i in range(10):
+  #  print()
+  #  sched.shuffle_people()

@@ -154,14 +154,14 @@ Color maps:
   Good diverging: Spectral,seismic,bwr,BrBG
 """
 
-def matplotlib_header(usetex=True,family='serif'):
+def matplotlib_header(usetex=True,family='sans-serif'):
   import seaborn as sns
   sns.set_style("ticks")
   plt.rc('axes.formatter',useoffset=False)
-  plt.rc('text',usetex=usetex)
+  #plt.rc('text',usetex=usetex)
   plt.rc('font',style='normal')
   plt.rc('font',family=family)
-  plt.rc('font',serif='Computer Modern')
+  #plt.rc('font',serif='Computer Modern')
   plt.rc('text',usetex=True)
   ticksize = 4
   plt.rc('xtick.major',size=ticksize)
