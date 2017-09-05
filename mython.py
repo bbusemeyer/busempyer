@@ -3,7 +3,7 @@ import numpy as np
 import scipy.linalg as lin
 from base64 import b64encode,b64decode
 from json import JSONEncoder
-from os import getcwd
+from os import getcwd,rename
 from datetime import datetime
 
 # Lines should be a list of lists of words.
@@ -20,6 +20,28 @@ def cross_prod(sets):
   mg = mg.swapaxes(0,-1)
   mg = mg.reshape(np.prod(mg.shape[:-1]),mg.shape[-1])
   return mg
+
+def fix_duped_json(jsonfn,key='tbdm_basis',newfn=None):
+  ''' When QWalk dumps a JSON with multiple keys from the same method, it just
+  prints them several times. When a JSON reader reads that, it overwrites the
+  previous keys. 
+
+  As a hack fix, just go through and enumerate the repeated keys.'''
+  if newfn is None: newfn='oiremcoidsajfdsa.json'
+
+  newf=open(newfn,'w')
+  keycount=0
+  for line in open(jsonfn,'r'):
+    if key in line:
+      newf.write(line.replace(key,"%s_%d"%(key,keycount)))
+      keycount+=1
+    else:
+      newf.write(line)
+
+  newf.close()
+
+  if newfn is None:
+    os.rename(newfn,jsonfn)
 
 class Ldict(dict):
   """
