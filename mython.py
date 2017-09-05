@@ -40,8 +40,8 @@ def fix_duped_json(jsonfn,key='tbdm_basis',newfn=None):
 
   newf.close()
 
-  if newfn is None:
-    os.rename(newfn,jsonfn)
+  if newfn=='oiremcoidsajfdsa.json':
+    rename(newfn,jsonfn)
 
 class Ldict(dict):
   """
