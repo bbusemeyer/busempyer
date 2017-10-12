@@ -280,37 +280,49 @@ class CatagoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
+  def subplot(self,ax,xvar,yvar,evar=None,axdf=None,plotargs={},errargs={},
+      fill=True,line=False):
+    ''' Plot a subplot that considers only color and marking catagories.'''
+    self.plotargs=plotargs
+    if axdf is None: axdf=self.fulldf
+    for lab,df in axdf.groupby([self.mark,self.color]):
+      mark,color=lab
+
+      if line:
+        ax.plot(df[xvar],df[yvar],'-',
+            color=self.cmap[color],**plotargs)
+
+      if evar is not None:
+        ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
+            ecolor=self.cmap[color],capthick=1,capsize=2,**errargs)
+
+      if fill:
+        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+            color=self.cmap[color],**plotargs)
+      else:
+        if 'mew' not in self.plotargs: self.plotargs['mew']=1
+        if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
+        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+            color='none',
+            mec=self.cmap[color],**self.plotargs)
+        if 'mec' in self.plotargs: self.plotargs['mec']=save
+
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc='title',fill=True,line=False):
+      labrow=False,labcol=False,labloc='title',fill=True,line=False,
+      ax=None):
     ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
     row-and col-seperated plots. '''
 
     self.plotargs=plotargs
-    for lab,df in self.fulldf.groupby([self.row,self.col,self.mark,self.color]):
+    for lab,axdf in self.fulldf.groupby([self.row,self.col]):
+      row,col=lab
       annotation=[]
-      ax=self.axes[self.rowmap[lab[0]],self.colmap[lab[1]]]
+      ax=self.axes[self.rowmap[row],self.colmap[col]]
 
-      if line:
-        ax.plot(df[xvar],df[yvar],'-',
-            color=self.cmap[lab[3]],**plotargs)
+      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line)
 
-      if evar is not None:
-        ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
-            ecolor=self.cmap[lab[3]],capthick=1,capsize=2,**errargs)
-
-      if fill:
-        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
-            color=self.cmap[lab[3]],**plotargs)
-      else:
-        if 'mew' not in self.plotargs: self.plotargs['mew']=1
-        if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
-        ax.plot(df[xvar],df[yvar],self.mmap[lab[2]],
-            color='none',
-            mec=self.cmap[lab[3]],**self.plotargs)
-        if 'mec' in self.plotargs: self.plotargs['mec']=save
-
-      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(lab[0]))]
-      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(lab[1]))]
+      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(row))]
+      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(col))]
       if labloc=='title':
         ax.set_title('\n'.join(annotation))
       else:
@@ -318,10 +330,12 @@ class CatagoryPlot:
 
       self.fig.tight_layout()
 
-  def add_legend(self,axidx=(0,0),labmap={},args={}):
+  def add_legend(self,ax=None,labmap={},args={}):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
     handles. If there are two legends, the args should be a list."""
+    if ax is None: ax=self.axes[0,0]
+
     unique_colors=self.fulldf[self.color].unique()
     unique_marks=self.fulldf[self.mark].unique()
 
@@ -339,7 +353,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
-      self.axes[axidx].legend(handles=prox,**args)
+      ax.legend(handles=prox,**args)
     elif self.color=='catagoryplotdummy': 
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -349,7 +363,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_marks
         ]
-      self.axes[axidx].legend(handles=prox,**args)
+      ax.legend(handles=prox,**args)
     elif self.color==self.mark:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -359,7 +373,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
-      self.axes[axidx].legend(handles=prox,**args)
+      ax.legend(handles=prox,**args)
     else:
       if type(args)==dict:
         args=[args,args]
@@ -379,9 +393,9 @@ class CatagoryPlot:
           ) for unique in unique_marks
         ]
       prox=cprox,mprox
-      mlegend=self.axes[axidx].legend(handles=mprox,**(args[1]))
-      self.axes[axidx].add_artist(mlegend)
-      self.axes[axidx].legend(handles=cprox,**args[0])
+      mlegend=ax.legend(handles=mprox,**(args[1]))
+      ax.add_artist(mlegend)
+      ax.legend(handles=cprox,**args[0])
     return prox
 
 ### Fitting tools.
