@@ -9,7 +9,6 @@ scf=UKS(mol)
 dm=scf.from_chk('pyscf_driver.py.chkfile')
 
 orbdf=pd.DataFrame(mol.spherical_labels(),columns=['atid','at','orb','type'])
-print(orbdf.shape)
 
 pops=mulliken_meta(mol,dm,verbose=1)
 orbdf['up']=pops[0][0]
@@ -17,12 +16,15 @@ orbdf['dn']=pops[0][1]
 orbdf['spin']=orbdf['up']-orbdf['dn']
 orbdf['charge']=orbdf['up']+orbdf['dn']
 
-spindf=orbdf.groupby(['atid','at']).agg({
+atdf=orbdf.groupby(['atid','at']).agg({
     'spin':np.sum,
+    'charge':np.sum,
     'up':np.sum,
     'dn':np.sum
   })
 
-print(spindf)
+print(atdf[['up','dn','charge','spin']])
 
-print("Max spin:",spindf['spin'].max())
+print("Max spin:",abs(atdf['spin']).max())
+print("Total charge:",atdf['charge'].sum())
+print("Total spin:",atdf['spin'].sum())

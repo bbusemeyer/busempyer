@@ -6,7 +6,7 @@ assert len(sys.argv)==2,"""
   """
 
 dat=lib.chkfile.load(sys.argv[1],'scf')
-nspin=1
+nspin=2
 print('nspin:',nspin)
 if nspin==1:
   egy=dat['mo_energy']
@@ -29,6 +29,6 @@ else:
   for info in zip(upocc,dnocc,upegy,dnegy):
     uo,do,ue,de=info
     change=(ue-last[0],de-last[1])
-    print("{} {:1.1} {: >07.3f} {: >07.3f}".format(count,uo,ue,change[0]))
+    print("{} {:1.1} {:1.1} {: >07.3f} {: >07.3f}".format(count,uo,do,ue,change[0]))
     count+=1
     last=ue,de
