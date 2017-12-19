@@ -96,7 +96,6 @@ def mat_diag_exp(pmat,perr):
   varerr=varerr**0.5
   return avg,avgerr,var,varerr
 
-
 def analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
     Useful for external versions. """
@@ -503,6 +502,8 @@ def _check_spins(dft_record,small=1.0):
   init_spins = dft_record['initial_spin']
   moms = dft_record['mag_moments']
   moms = np.array(moms)
+  print(init_spins)
+  print(moms)
   zs = abs(moms) < small
   up = moms > 0.
   dn = moms < 0.
@@ -552,7 +553,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
-  alldf = _format_dftdf(rawdf)
+  alldf = _format_dftdf(rawdf) 
   for qmc in ['vmc','dmc']:
     qmcdf = unpack(rawdf[qmc])
     if 'energy' in qmcdf.columns:
@@ -629,24 +630,23 @@ def _format_dftdf(rawdf):
         ['basis_lowest','basis_number','basis_factor'],basis_info)))
 
     # This part of the method is for the old basis part.
-    # I updated the dict case to handle the split format.
-    #elif type(basis_info)==dict:
-    #  min_basis = 1e10
-    #  for atom in basis_info.keys():
-    #    print(basis_info)
-    #    new = min([np.array(elem['coefs'])[0,:].min() for elem in basis_info[atom]])
-    #    if new < min_basis: min_basis = new
-    #  return pd.Series(dict(zip(
-    #    ['basis_lowest','basis_number','basis_factor'],[min_basis,0,0])))
+    elif type(basis_info)==dict:
+      min_basis = 1e10
+      for atom in basis_info.keys():
+        new = min([np.array(elem['coefs'])[0,:].min() for elem in basis_info[atom]])
+        if new < min_basis: min_basis = new
+      return pd.Series(dict(zip(
+        ['basis_lowest','basis_number','basis_factor'],[min_basis,0,0])))
 
     # For now taking the best part of each atom so it works.
+    # This is the case of split basis, which I determined is not that useful.
     # Not sure if this is the best behavior.
-    elif type(basis_info)==dict:
-      min_basis = min((basis[0] for atom,basis in basis_info.items()))
-      max_factor = max((basis[1] for atom,basis in basis_info.items()))
-      max_number = max((basis[2] for atom,basis in basis_info.items()))
-      return pd.Series(dict(zip(
-        ['basis_lowest','basis_number','basis_factor'],[min_basis,max_factor,max_number])))
+    #elif type(basis_info)==dict:
+    #  min_basis = min((basis[0] for atom,basis in basis_info.items()))
+    #  max_factor = max((basis[1] for atom,basis in basis_info.items()))
+    #  max_number = max((basis[2] for atom,basis in basis_info.items()))
+    #  return pd.Series(dict(zip(
+    #    ['basis_lowest','basis_number','basis_factor'],[min_basis,max_factor,max_number])))
     else:
       return pd.Series(dict(zip(
         ['basis_lowest','basis_number','basis_factor'],[0,0,0])))
@@ -668,8 +668,8 @@ def _format_dftdf(rawdf):
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
   dftdf['spins_consistent'] = dftdf['spins_consistent'].astype(bool)
   dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
-  dftdf['basis']=dftdf.apply(make_basis_consistent,axis=1)
-  dftdf['basis'] = dftdf['basis'].apply(hashable_basis)
+  #dftdf['basis']=dftdf.apply(make_basis_consistent,axis=1)
+  #dftdf['basis'] = dftdf['basis'].apply(hashable_basis)
   dftdf['basis_number'] = dftdf['basis_number'].astype(int)
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
