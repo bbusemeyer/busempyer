@@ -126,6 +126,12 @@ def integrate_abs(cube):
   return np.sum(abs(cube['data']))*vol
 
 #####################################
+def cabs(cube):
+  """Take absolute value of cube data."""
+  cube['data']=abs(cube['data'])
+  return cube
+
+#####################################
 def normalize_abs(cube,Nelec=1):
   """Normalize the density so the integral over all space yeilds Nelec.
   
@@ -133,6 +139,7 @@ def normalize_abs(cube,Nelec=1):
   vol=abs(det(cube['latvec']))
   norm=np.sum(abs(cube['data']))*vol
   cube['data']*=(float(Nelec)/norm)
+  return cube
 
 #####################################
 def freq_cutoff(cube,freq_cutoff=0.90):
@@ -230,6 +237,15 @@ def add_cubes(cube1,cube2,N1=1,N2=1):
   addcube['data'] += cube2['data']
   addcube['data'] /= abs(addcube['data']).sum()
   return addcube
+
+#####################################
+def mul_cubes(cube1,cube2,N1=1,N2=1):
+  """Multiply two cube files, pointwise.
+  Note: you may need to normalize these appropriately first."""
+  mulcube = deepcopy(cube1)
+  mulcube['data'] *= cube2['data']
+  mulcube['data'] /= abs(mulcube['data']).sum()
+  return mulcube
 
 #####################################
 # Used for interpolation scheme
