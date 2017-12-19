@@ -255,14 +255,14 @@ class CatagoryPlot:
     self.plotargs={}
 
     if cmap is None:
-      unique_colors=self.fulldf[color].unique()
+      unique_colors=self.fulldf[color].sort_values().unique()
       self.cmap=dict(zip(unique_colors,(ps['dark8']+ps['cb12'])[:unique_colors.shape[0]]))
     else: 
       self.cmap=cmap
     self.cmap['catagoryplotdummy']='none'
     
     if mmap is None:
-      unique_marks=self.fulldf[mark].unique()
+      unique_marks=self.fulldf[mark].sort_values().unique()
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
     else: 
       self.mmap=mmap
@@ -336,8 +336,8 @@ class CatagoryPlot:
     handles. If there are two legends, the args should be a list."""
     if ax is None: ax=self.axes[0,0]
 
-    unique_colors=self.fulldf[self.color].unique()
-    unique_marks=self.fulldf[self.mark].unique()
+    unique_colors=self.fulldf[self.color].sort_values().unique()
+    unique_marks=self.fulldf[self.mark].sort_values().unique()
 
     safeargs=copy(self.plotargs)
     if 'mew' in self.plotargs:
@@ -353,7 +353,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
-      ax.legend(handles=prox,**args)
+      leg=ax.legend(handles=prox,**args)
     elif self.color=='catagoryplotdummy': 
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -363,7 +363,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_marks
         ]
-      ax.legend(handles=prox,**args)
+      leg=ax.legend(handles=prox,**args)
     elif self.color==self.mark:
       if labmap=={}:
         labmap=dict(zip(unique_marks,unique_marks))
@@ -373,7 +373,7 @@ class CatagoryPlot:
             **self.plotargs
           ) for unique in unique_colors
         ]
-      ax.legend(handles=prox,**args)
+      leg=ax.legend(handles=prox,**args)
     else:
       if type(args)==dict:
         args=[args,args]
@@ -394,9 +394,11 @@ class CatagoryPlot:
         ]
       prox=cprox,mprox
       mlegend=ax.legend(handles=mprox,**(args[1]))
+      mlegend._legend_box.align='left'
       ax.add_artist(mlegend)
-      ax.legend(handles=cprox,**args[0])
-    return prox
+      leg=[ax.legend(handles=cprox,**args[0]),mlegend]
+      leg[0]._legend_box.align='left'
+    return leg
 
 ### Fitting tools.
 
