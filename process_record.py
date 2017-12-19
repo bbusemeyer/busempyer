@@ -33,7 +33,8 @@ def process_record(record):
       res['dft']['spins_consistent'] = _check_spins(res['dft'],small=SMALLSPIN)
   if 'vmc' in record['qmc'].keys():
     res['vmc'] = _process_vmc(record['qmc']['vmc'])
-  if 'dmc' in record['qmc'].keys() and record['qmc']['dmc']!={}:
+  if 'dmc' in record['qmc'].keys():
+    print("Getting DMC")
     res['dmc'] = _process_dmc(record['qmc']['dmc'])
   if 'results' in record['qmc']['postprocess'].keys():
     res['dmc'].update(_process_post(record['qmc']['postprocess']))
@@ -94,7 +95,6 @@ def mat_diag_exp(pmat,perr):
         (2*pmat[n][n]*avgerr*(n-avg))**2
   varerr=varerr**0.5
   return avg,avgerr,var,varerr
-
 
 def analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
@@ -502,6 +502,8 @@ def _check_spins(dft_record,small=1.0):
   init_spins = dft_record['initial_spin']
   moms = dft_record['mag_moments']
   moms = np.array(moms)
+  print(init_spins)
+  print(moms)
   zs = abs(moms) < small
   up = moms > 0.
   dn = moms < 0.
@@ -551,7 +553,7 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       abs(np.linalg.det(np.array(x).reshape(3,3)))
     )
   # Unpacking the energies.
-  alldf = _format_dftdf(rawdf)
+  alldf = _format_dftdf(rawdf) 
   for qmc in ['vmc','dmc']:
     qmcdf = unpack(rawdf[qmc])
     if 'energy' in qmcdf.columns:
@@ -561,11 +563,18 @@ def format_datajson(inp_json="results.json",filterfunc=lambda x:True):
       qmcdf = qmcdf\
           .rename(columns={'value':"%s_energy"%qmc,'error':"%s_energy_err"%qmc})\
           .drop('energy',axis=1)
+      # FIXME some bug in reading the jastrow and optimizer, not sure where it's coming from.
+      qmcdf.loc[qmcdf['jastrow'].isnull(),'jastrow']='twobody'
+      qmcdf.loc[qmcdf['optimizer'].isnull(),'optimizer']='energy'
     alldf = alldf.join(qmcdf,lsuffix='',rsuffix='_new')
     for col in alldf.columns:
       if '_new' in col:
         sel=alldf[col].notnull()
-        assert all(alldf.loc[sel,col.replace('_new','')]==alldf.loc[sel,col])
+        diff=alldf.loc[sel,col.replace('_new','')]!=alldf.loc[sel,col]
+        
+        assert not any(diff),'''
+          Joined QMC data changed something.  {}'''.format(alldf.loc[sel,[col,col+'_new']][diff])
+        #assert all(alldf.loc[sel,col.replace('_new','')]==alldf.loc[sel,col])
         del alldf[col]
     if "%s_energy"%qmc in qmcdf.columns:
       alldf["%s_energy"%qmc] = alldf["%s_energy"%qmc]
@@ -608,11 +617,19 @@ def cast_supercell(sup):
     sup[rix] = tuple(row)
   return tuple(sup)
 
+def make_basis_consistent(row):
+  if type(row['basis'])==dict:
+    return row['basis']
+  atoms=list(row['initial_charges'].keys())
+  return dict(zip(atoms,[row['basis'] for a in atoms]))
+
 def _format_dftdf(rawdf):
   def desect_basis(basis_info):
     if type(basis_info)==list:
       return pd.Series(dict(zip(
         ['basis_lowest','basis_number','basis_factor'],basis_info)))
+
+    # This part of the method is for the old basis part.
     elif type(basis_info)==dict:
       min_basis = 1e10
       for atom in basis_info.keys():
@@ -620,9 +637,25 @@ def _format_dftdf(rawdf):
         if new < min_basis: min_basis = new
       return pd.Series(dict(zip(
         ['basis_lowest','basis_number','basis_factor'],[min_basis,0,0])))
+
+    # For now taking the best part of each atom so it works.
+    # This is the case of split basis, which I determined is not that useful.
+    # Not sure if this is the best behavior.
+    #elif type(basis_info)==dict:
+    #  min_basis = min((basis[0] for atom,basis in basis_info.items()))
+    #  max_factor = max((basis[1] for atom,basis in basis_info.items()))
+    #  max_number = max((basis[2] for atom,basis in basis_info.items()))
+    #  return pd.Series(dict(zip(
+    #    ['basis_lowest','basis_number','basis_factor'],[min_basis,max_factor,max_number])))
     else:
       return pd.Series(dict(zip(
         ['basis_lowest','basis_number','basis_factor'],[0,0,0])))
+  def hashable_basis(basis_info):
+    if type(basis_info)==dict:
+      atoms=sorted(basis_info.keys())
+      return tuple(zip(atoms,(tuple(basis_info[a]) for a in atoms)))
+    else:
+      return tuple(basis_info)
   ids = rawdf['control'].apply(lambda x:x['id'])
   dftdf = unpack(rawdf['dft'])
   dftdf = dftdf.join(ids).rename(columns={'control':'id'})
@@ -635,6 +668,8 @@ def _format_dftdf(rawdf):
   dftdf['tolinteg'] = dftdf['tolinteg'].apply(lambda x:x[0])
   dftdf['spins_consistent'] = dftdf['spins_consistent'].astype(bool)
   dftdf = dftdf.join(dftdf['basis'].apply(desect_basis))
+  #dftdf['basis']=dftdf.apply(make_basis_consistent,axis=1)
+  #dftdf['basis'] = dftdf['basis'].apply(hashable_basis)
   dftdf['basis_number'] = dftdf['basis_number'].astype(int)
   dftdf.loc[dftdf['supercell'].notnull(),'supercell'] = \
       dftdf.loc[dftdf['supercell'].notnull(),'supercell']\
@@ -650,8 +685,7 @@ def _format_dftdf(rawdf):
             max(abs(np.array(x)))
           )
   dftdf['dft_energy'] = dftdf['total_energy']
-  for redundant in ['basis','functional']:
-    del dftdf[redundant]
+  dftdf=dftdf.drop(['functional'],axis=1)
   return dftdf
 
 ###############################################################################

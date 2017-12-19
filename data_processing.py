@@ -49,8 +49,8 @@ def gen_autogen_defining_columns():
   Pls keep alphabetize (<range> sort u).  """
   return [
       'basis_factor',
-      'basis_lowest',
       'basis_number',
+      'basis_lowest',
       'levshift',
       'a','b','c',
       'total_spin',

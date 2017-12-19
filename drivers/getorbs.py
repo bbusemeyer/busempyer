@@ -20,11 +20,11 @@ def produce_inputs(fileroot):
     upoutpf.write(ln)
     dnoutpf.write(ln)
 
-  while ln != ['#Spin','up','orbitals']: 
+  while (ln != ['#Spin','up','orbitals']) and (ln != ['#','Spin','up','orbitals.']): 
     ln = openf.readline().split()
       
   ln = openf.readline().split()
-  while ln != ['#Spin','down','orbitals']:
+  while (ln != ['#Spin','down','orbitals']) and (ln != ['#','Spin','down','orbitals.']): 
     uporbs += ln
     ln = openf.readline().split()
 
@@ -67,12 +67,6 @@ def produce_inputs_spinless(fileroot):
     orbs += ln
     ln = openf.readline().split()
 
-  ln = openf.readline().split()
-  while ln != []:
-    if ln[-1] == '}': del ln[-1]
-    orbs += ln
-    ln = openf.readline().split()
-
   outpf.write('PLOTORBITALS{ ')
   for oi in orbs: outpf.write(oi+' ')
   outpf.write('}')
@@ -87,7 +81,6 @@ if __name__ == "__main__":
     Usage: getorbs.py qwalk_root [spinless]""")
   fileroot = argv[1]
   if len(argv)>2 and argv[2]=="spinless":
-    raise NotImplementedError # TODO
     produce_inputs_spinless(fileroot)
   else:
     produce_inputs(fileroot)
