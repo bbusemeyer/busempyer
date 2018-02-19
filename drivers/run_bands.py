@@ -18,4 +18,4 @@ projs = []
 bandout = open("band.inp",'w')
 bandout.write(cio.gen_properties(cryinp,natoms,kpath,denom,projs))
 bandout.close()
-print sub.check_output("properties < band.inp > band.out",shell=True)
+print(sub.check_output("properties < band.inp > band.out",shell=True))
