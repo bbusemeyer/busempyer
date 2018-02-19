@@ -1,33 +1,53 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
-ticksize = 4
-sns.set_style("ticks")
-plt.rc('xtick.major',size=ticksize)
-plt.rc('ytick.major',size=ticksize)
-plt.rc('font',style='normal')
-plt.rc('font',family='serif')
-plt.rc('font',serif='Computer Modern Roman')
-plt.rc('text',usetex=True)
-plt.rc('lines',linewidth=1)
-plt.rc('axes.formatter',useoffset=False)
+import plot_tools as pt
 from read_bands import read_fort25
-ev = 27.211396132
+ev=27.2114
+pt.matplotlib_header()
 
-dat = read_fort25("fort.25")
-bands = (dat['bands'][0]['dat'] - dat['bands'][0]['efermi'])*ev*1e3
-dk    = dat['bands'][0]['dkp']
+def plot_bands():
+  dat = read_fort25("fort.25")
+  totk=0.0
+  nbands=dat['bands'][0]['dat'].shape[1]
+  fullbands=[[] for i in range(nbands)]
+  fullkpts=[]
+  breaks=[0.0]
+  klabs=['000']
+  for leg in dat['bands'][:len(dat['bands'])//2]:
+    bands=(leg['dat']-leg['efermi'])*ev
+    dk=leg['dkp']
 
-fig,ax = plt.subplots()
-fig.set_size_inches(3,3)
-for band in bands.T:
-  full = band.tolist()
-  kpts = [dk*(i - len(full)) for i in range(2*len(full))]
-  full = list(reversed(full))+full
-  ax.plot(kpts,full,color='k')
-ax.set_ylabel("$E - E_\mathrm{F}$ (meV)")
-#ax.set_xlim(-0.2,0.2)
-#ax.set_xticks(np.linspace(-0.1,0.1,3))
-ax.set_ylim(-500,800)
-fig.tight_layout()
-fig.savefig("unp_bands.pdf")
+    kpts=totk+dk*np.arange(bands.shape[0])
+    fullkpts+=kpts.tolist()
+    breaks.append(kpts[-1])
+    klabs.append(leg['k1'])
+    for bi,band in enumerate(bands.T):
+      fullbands[bi]+=band.tolist()
+    totk+=dk*bands.shape[0]
+
+  fig,ax=plt.subplots(1,1)
+  for band in fullbands:
+    if -3<band[0]<3:
+      c='r'
+      l=2
+    else:
+      c='k'
+      l=1
+    ax.plot(fullkpts,band,c,lw=l)
+  ax.set_xticks(breaks)
+  ax.set_xticklabels(klabs)
+  ax.set_xlim((min(breaks),max(breaks)))
+  ax.set_ylim((-4,4))
+  for line in breaks:
+    ax.axvline(line,color='k',lw=0.5)
+
+  
+  ax.set_xlabel(r"$k$-point$(\frac{k_x}{\pi a}\frac{k_y}{\pi b}\frac{k_z}{\pi c})$")
+  ax.set_ylabel("$E - E_\mathrm{F}$ (eV)")
+  fig.set_size_inches(3,3)
+  fig.tight_layout()
+  fig.savefig("bands.pdf")
+  fig.savefig("bands.eps")
+
+if __name__=='__main__':
+  plot_bands()
