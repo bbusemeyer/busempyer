@@ -167,10 +167,18 @@ def matplotlib_header(usetex=True,family='serif'):
   plt.rc('xtick.major',size=ticksize)
   plt.rc('ytick.major',size=ticksize)
 
-def fix_lims(ax_inp,factor=0.04):
+def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
   """
   Create buffer around all points that is factor*(data range) wide.
+  Fixes it in-place.
+
+  Args:
+    ax_inp (matplotlib.Axes or Axes array): Axes to fix.
+    factor (float): fraction of empty space around points.
+    do_x (bool): Fix the x axis.
+    do_y (bool): Fix the y axis.
   """
+
   minx,miny = np.Inf,np.Inf
   maxx,maxy = -np.Inf,-np.Inf
   if type(ax_inp) != np.ndarray:
@@ -193,8 +201,8 @@ def fix_lims(ax_inp,factor=0.04):
   xs = factor*(maxx-minx)
   ys = factor*(maxy-miny)
   for ax in ax_array.flatten():
-    if xs != 0: ax.set_xlim(minx-xs,maxx+xs)
-    if ys != 0: ax.set_ylim(miny-ys,maxy+ys)
+    if xs != 0 and do_x: ax.set_xlim(minx-xs,maxx+xs)
+    if ys != 0 and do_y: ax.set_ylim(miny-ys,maxy+ys)
 
 def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 

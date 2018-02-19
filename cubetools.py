@@ -235,7 +235,7 @@ def add_cubes(cube1,cube2,N1=1,N2=1):
   Note: you may need to normalize these appropriately first."""
   addcube = deepcopy(cube1)
   addcube['data'] += cube2['data']
-  addcube['data'] /= abs(addcube['data']).sum()
+  #addcube['data'] /= abs(addcube['data']).sum()
   return addcube
 
 #####################################
@@ -244,7 +244,7 @@ def mul_cubes(cube1,cube2,N1=1,N2=1):
   Note: you may need to normalize these appropriately first."""
   mulcube = deepcopy(cube1)
   mulcube['data'] *= cube2['data']
-  mulcube['data'] /= abs(mulcube['data']).sum()
+  #mulcube['data'] /= abs(mulcube['data']).sum()
   return mulcube
 
 #####################################

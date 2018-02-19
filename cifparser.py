@@ -15,7 +15,7 @@ def seperr(num):
   except ValueError:
     return num,0.0
 
-def read_cif(ciffn):
+def read_cif(cifstr):
   # Useful keys that have the pattern:
   # _key value
   one_keys=[
@@ -28,7 +28,7 @@ def read_cif(ciffn):
   cifdat={}
   siteflag=False
 
-  for line in open(ciffn,'r'):
+  for line in ciffn.split('\n'):
     lilist=line.split()
 
     if len(lilist)==0: continue
