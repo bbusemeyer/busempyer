@@ -227,7 +227,7 @@ def safemap(di,key):
     return key
 
 # The mother of all plotting tools.
-class CatagoryPlot: 
+class CategoryPlot: 
   """ Use a pandas DataFrame to make plots broken down by color, row, column,
   and marker. Somewhat similar to what ggplot can handle (more elegantly).
 
