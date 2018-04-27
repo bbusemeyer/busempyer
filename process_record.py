@@ -11,11 +11,76 @@ NORBFE = 10
 NORBCH = 4
 SMALLSPIN = 1.0 # Spins less than this are considered zero.
 
+
+def fluctdat_array(jsondat,key='value'):
+  ''' Turn the dictionary of fluctuation data into a single array.'''
+  # May not work for bundled QWalk jobs. Might need to average instead of [0].
+  return np.array([d[key] for d in jsondat['fluctuation data']])\
+      .reshape(jsondat['nspin'],jsondat['nspin'],
+               jsondat['nregion'],jsondat['nregion'],
+               jsondat['maxn'],jsondat['maxn'])
+
+def fluct_moms(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  return np.array(mom).reshape(nspin,nregion)
+
+def fluct_moms_err(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ ((np.arange(nn)*flarray[s1,s1,r1,r1].diagonal())**2).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  return np.array(mom).reshape(nspin,nregion)**0.5
+
+# TODO: Inefficient but easy to use.
+def fluct_vars(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  mom=np.array(mom).reshape(nspin,nregion)
+  var=[ ((np.arange(nn)-mom[s1,r1])**2*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  return np.array(var).reshape(nspin,nregion)
+
+def unpack_nfluct(jsondat):
+  ''' Calculate useful quantities and put them into a nice dataframe.
+  Example:
+  >>> mydata=json.load(open('qw.json','r'))
+  >>> unpack_nfluct(mydata['properties']['region_fluctuation'])
+
+  Args:
+    jsondat (dict): result from calling gosling -json on a QWalk file and using ['properties']['region_fluctuation'].
+  Returns:
+    dict: Moments and variances as a dict.
+  '''
+  results={}
+  fluctdat=fluctdat_array(jsondat)
+  flucterr=fluctdat_array(jsondat,key='error')
+  results['moms']=fluct_moms(fluctdat)
+  results['momserr']=fluct_moms_err(flucterr)
+  results['vars']=fluct_vars(fluctdat)
+  return results
+
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
 # github, check out my FeTe notebook!
 ################################################################################
 
+##### !!! These are all written for autogenv1, so they might be obsolete.
 ###############################################################################
 # Process record group of functions.
 def process_record(record):
