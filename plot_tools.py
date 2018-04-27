@@ -207,12 +207,28 @@ def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
 def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 
 def fix_xticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
   ax.set_xticks(thin_ticks(ax.get_xticks(),kwargs))
 
 def fix_yticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
   ax.set_yticks(thin_ticks(ax.get_yticks(),kwargs))
 
+def fix_ticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
+  fix_xticks(ax,kwargs)
+  fix_yticks(ax,kwargs)
+
 def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
+  ''' Remove from list at evenly spaced intervals.
+  Args:
+    div (int): Total number of ticks divided by this.
+    start (int): Start the ticks from this point. 
+    shift (int): Shift the starting tick by this much.
+    append (int): Add this more ticks.
+  Returns:
+    list: new ticks.
+  '''
   newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
 
@@ -232,7 +248,7 @@ class CategoryPlot:
   and marker. Somewhat similar to what ggplot can handle (more elegantly).
 
   For example: df.columns=[x,y,z],
-  cp=CatagoryPlot(df,color='z',mark='z')
+  cp=CategoryPlot(df,color='z',mark='z')
   cp.plot('x','y')
 
   Now cp.fig will have a figure of x vs y with color and marker broken down by z.
@@ -249,7 +265,7 @@ class CategoryPlot:
       labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
 
     if 'catagoryplotdummy' in df.columns:
-      print("CatagoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
+      print("CategoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
 
 
     assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
