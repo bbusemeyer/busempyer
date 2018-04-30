@@ -20,28 +20,8 @@ def fluctdat_array(jsondat,key='value'):
                jsondat['nregion'],jsondat['nregion'],
                jsondat['maxn'],jsondat['maxn'])
 
-def fluct_moms(flarray):
-  nspin=flarray.shape[0]
-  nregion=flarray.shape[2]
-  nn=flarray.shape[4]
-  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
-      for s1 in range(nspin)
-      for r1 in range(nregion)
-    ]
-  return np.array(mom).reshape(nspin,nregion)
-
-def fluct_moms_err(flarray):
-  nspin=flarray.shape[0]
-  nregion=flarray.shape[2]
-  nn=flarray.shape[4]
-  mom=[ ((np.arange(nn)*flarray[s1,s1,r1,r1].diagonal())**2).sum()
-      for s1 in range(nspin)
-      for r1 in range(nregion)
-    ]
-  return np.array(mom).reshape(nspin,nregion)**0.5
-
 # TODO: Inefficient but easy to use.
-def fluct_vars(flarray):
+def old_fluct_vars(flarray):
   nspin=flarray.shape[0]
   nregion=flarray.shape[2]
   nn=flarray.shape[4]
@@ -65,8 +45,6 @@ def fluct_covars(flarray):
       for r1 in range(nregion)
     ]
   mom=np.array(mom).reshape(nspin,nregion)
-  print("DEBUG")
-  print(abs(flarray-np.transpose(flarray,(1,0,3,2,5,4))).sum())
   covar=[ 
       ((np.arange(nn)-mom[s1,r1])*(np.arange(nn)-mom[s2,r2])\
           *flarray[s1,s2,r1,r2]).sum()
@@ -89,13 +67,40 @@ def unpack_nfluct(jsondat):
     dict: Moments and variances as a dict.
   '''
   results={}
-  fluctdat=fluctdat_array(jsondat)
-  flucterr=fluctdat_array(jsondat,key='error')
-  results['moms']=fluct_moms(fluctdat)
-  results['momserr']=fluct_moms_err(flucterr)
-  results['vars']=fluct_vars(fluctdat) # obsolete w/ covars?
-  results['covars']=fluct_covars(fluctdat)
+  results['fluctdat']=fluctdat_array(jsondat)
+  results['flucterr']=fluctdat_array(jsondat,key='error')
+
+  count=np.arange(results['fluctdat'].shape[-1])
+
+  results['moms']=np.einsum('ssrrnn,n->sr',results['fluctdat'],count)
+  results['momserr']=np.einsum('ssrrnn,n->sr',results['flucterr']**2,count**2)**0.5
+
+  # shifted(s,r,n)=n-mu(s,r)
+  shifted=count[None,None,:]-results['moms'][:,:,None]
+  shiftederr=results['momserr'][:,:,None]
+
+  results['covars']=np.einsum('aibjck,abc,ijk->aibj',results['fluctdat'],shifted,shifted)
+  results['covarserr']=\
+      np.einsum('aibjck,abc,ijk->aibj',results['flucterr']**2,shifted**2,shifted**2)**0.5 +\
+      np.einsum('aibjck,abc,ijk->aibj',results['fluctdat']**2,shiftederr**2,shifted**2)**0.5 +\
+      np.einsum('aibjck,abc,ijk->aibj',results['fluctdat']**2,shifted**2,shiftederr**2)**0.5
+
   return results
+
+def analyze_nfluct(fluctdat):
+  moms=fluctdat['moms']
+  momserr=fluctdat['momserr']
+  cov=fluctdat['covars']
+  coverr=fluctdat['covarserr']
+  fluctdat.update({
+      'spin': moms[0] - moms[1],
+      'charge': moms[0] + moms[1],
+      'avgerr': (momserr[0]**2 + momserr[1]**2)**0.5,
+      'magcov': cov[0,0] + cov[1,1] - cov[0,1] - cov[1,0],
+      'chgcov': cov[0,0] + cov[1,1] + cov[0,1] + cov[1,0],
+      'coverr': (coverr[0,0]**2 + coverr[1,1]**2 + coverr[0,1]**2 + coverr[1,0]**2)**0.5
+    })
+  return fluctdat
 
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
@@ -183,7 +188,7 @@ def mat_diag_exp(pmat,perr):
   varerr=varerr**0.5
   return avg,avgerr,var,varerr
 
-def analyze_nfluct(post_record):
+def old_analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
     Useful for external versions. """
   def diag_exp(rec):
