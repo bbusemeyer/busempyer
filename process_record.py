@@ -56,6 +56,27 @@ def fluct_vars(flarray):
     ]
   return np.array(var).reshape(nspin,nregion)
 
+def fluct_covars(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  mom=np.array(mom).reshape(nspin,nregion)
+  print("DEBUG")
+  print(abs(flarray-np.transpose(flarray,(1,0,3,2,5,4))).sum())
+  covar=[ 
+      ((np.arange(nn)-mom[s1,r1])*(np.arange(nn)-mom[s2,r2])\
+          *flarray[s1,s2,r1,r2]).sum()
+      for s1 in range(nspin)
+      for s2 in range(nspin)
+      for r1 in range(nregion)
+      for r2 in range(nregion)
+    ]
+  return np.array(covar).reshape(nspin,nspin,nregion,nregion)
+
 def unpack_nfluct(jsondat):
   ''' Calculate useful quantities and put them into a nice dataframe.
   Example:
@@ -72,7 +93,8 @@ def unpack_nfluct(jsondat):
   flucterr=fluctdat_array(jsondat,key='error')
   results['moms']=fluct_moms(fluctdat)
   results['momserr']=fluct_moms_err(flucterr)
-  results['vars']=fluct_vars(fluctdat)
+  results['vars']=fluct_vars(fluctdat) # obsolete w/ covars?
+  results['covars']=fluct_covars(fluctdat)
   return results
 
 ################################################################################
