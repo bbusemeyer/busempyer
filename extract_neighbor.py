@@ -1,11 +1,21 @@
 #!/usr/bin/python
-from numpy import *
+import numpy as np
 
 def safeint(thing):
   try: return int(thing)
   except ValueError: return thing
 
 def read_map(inpf):
+  ''' Generate a nearest neighbor table from a crystal output file.
+
+  Args:
+    inpf (file object): Crystal output file opened for reading.
+  Returns:
+    dict: Map of ints (atom numbers labeled by crystal, which is 1-based indexing) to a list
+      [neighbor_number, neighbor_element, ix,iy,iz, distance].
+      The ix etc. label if it crosses a periodic bounary.
+      The information is similar to how it appears in the crystal output.
+  '''
   line = "Start"
   found_spot = False
   nnmap = {}
@@ -37,6 +47,7 @@ def read_map(inpf):
   return nnmap
 
 def map_to_table(nnmap):
+  ''' Convert the mapping (good at looking up neighbors of an atom) to a table (good at looking at all distances).'''
   nntable = []
   for key in nnmap.keys():
     for neighbors in nnmap[key]:
