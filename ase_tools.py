@@ -62,5 +62,5 @@ def get_nnmap(atoms):
   nnmap={}
   for atomnum,atomdist in enumerate(distances):
     order=atomdist.argsort()
-    nnmap[atomnum]=tuple(zip(np.arange(atomdist.shape[0])[order][1:],atomdist[order][1:]))
+    nnmap[atomnum]=list(zip(np.arange(atomdist.shape[0])[order][1:],atoms.get_chemical_symbols(),atomdist[order][1:]))
   return nnmap
