@@ -1,7 +1,7 @@
 ''' Some drivers for ASE (atomic simulation environment) tools.
 
 Some useful ASE routines:
-  - ase.neigborlist.neighbor_list: computes nearest neighbor table.
+  - Atoms.get_all_distances(mic=True): Get distance table, respecting periodic boundary conditions.
 
 '''
 
@@ -62,7 +62,5 @@ def get_nnmap(atoms):
   nnmap={}
   for atomnum,atomdist in enumerate(distances):
     order=atomdist.argsort()
-    nnmap[atomnum]=tuple(zip(np.arange(atomdist.shape[0]),atomdist[order]))
+    nnmap[atomnum]=tuple(zip(np.arange(atomdist.shape[0])[order][1:],atomdist[order][1:]))
   return nnmap
-
-
