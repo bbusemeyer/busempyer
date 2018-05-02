@@ -96,7 +96,9 @@ myplotdef={
   }
 myerrdef={
     'capthick':1,
-    'capwidth':1
+    'capsize':2,
+    'ecolor':'k',
+    'fmt':'none'
   }
 
 notes = """
@@ -312,13 +314,20 @@ class CategoryPlot:
     for lab,df in axdf.groupby([self.mark,self.color]):
       mark,color=lab
 
+      # Handle missing marks and colors.
+      if mark not in self.mmap:
+        print("Warning: %s has no mark. Assigning it default '.'"%mark)
+        self.mmap[mark]='.'
+      if color not in self.cmap:
+        print("Warning: %s has no color. Assigning it default 'k'"%color)
+        self.cmap[color]='k'
+
       if line:
         ax.plot(df[xvar],df[yvar],'-',
             color=self.cmap[color],**plotargs)
 
       if evar is not None:
-        ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
-            ecolor=self.cmap[color],capthick=1,capsize=2,**errargs)
+        ax.errorbar(df[xvar],df[yvar],df[evar],**errargs)
 
       if fill:
         ax.plot(df[xvar],df[yvar],self.mmap[mark],
