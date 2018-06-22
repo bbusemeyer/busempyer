@@ -187,19 +187,21 @@ def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
     ax_array = np.array((ax_inp))
   else:
     ax_array = ax_inp
+  xdata=np.array(())
+  ydata=np.array(())
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
       if type(line.get_xdata()) is type([]):
         continue
-      if line.get_xdata().max() > maxx:
-        maxx = line.get_xdata().max()
-      if line.get_ydata().max() > maxy:
-        maxy = line.get_ydata().max()
-      if line.get_xdata().min() < minx:
-        minx = line.get_xdata().min()
-      if line.get_ydata().min() < miny:
-        miny = line.get_ydata().min()
+      xdata=np.concatenate((xdata,line.get_xdata()))
+      ydata=np.concatenate((ydata,line.get_ydata()))
+
+  maxx=xdata[~np.isnan(xdata)].max()
+  maxy=ydata[~np.isnan(ydata)].max()
+  minx=xdata[~np.isnan(xdata)].min()
+  miny=ydata[~np.isnan(ydata)].min()
+
   xs = factor*(maxx-minx)
   ys = factor*(maxy-miny)
   for ax in ax_array.flatten():

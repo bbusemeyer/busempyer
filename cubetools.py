@@ -295,8 +295,10 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   # Classify points to show all atoms while minimizing extra space.
   pidx = (np.array((pos[1]-pos[2], pos[2]-pos[0], pos[0]-pos[1]))**2).sum(axis=1).argsort()
   orig = pos[pidx[ 1]]
-  pvm  = pos[pidx[ 0]] - orig # Main plotting axis (static).
-  pvo  = pos[pidx[-1]] - orig # Orthogonal plotting axis.
+  pvm  = pos[pidx[-1]] - orig # Main plotting axis (static).
+  pvo  = pos[pidx[ 0]] - orig # Orthogonal plotting axis.
+  # Idea is that normally you'd want to orthogonalize the sortest axis.
+  # Moving the axis is what creates extra space in the plot.
 
   # Orthogonalize orth. axis, since this is how most plots are.
   pvo -= np.sum(pvo*pvm)/np.sum(pvm**2) * pvm
