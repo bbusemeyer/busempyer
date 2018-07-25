@@ -187,19 +187,21 @@ def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
     ax_array = np.array((ax_inp))
   else:
     ax_array = ax_inp
+  xdata=np.array(())
+  ydata=np.array(())
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
       if type(line.get_xdata()) is type([]):
         continue
-      if line.get_xdata().max() > maxx:
-        maxx = line.get_xdata().max()
-      if line.get_ydata().max() > maxy:
-        maxy = line.get_ydata().max()
-      if line.get_xdata().min() < minx:
-        minx = line.get_xdata().min()
-      if line.get_ydata().min() < miny:
-        miny = line.get_ydata().min()
+      xdata=np.concatenate((xdata,line.get_xdata()))
+      ydata=np.concatenate((ydata,line.get_ydata()))
+
+  maxx=xdata[~np.isnan(xdata)].max()
+  maxy=ydata[~np.isnan(ydata)].max()
+  minx=xdata[~np.isnan(xdata)].min()
+  miny=ydata[~np.isnan(ydata)].min()
+
   xs = factor*(maxx-minx)
   ys = factor*(maxy-miny)
   for ax in ax_array.flatten():
@@ -246,25 +248,36 @@ def safemap(di,key):
 
 # The mother of all plotting tools.
 class CategoryPlot: 
-  """ Use a pandas DataFrame to make plots broken down by color, row, column,
-  and marker. Somewhat similar to what ggplot can handle (more elegantly).
-
-  For example: df.columns=[x,y,z],
-  cp=CategoryPlot(df,color='z',mark='z')
-  cp.plot('x','y')
-
-  Now cp.fig will have a figure of x vs y with color and marker broken down by z.
-  
-  Call self.plot() to actually make a plot. 
-  
-  There are a lot of bugs I know about but haven't bothered to fix. If you find
-  one, I can probably fix it pretty quick, so long as there's a desire to have
-  it fixed.
-  """
   def __init__(self,df,
       row='catagoryplotdummy',col='catagoryplotdummy',
       color='catagoryplotdummy',mark='catagoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,squeeze=False):
+    '''
+    Use a pandas DataFrame to make plots broken down by color, row, column,
+    and marker. Somewhat similar to what ggplot can handle (more elegantly).
+
+    For example: df.columns=[x,y,z],
+    cp=CategoryPlot(df,color='z',mark='z')
+    cp.plot('x','y')
+
+    Now cp.fig will have a figure of x vs y with color and marker broken down by z.
+    
+    Call self.plot() to actually make a plot. 
+   
+      Args:
+        row: rows will differ by this quantity (default to one row).
+        col: columns will differ by this quantity (default to one column).
+        color: colors will differ by this quantity (default to one color).
+        mark: markers will differ by this quantity (default to one marker).
+        labmap: labels of data values are mapped using labmap first.
+        cmap: data values are mapped to these colors (default to ps['dark8']).
+        mmap: data values are mapped to these markers (default to pm).
+        sharex: x-axes are set to same limits.
+        sharey: y-axes are set to same limits.
+        squeeze: minimize the dimension of self.axes.
+    '''
+
+
 
     if 'catagoryplotdummy' in df.columns:
       print("CategoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")

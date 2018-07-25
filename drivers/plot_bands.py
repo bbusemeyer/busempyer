@@ -7,7 +7,7 @@ import pickle as pkl
 ev=27.2114
 pt.matplotlib_header()
 
-def plot_bands():
+def plot_bands(spin=1):
   dat = read_fort25("fort.25")
   totk=0.0
   nbands=dat['bands'][0]['dat'].shape[1]
@@ -16,7 +16,7 @@ def plot_bands():
   fullkpts=[]
   breaks=[0.0]
   klabs=['000']
-  for leg in dat['bands'][:len(dat['bands'])//2]:
+  for leg in dat['bands'][:len(dat['bands'])//1]:
     bands=(leg['dat']-leg['efermi'])*ev
     dk=leg['dkp']
 
@@ -63,7 +63,7 @@ def plot_bands():
  
   ax.set_xlabel(r"$k$-point$(\frac{k_x}{\pi a}\frac{k_y}{\pi b}\frac{k_z}{\pi c})$")
   ax.set_ylabel("$E - E_\mathrm{F}$ (eV)")
-  fig.set_size_inches(3,3)
+  fig.set_size_inches(6,3)
   fig.tight_layout()
   fig.savefig("bands.pdf")
   fig.savefig("bands.eps")

@@ -11,6 +11,8 @@ from copy import deepcopy
 def mean_err(x):
   return sum(x**2)**0.5
 
+# A lot of this is probably obsolete with latest version of autogen.
+
 ###############################################################################
 # Misc. tools.
 def mean_array(ser):
