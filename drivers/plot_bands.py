@@ -11,6 +11,7 @@ def plot_bands():
   dat = read_fort25("fort.25")
   totk=0.0
   nbands=dat['bands'][0]['dat'].shape[1]
+  print(nbands)
   fullbands=[[] for i in range(nbands)]
   fullkpts=[]
   breaks=[0.0]
@@ -40,7 +41,7 @@ def plot_bands():
   ax.set_xticks(breaks)
   ax.set_xticklabels(klabs)
   ax.set_xlim((min(breaks)-0.1,max(breaks)+0.1))
-  ax.set_ylim((-4,4))
+  #ax.set_ylim((-4,4))
   for line in breaks:
     ax.axvline(line,color='k',lw=0.5)
 
