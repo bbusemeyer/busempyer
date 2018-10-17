@@ -15,7 +15,7 @@ def plot_bands(spin=1):
   fullkpts=[]
   breaks=[0.0]
   klabs=['000']
-  for leg in dat['bands'][:len(dat['bands'])//1]:
+  for leg in dat['bands'][:len(dat['bands'])//2]:
     bands=(leg['dat']-leg['efermi'])*ev
     dk=leg['dkp']
 

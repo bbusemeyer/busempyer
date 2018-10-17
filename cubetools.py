@@ -7,6 +7,7 @@ from copy import deepcopy
 
 #####################################
 def read_cube(inpf,qwalk_patch=False):
+  if type(inpf)==str: inpf = open(inpf,'r')
   cube={}
   cube['comment']=inpf.readline()
   cube['type']=inpf.readline()
@@ -55,6 +56,7 @@ def read_cube(inpf,qwalk_patch=False):
 
 #####################################
 def write_cube(cube, outf):
+  if type(outf)==str: outf = open(outf,'w')
   outf.write(cube['comment'])
   outf.write(cube['type'])
   outf.write(str(cube['natoms'])+" {} {} {}".format(*cube['origin']))
@@ -78,6 +80,7 @@ def write_cube(cube, outf):
 
 #####################################
 def write_xsf(cube,outf):
+  if type(outf)==str: outf=open(outf,'w')
   outf.write("CRYSTAL\n")
   outf.write("PRIMVEC\n")
   natoms=cube['natoms']
@@ -128,8 +131,9 @@ def integrate_abs(cube):
 #####################################
 def cabs(cube):
   """Take absolute value of cube data."""
-  cube['data']=abs(cube['data'])
-  return cube
+  newcube = deepcopy(cube)
+  newcube['data']=abs(newcube['data'])
+  return newcube
 
 #####################################
 def normalize_abs(cube,Nelec=1):

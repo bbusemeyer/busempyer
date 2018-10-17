@@ -295,14 +295,17 @@ class CategoryPlot:
 
     if cmap is None:
       unique_colors=self.fulldf[color].sort_values().unique()
-      self.cmap=dict(zip(unique_colors,(ps['dark8']+ps['cb12'])[:unique_colors.shape[0]]))
+      nc=unique_colors.shape[0]
+      self.cmap=dict(zip(unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
     self.cmap['catagoryplotdummy']='none'
     
     if mmap is None:
       unique_marks=self.fulldf[mark].sort_values().unique()
+      nm=unique_marks.shape[0]
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
+      self.mmap=dict(zip(unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
     self.mmap['catagoryplotdummy']='s'
@@ -314,7 +317,7 @@ class CategoryPlot:
         self.fulldf[col].unique().shape[0],
         squeeze=False,sharex=sharex,sharey=sharey
       )
-    self.fig.set_size_inches(3.5*self.axes.shape[1]+0.5,
+    self.fig.set_size_inches(3*self.axes.shape[1]+0.5,
                          2.5*self.axes.shape[0]+0.5)
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
