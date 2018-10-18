@@ -42,46 +42,34 @@ def random_example(size=10,prob_connect=0.25):
   test = (test + test.T)/2. # I know it's not uniform, get off my back!
   test = test - np.eye(test.shape[0]) < prob_connect
   print("Random test:")
-  print(test)
+  print(test.astype(int))
 
   connected_sets,home_node = find_connected_sets(test)
   print("Results:")
   print(connected_sets)
 
   print("Rearranged:")
-  rearrange = arrange_to_blocks(test)
-  print(rearrange)
+  ordering = connected_order(test)
+  rearrange = test[ordering][:,ordering]
+  print(rearrange.astype(int))
 
 ### Utils  ################################
 
-def arrange_to_blocks(symmatrix,tol=1e-4):
-  ''' Rearrange a symmetric matrix to seperate blocks.
-
-  Note: this can probably be generalized to nonsymmetric by taking 
-  max of matrix and its transpose for each off-diagonal element.
-  The problem is that find_connected_sets needs to be a metric.
-
-  Args: 
-    symmatrix (array): to be rearranged, in-place.
-    tol (float): tolerance from blocks to be independent.
-  '''
-  ordering = connected_order(symmatrix,tol)
-
-  symmatrix = symmatrix[ordering]
-  symmatrix = symmatrix[:,ordering]
-
-  return symmatrix
-
 def connected_order(symmatrix,tol=1e-4):
   ''' Ordering that rearranges a symmetric matrix to seperate blocks.
+  
+  >>> ordering = connected_order(my_array,1e-3)
+  >>> my_array = my_array[ordering][:,ordering] # to sort into blocks.
 
   Note: this can probably be generalized to nonsymmetric by taking 
   max of matrix and its transpose for each off-diagonal element.
   The problem is that find_connected_sets needs to be a metric.
 
   Args: 
-    symmatrix (array): to be rearranged, in-place.
-    tol (float): tolerance from blocks to be independent.
+    symmatrix (array): matrix to analyze.
+    tol (float): max allowed block coupling.
+  Returns:
+    ordering (list): column/row order to use.
   '''
   connections = np.abs(symmatrix) > tol
   connected_sets,_ = find_connected_sets(connections)
@@ -89,6 +77,33 @@ def connected_order(symmatrix,tol=1e-4):
   ordering = []
   for head_node in connected_sets:
     ordering += connected_sets[head_node]
+  return ordering
+
+def recursive_order(symmatrix,tols=[1e-10,1e-4,1e-0,1e1]):
+  ''' Same as connected_order, but recursively call subblocks with successive tolerances.
+  
+  >>> ordering = connected_order(my_array,1e-3)
+  >>> my_array = my_array[ordering][:,ordering] # to sort into blocks.
+
+  Args: 
+    symmatrix (array): matrix to analyze.
+    tols (list): list of tolerances to recursively sort by. Increasing makes more sense.
+  Returns:
+    ordering (list): column/row order to use.
+  '''
+  connections = np.abs(symmatrix) > tols[0]
+  connected_sets,_ = find_connected_sets(connections)
+
+  ordering = []
+
+  for head_node in connected_sets:
+    if len(tols)==1 or len(connected_sets[head_node])==1:
+      ordering += connected_sets[head_node]
+    else:
+      subset = list(connected_sets[head_node])
+      suborder = recursive_order(symmatrix[subset][:,subset],tols[1:])
+      ordering += [subset[s] for s in suborder]
+
   return ordering
 
 ### Work horse ################################
