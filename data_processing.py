@@ -11,6 +11,8 @@ from copy import deepcopy
 def mean_err(x):
   return sum(x**2)**0.5
 
+# A lot of this is probably obsolete with latest version of autogen.
+
 ###############################################################################
 # Misc. tools.
 def mean_array(ser):
@@ -457,13 +459,13 @@ def untuple_cols(df,prefix="",sep="_"):
 # Safely take list of one element into it's value.
 def unlist(li):
   if li != li: return np.nan
-  if len(li) > 1: AssertionError("unlist can't operate on multi-element list")
+  assert not len(li) > 1,"unlist can't operate on multi-element list"
   return li[0]
 
 # Safely take list of one element into it's value.
 def undict(di):
   if di != di: return np.nan
-  if len(di) > 1: AssertionError("undict can't operate on multi-element dict")
+  assert not len(di) > 1,"undict can't operate on multi-element list"
   return list(di.items())[0][1]
 
 # Convert pandas DataFrame row into a dictionary.

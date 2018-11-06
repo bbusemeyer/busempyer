@@ -11,11 +11,103 @@ NORBFE = 10
 NORBCH = 4
 SMALLSPIN = 1.0 # Spins less than this are considered zero.
 
+
+def fluctdat_array(jsondat,key='value'):
+  ''' Turn the dictionary of fluctuation data into a single array.'''
+  # May not work for bundled QWalk jobs. Might need to average instead of [0].
+  return np.array([d[key] for d in jsondat['fluctuation data']])\
+      .reshape(jsondat['nspin'],jsondat['nspin'],
+               jsondat['nregion'],jsondat['nregion'],
+               jsondat['maxn'],jsondat['maxn'])
+
+# TODO: Inefficient but easy to use.
+def old_fluct_vars(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  mom=np.array(mom).reshape(nspin,nregion)
+  var=[ ((np.arange(nn)-mom[s1,r1])**2*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  return np.array(var).reshape(nspin,nregion)
+
+def fluct_covars(flarray):
+  nspin=flarray.shape[0]
+  nregion=flarray.shape[2]
+  nn=flarray.shape[4]
+  mom=[ (np.arange(nn)*flarray[s1,s1,r1,r1].diagonal()).sum()
+      for s1 in range(nspin)
+      for r1 in range(nregion)
+    ]
+  mom=np.array(mom).reshape(nspin,nregion)
+  covar=[ 
+      ((np.arange(nn)-mom[s1,r1])*(np.arange(nn)-mom[s2,r2])\
+          *flarray[s1,s2,r1,r2]).sum()
+      for s1 in range(nspin)
+      for s2 in range(nspin)
+      for r1 in range(nregion)
+      for r2 in range(nregion)
+    ]
+  return np.array(covar).reshape(nspin,nspin,nregion,nregion)
+
+def unpack_nfluct(jsondat):
+  ''' Calculate useful quantities and put them into a nice dataframe.
+  Example:
+  >>> mydata=json.load(open('qw.json','r'))
+  >>> unpack_nfluct(mydata['properties']['region_fluctuation'])
+
+  Args:
+    jsondat (dict): result from calling gosling -json on a QWalk file and using ['properties']['region_fluctuation'].
+  Returns:
+    dict: Moments and variances as a dict.
+  '''
+  results={}
+  results['fluctdat']=fluctdat_array(jsondat)
+  results['flucterr']=fluctdat_array(jsondat,key='error')
+
+  count=np.arange(results['fluctdat'].shape[-1])
+
+  results['moms']=np.einsum('ssrrnn,n->sr',results['fluctdat'],count)
+  results['momserr']=np.einsum('ssrrnn,n->sr',results['flucterr']**2,count**2)**0.5
+
+  # shifted(s,r,n)=n-mu(s,r)
+  shifted=count[None,None,:]-results['moms'][:,:,None]
+  shiftederr=results['momserr'][:,:,None]
+
+  results['covars']=np.einsum('aibjck,abc,ijk->aibj',results['fluctdat'],shifted,shifted)
+  results['covarserr']=\
+      np.einsum('aibjck,abc,ijk->aibj',results['flucterr']**2,shifted**2,shifted**2)**0.5 +\
+      np.einsum('aibjck,abc,ijk->aibj',results['fluctdat']**2,shiftederr**2,shifted**2)**0.5 +\
+      np.einsum('aibjck,abc,ijk->aibj',results['fluctdat']**2,shifted**2,shiftederr**2)**0.5
+
+  return results
+
+def analyze_nfluct(fluctdat):
+  moms=fluctdat['moms']
+  momserr=fluctdat['momserr']
+  cov=fluctdat['covars']
+  coverr=fluctdat['covarserr']
+  fluctdat.update({
+      'spin': moms[0] - moms[1],
+      'charge': moms[0] + moms[1],
+      'avgerr': (momserr[0]**2 + momserr[1]**2)**0.5,
+      'magcov': cov[0,0] + cov[1,1] - cov[0,1] - cov[1,0],
+      'chgcov': cov[0,0] + cov[1,1] + cov[0,1] + cov[1,0],
+      'coverr': (coverr[0,0]**2 + coverr[1,1]**2 + coverr[0,1]**2 + coverr[1,0]**2)**0.5
+    })
+  return fluctdat
+
 ################################################################################
 # If you're wondering about how to use these, and you're in the Wagner group on
 # github, check out my FeTe notebook!
 ################################################################################
 
+##### !!! These are all written for autogenv1, so they might be obsolete.
 ###############################################################################
 # Process record group of functions.
 def process_record(record):
@@ -96,7 +188,7 @@ def mat_diag_exp(pmat,perr):
   varerr=varerr**0.5
   return avg,avgerr,var,varerr
 
-def analyze_nfluct(post_record):
+def old_analyze_nfluct(post_record):
   """ Version of _analyze_nfluct where no site-averaging is done.
     Useful for external versions. """
   def diag_exp(rec):

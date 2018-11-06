@@ -67,7 +67,7 @@ def display_nested_dict(nested,indent=""):
   Don't use indent if calling on root."""
   outstr = ""
   for key in nested.keys():
-    outstr += indent+key+"\n"
+    outstr += "{0}{1}\n".format(indent,key)
     if type(nested[key])==dict:
       outstr += display_nested_dict(nested[key],indent="  "+indent)
   return outstr

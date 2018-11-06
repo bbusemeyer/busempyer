@@ -15,10 +15,11 @@ def seperr(num):
   except ValueError:
     return num,0.0
 
-def read_cif(ciffn):
+def read_cif(cifstr):
   # Useful keys that have the pattern:
   # _key value
   one_keys=[
+      '_database_code_ICSD',
       '_cell_length_a','_cell_length_b','_cell_length_c',
       '_cell_angle_alpha','_cell_angle_beta','_cell_angle_gamma',
       '_symmetry_space_group_name_H-M','_symmetry_Int_Tables_number',
@@ -28,7 +29,7 @@ def read_cif(ciffn):
   cifdat={}
   siteflag=False
 
-  for line in open(ciffn,'r'):
+  for line in ciffn.split('\n'):
     lilist=line.split()
 
     if len(lilist)==0: continue

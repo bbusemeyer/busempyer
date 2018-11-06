@@ -7,6 +7,7 @@ from copy import deepcopy
 
 #####################################
 def read_cube(inpf,qwalk_patch=False):
+  if type(inpf)==str: inpf = open(inpf,'r')
   cube={}
   cube['comment']=inpf.readline()
   cube['type']=inpf.readline()
@@ -55,6 +56,7 @@ def read_cube(inpf,qwalk_patch=False):
 
 #####################################
 def write_cube(cube, outf):
+  if type(outf)==str: outf = open(outf,'w')
   outf.write(cube['comment'])
   outf.write(cube['type'])
   outf.write(str(cube['natoms'])+" {} {} {}".format(*cube['origin']))
@@ -78,6 +80,7 @@ def write_cube(cube, outf):
 
 #####################################
 def write_xsf(cube,outf):
+  if type(outf)==str: outf=open(outf,'w')
   outf.write("CRYSTAL\n")
   outf.write("PRIMVEC\n")
   natoms=cube['natoms']
@@ -128,8 +131,9 @@ def integrate_abs(cube):
 #####################################
 def cabs(cube):
   """Take absolute value of cube data."""
-  cube['data']=abs(cube['data'])
-  return cube
+  newcube = deepcopy(cube)
+  newcube['data']=abs(newcube['data'])
+  return newcube
 
 #####################################
 def normalize_abs(cube,Nelec=1):
@@ -235,7 +239,7 @@ def add_cubes(cube1,cube2,N1=1,N2=1):
   Note: you may need to normalize these appropriately first."""
   addcube = deepcopy(cube1)
   addcube['data'] += cube2['data']
-  addcube['data'] /= abs(addcube['data']).sum()
+  #addcube['data'] /= abs(addcube['data']).sum()
   return addcube
 
 #####################################
@@ -244,7 +248,7 @@ def mul_cubes(cube1,cube2,N1=1,N2=1):
   Note: you may need to normalize these appropriately first."""
   mulcube = deepcopy(cube1)
   mulcube['data'] *= cube2['data']
-  mulcube['data'] /= abs(mulcube['data']).sum()
+  #mulcube['data'] /= abs(mulcube['data']).sum()
   return mulcube
 
 #####################################
@@ -295,8 +299,10 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   # Classify points to show all atoms while minimizing extra space.
   pidx = (np.array((pos[1]-pos[2], pos[2]-pos[0], pos[0]-pos[1]))**2).sum(axis=1).argsort()
   orig = pos[pidx[ 1]]
-  pvm  = pos[pidx[ 0]] - orig # Main plotting axis (static).
-  pvo  = pos[pidx[-1]] - orig # Orthogonal plotting axis.
+  pvm  = pos[pidx[-1]] - orig # Main plotting axis (static).
+  pvo  = pos[pidx[ 0]] - orig # Orthogonal plotting axis.
+  # Idea is that normally you'd want to orthogonalize the sortest axis.
+  # Moving the axis is what creates extra space in the plot.
 
   # Orthogonalize orth. axis, since this is how most plots are.
   pvo -= np.sum(pvo*pvm)/np.sum(pvm**2) * pvm

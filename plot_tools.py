@@ -96,7 +96,9 @@ myplotdef={
   }
 myerrdef={
     'capthick':1,
-    'capwidth':1
+    'capsize':2,
+    'ecolor':'k',
+    'fmt':'none'
   }
 
 notes = """
@@ -167,44 +169,70 @@ def matplotlib_header(usetex=True,family='serif'):
   plt.rc('xtick.major',size=ticksize)
   plt.rc('ytick.major',size=ticksize)
 
-def fix_lims(ax_inp,factor=0.04):
+def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
   """
   Create buffer around all points that is factor*(data range) wide.
+  Fixes it in-place.
+
+  Args:
+    ax_inp (matplotlib.Axes or Axes array): Axes to fix.
+    factor (float): fraction of empty space around points.
+    do_x (bool): Fix the x axis.
+    do_y (bool): Fix the y axis.
   """
+
   minx,miny = np.Inf,np.Inf
   maxx,maxy = -np.Inf,-np.Inf
   if type(ax_inp) != np.ndarray:
     ax_array = np.array((ax_inp))
   else:
     ax_array = ax_inp
+  xdata=np.array(())
+  ydata=np.array(())
   for ax in ax_array.flatten():
     for line in ax.get_lines():
       # axvlines store the data as lists and often should be ignored.
       if type(line.get_xdata()) is type([]):
         continue
-      if line.get_xdata().max() > maxx:
-        maxx = line.get_xdata().max()
-      if line.get_ydata().max() > maxy:
-        maxy = line.get_ydata().max()
-      if line.get_xdata().min() < minx:
-        minx = line.get_xdata().min()
-      if line.get_ydata().min() < miny:
-        miny = line.get_ydata().min()
+      xdata=np.concatenate((xdata,line.get_xdata()))
+      ydata=np.concatenate((ydata,line.get_ydata()))
+
+  maxx=xdata[~np.isnan(xdata)].max()
+  maxy=ydata[~np.isnan(ydata)].max()
+  minx=xdata[~np.isnan(xdata)].min()
+  miny=ydata[~np.isnan(ydata)].min()
+
   xs = factor*(maxx-minx)
   ys = factor*(maxy-miny)
   for ax in ax_array.flatten():
-    if xs != 0: ax.set_xlim(minx-xs,maxx+xs)
-    if ys != 0: ax.set_ylim(miny-ys,maxy+ys)
+    if xs != 0 and do_x: ax.set_xlim(minx-xs,maxx+xs)
+    if ys != 0 and do_y: ax.set_ylim(miny-ys,maxy+ys)
 
 def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
 
 def fix_xticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
   ax.set_xticks(thin_ticks(ax.get_xticks(),kwargs))
 
 def fix_yticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
   ax.set_yticks(thin_ticks(ax.get_yticks(),kwargs))
 
+def fix_ticks(ax,**kwargs):
+  ''' Convenience function for thin_ticks.'''
+  fix_xticks(ax,kwargs)
+  fix_yticks(ax,kwargs)
+
 def thin_ticks(ticks,div=2,start=0,shift=0,append=0):
+  ''' Remove from list at evenly spaced intervals.
+  Args:
+    div (int): Total number of ticks divided by this.
+    start (int): Start the ticks from this point. 
+    shift (int): Shift the starting tick by this much.
+    append (int): Add this more ticks.
+  Returns:
+    list: new ticks.
+  '''
   newticks = [ticks[div*i-shift] for i in range(start,len(ticks)//div+append)]
   return newticks
 
@@ -219,29 +247,40 @@ def safemap(di,key):
     return key
 
 # The mother of all plotting tools.
-class CatagoryPlot: 
-  """ Use a pandas DataFrame to make plots broken down by color, row, column,
-  and marker. Somewhat similar to what ggplot can handle (more elegantly).
-
-  For example: df.columns=[x,y,z],
-  cp=CatagoryPlot(df,color='z',mark='z')
-  cp.plot('x','y')
-
-  Now cp.fig will have a figure of x vs y with color and marker broken down by z.
-  
-  Call self.plot() to actually make a plot. 
-  
-  There are a lot of bugs I know about but haven't bothered to fix. If you find
-  one, I can probably fix it pretty quick, so long as there's a desire to have
-  it fixed.
-  """
+class CategoryPlot: 
   def __init__(self,df,
       row='catagoryplotdummy',col='catagoryplotdummy',
       color='catagoryplotdummy',mark='catagoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,squeeze=False):
+    '''
+    Use a pandas DataFrame to make plots broken down by color, row, column,
+    and marker. Somewhat similar to what ggplot can handle (more elegantly).
+
+    For example: df.columns=[x,y,z],
+    cp=CategoryPlot(df,color='z',mark='z')
+    cp.plot('x','y')
+
+    Now cp.fig will have a figure of x vs y with color and marker broken down by z.
+    
+    Call self.plot() to actually make a plot. 
+   
+      Args:
+        row: rows will differ by this quantity (default to one row).
+        col: columns will differ by this quantity (default to one column).
+        color: colors will differ by this quantity (default to one color).
+        mark: markers will differ by this quantity (default to one marker).
+        labmap: labels of data values are mapped using labmap first.
+        cmap: data values are mapped to these colors (default to ps['dark8']).
+        mmap: data values are mapped to these markers (default to pm).
+        sharex: x-axes are set to same limits.
+        sharey: y-axes are set to same limits.
+        squeeze: minimize the dimension of self.axes.
+    '''
+
+
 
     if 'catagoryplotdummy' in df.columns:
-      print("CatagoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
+      print("CategoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
 
 
     assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
@@ -256,14 +295,17 @@ class CatagoryPlot:
 
     if cmap is None:
       unique_colors=self.fulldf[color].sort_values().unique()
-      self.cmap=dict(zip(unique_colors,(ps['dark8']+ps['cb12'])[:unique_colors.shape[0]]))
+      nc=unique_colors.shape[0]
+      self.cmap=dict(zip(unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
     self.cmap['catagoryplotdummy']='none'
     
     if mmap is None:
       unique_marks=self.fulldf[mark].sort_values().unique()
+      nm=unique_marks.shape[0]
       self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
+      self.mmap=dict(zip(unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
     self.mmap['catagoryplotdummy']='s'
@@ -275,7 +317,7 @@ class CatagoryPlot:
         self.fulldf[col].unique().shape[0],
         squeeze=False,sharex=sharex,sharey=sharey
       )
-    self.fig.set_size_inches(3.5*self.axes.shape[1]+0.5,
+    self.fig.set_size_inches(3*self.axes.shape[1]+0.5,
                          2.5*self.axes.shape[0]+0.5)
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
@@ -288,13 +330,20 @@ class CatagoryPlot:
     for lab,df in axdf.groupby([self.mark,self.color]):
       mark,color=lab
 
+      # Handle missing marks and colors.
+      if mark not in self.mmap:
+        print("Warning: %s has no mark. Assigning it default '.'"%mark)
+        self.mmap[mark]='.'
+      if color not in self.cmap:
+        print("Warning: %s has no color. Assigning it default 'k'"%color)
+        self.cmap[color]='k'
+
       if line:
         ax.plot(df[xvar],df[yvar],'-',
             color=self.cmap[color],**plotargs)
 
       if evar is not None:
-        ax.errorbar(df[xvar],df[yvar],df[evar],fmt='none',
-            ecolor=self.cmap[color],capthick=1,capsize=2,**errargs)
+        ax.errorbar(df[xvar],df[yvar],df[evar],**errargs)
 
       if fill:
         ax.plot(df[xvar],df[yvar],self.mmap[mark],

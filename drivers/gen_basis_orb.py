@@ -13,7 +13,7 @@ basfn=sys.argv[2]
 outf=open(sys.argv[3],'w')
 
 # Convert basis type to range of basis elements numbers.
-basis_converter = {"S":1,"P":3,"5D":5}
+basis_converter = {"s":1,"p":3,"5d":5,"5d_siesta":5}
 def find_basis_numbers(element,basfn):
   basf = open(basfn,'r')
   num_basis = 0
@@ -23,8 +23,8 @@ def find_basis_numbers(element,basfn):
   for wnum,word in enumerate(baswords):
     if word == element: elmflg = True
     if (word == "{") and (elmflg): basflg = True
-    if elmflg and basflg and (word in basis_converter.keys()):
-      num_basis+=basis_converter[word]
+    if elmflg and basflg and (word.lower() in basis_converter.keys()):
+      num_basis+=basis_converter[word.lower()]
     if elmflg and basflg and word == "}":
       basf.close()
       return range(1,num_basis+1)
@@ -37,7 +37,7 @@ atomlist = []
 for line in sysf:
   #assume that the ATOM section is all on one line
   #as is printed out by the converters
-  if "ATOM" in line:
+  if "atom" in line.lower():
     spl=line.split()
     atomlist.append(spl[2])
 
