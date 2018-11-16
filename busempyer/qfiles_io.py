@@ -1,4 +1,4 @@
-import  mython as my
+from busempyer.mython import gen_qsub,Ldict
 import subprocess as sp
 import numpy as np
 import os

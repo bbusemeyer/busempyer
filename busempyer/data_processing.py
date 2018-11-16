@@ -1,11 +1,10 @@
 import numpy as np
 import os
 import json
-import cryfiles_io as cio
-import qfiles_io as qio
+from busempyer.cryfiles_io import read_cryinp,read_cryout
+from busempyer.qfiles_io import read_qfile,read_qenergy,read_number_dens,moments,read_dm
 #import read_numberfluct as rn
-import qefiles_io as qeio
-import cubetools as ct
+from busempyer.cubetools import read_cube
 from copy import deepcopy
 
 def mean_err(x):
@@ -147,14 +146,14 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
   
   print("  DFT params and results..." )
   try:
-    dftdat = cio.read_cryinp(open(dftfile,'r'))
+    dftdat = read_cryinp(open(dftfile,'r'))
     bres['a'] = dftdat['latparms'][0]
     bres['c'] = dftdat['latparms'][1]
     bres['se_height'] = dftdat['apos'][dftdat['atypes'].index(234)][-1]
     for key in ['mixing','broyden','fmixing','tolinteg',
                 'kdens','spinlock','supercell','tole','basis']:
       bres[key] = dftdat[key]
-    dftdat = cio.read_cryout(open(dftoutf,'r'))
+    dftdat = read_cryout(open(dftoutf,'r'))
     bres['dft_energy'] = dftdat['dft_energy']
     bres['dft_moments'] = dftdat['dft_moments']
   except IOError:
@@ -177,8 +176,8 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
 
     print("  now DMC:",kroot+"..." )
     try:
-      sysdat = qio.read_qfile(open(kroot+'.sys','r'))
-      dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
+      sysdat = read_qfile(open(kroot+'.sys','r'))
+      dmcinp = read_qfile(open(kroot+'.dmc','r'))
       ress[rk] = bres.copy()
       ress[rk]['kpoint'] = sysdat['system']['kpoint']
       ress[rk]['ts'] = dmcinp['method']['timestep']
@@ -189,7 +188,7 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     print("  energies..." )
     try:
       inpf = open(kroot+'.dmc.log','r')
-      egydat = qio.read_qenergy(inpf,gosling)
+      egydat = read_qenergy(inpf,gosling)
       ress[rk]['dmc_energy']     =  egydat['egy']
       ress[rk]['dmc_energy_err'] =  egydat['err']
     except IOError:
@@ -197,7 +196,7 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
 
     try:
       inpf = open(kroot+'.ogp.log','r')
-      ogpdat = qio.read_qenergy(inpf,gosling)
+      ogpdat = read_qenergy(inpf,gosling)
       ress[rk]['dmc_excited_energy']     =  ogpdat['egy']
       ress[rk]['dmc_excited_energy_err'] =  ogpdat['err']
     except IOError:
@@ -220,11 +219,11 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     print("  fluctuations..." )
     try:
       inpf = open(kroot+'.ppr.o','r')
-      fludat, fluerr = qio.read_number_dens(inpf)
+      fludat, fluerr = read_number_dens(inpf)
       if fludat is None:
         print("  (Error in number fluctuation output, skipping)")
       else:
-        avg, var, cov, avge, vare, cove = qio.moments(fludat,fluerr)
+        avg, var, cov, avge, vare, cove = moments(fludat,fluerr)
         ress[rk]['average']    = avg
         ress[rk]['covariance'] = cov
     except IOError:
@@ -233,7 +232,7 @@ def read_dir(froot,gosling='./gosling',read_cubes=False):
     print("  1-RDM..." )
     try:
       inpf = open(kroot+'.ordm.o')
-      odmdat = qio.read_dm(inpf)
+      odmdat = read_dm(inpf)
       if odmdat is None:
         print("  (Error in 1-RDM output, skipping)")
       else:
@@ -333,8 +332,8 @@ def read_dir_autogen(froot,gosling='./gosling',read_cubes=False):
 
     print("  now DMC:",kroot+"..." )
     try:
-      sysdat = qio.read_qfile(open(kroot+'.sys','r'))
-      dmcinp = qio.read_qfile(open(kroot+'.dmc','r'))
+      sysdat = read_qfile(open(kroot+'.sys','r'))
+      dmcinp = read_qfile(open(kroot+'.dmc','r'))
       entry['kpoint'] = sysdat['system']['kpoint']
       entry['timestep'] = dmcinp['method']['timestep']
       entry['localization'] = "None"

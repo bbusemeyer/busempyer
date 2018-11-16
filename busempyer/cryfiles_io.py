@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from numpy  import array,dot,zeros
 import numpy as np
-from mython import lines2str,gen_qsub
+from busempyer.mython import lines2str,gen_qsub
 import os
 import shutil as sh
 
