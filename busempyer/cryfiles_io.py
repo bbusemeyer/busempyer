@@ -113,8 +113,12 @@ def read_cryinp(inpf):
       continue
 
     if 'SHRINK' == inpl[pos]:
-      res['kdens'] = int(inpl[pos+1].split()[0])
-      pos += 2
+      res['kdens'] = int(inpl[pos+1])
+      res['gdens'] = int(inpl[pos+2])
+      pos += 3
+      if res['kdens']==0:
+        res['kdens']=tuple(inpl[pos:pos+3])
+        pos+=3
       continue
 
     if 'TOLINTEG' == inpl[pos]:
@@ -190,13 +194,16 @@ def gen_properties(cryinp,natoms,kpath,denom,projs,
   """
   inp = read_cryinp(cryinp)
   shrink = inp['kdens']
+  if type(shrink)!=int:
+    shrink=max(shrink)
+  gilat=inp['gdens']
   epera  = array(inp['effchg'])
   
   # This may only make sense when the spin channels are equal.
-  filled = int(round(dot(array(natoms),epera))) / 2
+  filled = int(round(dot(array(natoms),epera))) // 2
 
   newklines = [['NEWK']]
-  newklines.append([shrink,shrink*2])
+  newklines.append([shrink,gilat])
   newklines.append([get_ef,nprint])
 
   nline       = len(kpath)

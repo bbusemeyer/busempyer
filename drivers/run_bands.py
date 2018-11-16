@@ -4,7 +4,7 @@ import subprocess as sub
 
 # I'm not sure how general these are, but they're for FeSe.
 cryinp = open(sys.argv[1],'r')
-natoms = [2,2]
+natoms = [4,4]
 kpath = [
     [0,0,0],
     [1,0,0],
@@ -15,7 +15,6 @@ kpath = [
   ]
 denom = 2
 projs = []
-bandout = open("band.inp",'w')
-bandout.write(cio.gen_properties(cryinp,natoms,kpath,denom,projs))
-bandout.close()
-print(sub.check_output("properties < band.inp > band.out",shell=True))
+with open("band.inp",'w') as bandf:
+  bandf.write(cio.gen_properties(cryinp,natoms,kpath,denom,projs,above=10,below=10))
+#print sub.check_output("properties < band.inp > band.out",shell=True)
