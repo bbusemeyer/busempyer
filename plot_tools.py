@@ -87,19 +87,6 @@ def gen_spectrum(start,end,numpoints):
   return spectrum
 
 
-# My own plotting defaults.
-myplotdef={
-    'mew':0.5,
-    'mec':'k',
-    'ms':5,
-    'lw':1
-  }
-myerrdef={
-    'capthick':1,
-    'capsize':2,
-    'ecolor':'k',
-    'fmt':'none'
-  }
 
 notes = """
 Things I commonly have to look up:
@@ -155,6 +142,38 @@ Color maps:
   Good ``uniform'' sequential: viridis,plasma.
   Good diverging: Spectral,seismic,bwr,BrBG
 """
+
+def make_plotargs(**kwargs):
+  ''' Make a nice set of defaults for plot aesthetics.
+  Args: 
+    kwargs: additional arguments to modify defaults.
+  '''
+  # Defaults.
+  myplotdef={
+      'mew':0.5,
+      'mec':'k',
+      'ms':5,
+      'lw':1
+    }
+  for arg in kwargs:
+    myplotdef[arg] = kwargs[arg]
+  return myplotdef
+
+def make_errargs(**kwargs):
+  ''' Make a nice set of defaults for plot aesthetics.
+  Args: 
+    kwargs: additional arguments to modify defaults.
+  '''
+  # Defaults.
+  myerrdef={
+      'capthick':1,
+      'capsize':2,
+      'ecolor':'k',
+      'fmt':'none'
+    }
+  for arg in kwargs:
+    myerrdef[arg] = kwargs[arg]
+  return myerrdef
 
 def matplotlib_header(usetex=True,family='serif'):
   import seaborn as sns
@@ -251,7 +270,7 @@ class CategoryPlot:
   def __init__(self,df,
       row='catagoryplotdummy',col='catagoryplotdummy',
       color='catagoryplotdummy',mark='catagoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,squeeze=False):
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
@@ -269,12 +288,11 @@ class CategoryPlot:
         col: columns will differ by this quantity (default to one column).
         color: colors will differ by this quantity (default to one color).
         mark: markers will differ by this quantity (default to one marker).
-        labmap: labels of data values are mapped using labmap first.
+        labmap: labels of data values are mapped using labmap first. Not in map means leave as-is.
         cmap: data values are mapped to these colors (default to ps['dark8']).
         mmap: data values are mapped to these markers (default to pm).
         sharex: x-axes are set to same limits.
         sharey: y-axes are set to same limits.
-        squeeze: minimize the dimension of self.axes.
     '''
 
 
@@ -322,9 +340,73 @@ class CategoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
+  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
+      labrow=False,labcol=False,labloc='title',
+      fill=True,line=False,
+      xscale='linear',yscale='linear'):
+    '''
+    Plot some freakin' data. Jeez how complicated is this object?!
+
+    Args:
+      xvar (str): column name for x-axis.
+      yvar (str): column name for y-axis.
+      evar (str): optional column name for errorbars.
+      plotargs (dict): additonal options for matplotlib plot.
+      errargs (dict): additional options for matplotlib errorbar.
+      labrow (bool): Label rows automatically.
+      labcol (bool): Label columns automatically.
+      labloc (str) 'title', 'axes', or 'figure'. Location labels will appear.
+      fill (bool): whether points are filled or empty of color.
+      line (bool): whether to draw a line between all points.
+      xscale (str): 'linear' or 'log'; scale of the x axis.
+      yscale (str): 'lienar' or 'log'; scale of the y axis.
+    '''
+
+    self.plotargs=plotargs
+    for lab,axdf in self.fulldf.groupby([self.row,self.col]):
+      row,col=lab
+      annotation=[]
+      ax=self.axes[self.rowmap[row],self.colmap[col]]
+
+      # This will handle work pertaining to a single Axis.
+      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line,xscale,yscale)
+
+      # Handle locations of labels for row and col variables.
+      if labrow:
+        if labloc=='axes': self.axes[self.rowmap[row],0].set_ylabel(self.labmap(row))
+        else: annotation+=["{}: {}".format(self.row,self.labmap(row))]
+      if labcol: 
+        if labloc=='axes': self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
+        else: annotation+=["{}: {}".format(self.col,self.labmap(col))]
+      if labloc=='title':
+        ax.set_title('\n'.join(annotation))
+      elif labloc=='figure':
+        ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
+
+      # I'm a 90's baby.
+      self.fig.tight_layout()
+
   def subplot(self,ax,xvar,yvar,evar=None,axdf=None,plotargs={},errargs={},
-      fill=True,line=False):
-    ''' Plot a subplot that considers only color and marking catagories.'''
+      fill=True,line=False,xscale='linear',yscale='linear'):
+    ''' See plot. args are the same, but for only one plot in the grid.
+    Additonal Args:
+    ax (Axes): Axes instance to make a plot on.
+    '''
+
+    if xscale=='linear':
+      if yscale=='linear':
+        method=ax.plot
+      elif yscale=='log':
+        method=ax.semilogy
+      else: raise ValueError("yscale should be linear or log, not %s"%yscale)
+    elif xscale=='log':
+      if yscale=='linear':
+        method=ax.semilogx
+      elif yscale=='log':
+        method=ax.loglog
+      else: raise ValueError("yscale should be linear or log, not %s"%yscale)
+    else: raise ValueError("xscale should be linear or log, not %s"%xscale)
+
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
     for lab,df in axdf.groupby([self.mark,self.color]):
@@ -339,58 +421,52 @@ class CategoryPlot:
         self.cmap[color]='k'
 
       if line:
-        ax.plot(df[xvar],df[yvar],'-',
+        method(df[xvar],df[yvar],'-',
             color=self.cmap[color],**plotargs)
 
       if evar is not None:
         ax.errorbar(df[xvar],df[yvar],df[evar],**errargs)
 
       if fill:
-        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+        method(df[xvar],df[yvar],self.mmap[mark],
             color=self.cmap[color],**plotargs)
       else:
         if 'mew' not in self.plotargs: self.plotargs['mew']=1
         if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
-        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+        method(df[xvar],df[yvar],self.mmap[mark],
             color='none',
             mec=self.cmap[color],**self.plotargs)
         if 'mec' in self.plotargs: self.plotargs['mec']=save
 
-  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc='title',fill=True,line=False,
-      ax=None):
-    ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
-    row-and col-seperated plots. '''
-
-    self.plotargs=plotargs
-    for lab,axdf in self.fulldf.groupby([self.row,self.col]):
-      row,col=lab
-      annotation=[]
-      ax=self.axes[self.rowmap[row],self.colmap[col]]
-
-      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line)
-
-      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(row))]
-      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(col))]
-      if labloc=='title':
-        ax.set_title('\n'.join(annotation))
-      else:
-        ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
-
-      self.fig.tight_layout()
-
   def add_legend(self,ax=None,labmap={},args={}):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
-    handles. If there are two legends, the args should be a list."""
-    if ax is None: ax=self.axes[0,0]
+    handles. If there are two legends, the args should be a list.
+    Args:
+      ax (Axes, tuple, or None): Different options:
+        Axes--use this Axes instance to place the legend. 
+        tuple--use self.axes[ax] to place the legend.
+        None--use self.axes[0,0] to place the legend.
+      labmap (dict): map categories to labels that will appear in legend.
+      args (dict): other options for matplotlib's legend call. 
+        If thre are two legends (when mark and color are different descrimiators for the data),
+        this should be a tuple, one for mark and one for color).
+    """
+    if ax is None: 
+      ax=self.axes[0,0]
+    elif type(ax) == tuple:
+      ax=self.axes[ax]
 
     unique_colors=self.fulldf[self.color].sort_values().unique()
     unique_marks=self.fulldf[self.mark].sort_values().unique()
 
+    # Legend's marks should be fully visible.
     safeargs=copy(self.plotargs)
     if 'mew' in self.plotargs:
       safeargs.pop('mew')
+
+    legargs = copy(self.plotargs)
+    legargs['alpha'] = 1.0
 
     # Minimize needed labels:
     if self.mark=='catagoryplotdummy': 
@@ -399,7 +475,7 @@ class CategoryPlot:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
+            **legargs
           ) for unique in unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
@@ -409,7 +485,7 @@ class CategoryPlot:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
-            **self.plotargs
+            **legargs
           ) for unique in unique_marks
         ]
       leg=ax.legend(handles=prox,**args)
@@ -419,7 +495,7 @@ class CategoryPlot:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
+            **legargs
           ) for unique in unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
@@ -432,7 +508,7 @@ class CategoryPlot:
       cprox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
+            **legargs
           ) for unique in unique_colors
         ]
       mprox=[plt.Line2D([],[],
@@ -448,6 +524,24 @@ class CategoryPlot:
       leg=[ax.legend(handles=cprox,**args[0]),mlegend]
       leg[0]._legend_box.align='left'
     return leg
+
+  def set_xlabel(self,label,**kwargs):
+    ''' Label all bottom axes.
+    Args:
+      label (str): what do you think?!
+      kwargs: options to Axes.set_xlabel.
+    '''
+    for ax in self.axes[-1,:]:
+      ax.set_xlabel(label,kwargs)
+
+  def set_ylabel(self,label,**kwargs):
+    ''' Label all left axes.
+    Args:
+      label (str): what do you think?!
+      kwargs: options to Axes.set_xlabel.
+    '''
+    for ax in self.axes[:,0]:
+      ax.set_ylabel(label,kwargs)
 
 ### Fitting tools.
 
