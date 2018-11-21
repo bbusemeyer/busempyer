@@ -341,7 +341,7 @@ class CategoryPlot:
     self.colmap=idxmap(df[col].unique())
 
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc='title',
+      labrow=None,labcol=None,labloc=(0.9,0.9),
       fill=True,line=False,
       xscale='linear',yscale='linear'):
     '''
@@ -353,9 +353,9 @@ class CategoryPlot:
       evar (str): optional column name for errorbars.
       plotargs (dict): additonal options for matplotlib plot.
       errargs (dict): additional options for matplotlib errorbar.
-      labrow (bool): Label rows automatically.
-      labcol (bool): Label columns automatically.
-      labloc (str) 'title', 'axes', or 'figure'. Location labels will appear.
+      labrow (None or str): Label rows automatically; specify location as 'title', 'axes', or 'figure'.
+      labcol (None or str): Label columns automatically; specify location as 'title', 'axes', or 'figure'.
+      labloc (tuple): Location of annotation for labrow/labcol in axes fraction.
       fill (bool): whether points are filled or empty of color.
       line (bool): whether to draw a line between all points.
       xscale (str): 'linear' or 'log'; scale of the x axis.
@@ -372,15 +372,23 @@ class CategoryPlot:
       self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line,xscale,yscale)
 
       # Handle locations of labels for row and col variables.
-      if labrow:
-        if labloc=='axes': self.axes[self.rowmap[row],0].set_ylabel(self.labmap(row))
-        else: annotation+=["{}: {}".format(self.row,self.labmap(row))]
-      if labcol: 
-        if labloc=='axes': self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
-        else: annotation+=["{}: {}".format(self.col,self.labmap(col))]
-      if labloc=='title':
-        ax.set_title('\n'.join(annotation))
-      elif labloc=='figure':
+      labtitle = []
+      labannotate = []
+      if labrow=='axes':
+        self.axes[self.rowmap[row],0].set_ylabel(self.labmap(row))
+      elif labrow=='title': 
+        labtitle.append("{}: {}".format(self.row,self.labmap(row)))
+      elif labrow=='figure':
+        labannotate.append("{}: {}".format(self.row,self.labmap(row)))
+      if labcol=='axes':
+        self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
+      elif labcol=='title': 
+        labtitle.append("{}: {}".format(self.col,self.labmap(col)))
+      elif labcol=='figure':
+        labannotate.append("{}: {}".format(self.col,self.labmap(col)))
+      if len(labtitle):
+        ax.set_title('\n'.join(labtitle))
+      if len(labannotate):
         ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
 
       # I'm a 90's baby.
