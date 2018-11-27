@@ -478,31 +478,25 @@ class CategoryPlot:
 
     # Minimize needed labels:
     if self.mark=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_colors,unique_colors))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
+            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
     elif self.color=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
+            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=self.labmap(unique),
             **legargs
           ) for unique in unique_marks
         ]
       leg=ax.legend(handles=prox,**args)
     elif self.color==self.mark:
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
+            marker=self.mmap[unique],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in unique_colors
         ]
@@ -510,18 +504,15 @@ class CategoryPlot:
     else:
       if type(args)==dict:
         args=[args,args]
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
-        labmap.update(dict(zip(unique_colors,unique_colors)))
       cprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
+            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in unique_colors
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],mew=1.0,
+            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=self.labmap(unique),mew=1.0,
             **safeargs
           ) for unique in unique_marks
         ]

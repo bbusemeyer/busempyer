@@ -1,4 +1,3 @@
-from busempyer import ase_tools
 from busempyer import find_connect
 from busempyer import cifparser
 from busempyer import cryfiles_io
@@ -9,7 +8,6 @@ from busempyer import qefiles_io
 from busempyer import qfiles_io
 
 __all__ = [
-    'ase_tools',
     'cifparser',
     'cryfiles_io',
     'cubetools',
