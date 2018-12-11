@@ -268,8 +268,8 @@ def safemap(di,key):
 # The mother of all plotting tools.
 class CategoryPlot: 
   def __init__(self,df,
-      row='catagoryplotdummy',col='catagoryplotdummy',
-      color='catagoryplotdummy',mark='catagoryplotdummy',
+      row='categoryplotdummy',col='categoryplotdummy',
+      color='categoryplotdummy',mark='categoryplotdummy',
       labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
@@ -297,13 +297,13 @@ class CategoryPlot:
 
 
 
-    if 'catagoryplotdummy' in df.columns:
-      print("CategoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
+    if 'categoryplotdummy' in df.columns:
+      print("CategoryPlot: Warning, I'm not going to use the 'categoryplotdummy' column!")
 
 
     assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
     self.fulldf=df
-    self.fulldf['catagoryplotdummy']='catagoryplotdummy'
+    self.fulldf['categoryplotdummy']='categoryplotdummy'
     self.row=row
     self.col=col
     self.color=color
@@ -317,7 +317,7 @@ class CategoryPlot:
       self.cmap=dict(zip(unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
-    self.cmap['catagoryplotdummy']='none'
+    self.cmap['categoryplotdummy']='none'
     
     if mmap is None:
       unique_marks=self.fulldf[mark].sort_values().unique()
@@ -326,7 +326,7 @@ class CategoryPlot:
       self.mmap=dict(zip(unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
-    self.mmap['catagoryplotdummy']='s'
+    self.mmap['categoryplotdummy']='s'
 
     self.labmap=lambda x:safemap(labmap,x)
 
@@ -477,18 +477,18 @@ class CategoryPlot:
     legargs['alpha'] = 1.0
 
     # Minimize needed labels:
-    if self.mark=='catagoryplotdummy': 
+    if self.mark=='categoryplotdummy': 
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
+            marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
-    elif self.color=='catagoryplotdummy': 
+    elif self.color=='categoryplotdummy': 
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=self.labmap(unique),
+            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),
             **legargs
           ) for unique in unique_marks
         ]
@@ -506,13 +506,13 @@ class CategoryPlot:
         args=[args,args]
       cprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
+            marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in unique_colors
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=self.labmap(unique),mew=1.0,
+            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,
             **safeargs
           ) for unique in unique_marks
         ]
@@ -523,6 +523,16 @@ class CategoryPlot:
       leg=[ax.legend(handles=cprox,**args[0]),mlegend]
       leg[0]._legend_box.align='left'
     return leg
+
+  def axvline(self,*args,**kwargs):
+    ''' Add a vline to all axes in the set.'''
+    for ax in self.axes.ravel():
+      ax.axvline(*args,**kwargs)
+
+  def axhline(self,*args,**kwargs):
+    ''' Add a hline to all axes in the set.'''
+    for ax in self.axes.ravel():
+      ax.axhline(*args,**kwargs)
 
   def set_xlabel(self,label,**kwargs):
     ''' Label all bottom axes.
