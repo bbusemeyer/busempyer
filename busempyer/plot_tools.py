@@ -341,7 +341,7 @@ class CategoryPlot:
     self.colmap=idxmap(df[col].unique())
 
   def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=None,labcol=None,labloc=(0.9,0.9),
+      labrow=None,labcol=None,labloc=(0.7,0.9),
       fill=True,line=False,
       xscale='linear',yscale='linear'):
     '''
@@ -365,7 +365,6 @@ class CategoryPlot:
     self.plotargs=plotargs
     for lab,axdf in self.fulldf.groupby([self.row,self.col]):
       row,col=lab
-      annotation=[]
       ax=self.axes[self.rowmap[row],self.colmap[col]]
 
       # This will handle work pertaining to a single Axis.
@@ -389,7 +388,8 @@ class CategoryPlot:
       if len(labtitle):
         ax.set_title('\n'.join(labtitle))
       if len(labannotate):
-        ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
+        print('\n'.join(labannotate))
+        ax.annotate('\n'.join(labannotate),labloc,xycoords='axes fraction')
 
       # I'm a 90's baby.
       self.fig.tight_layout()

@@ -1,5 +1,6 @@
 #!/usr/bin/python
-from pylab import *
+from matplotlib.pyplot import plot,title,annotate,gcf
+from numpy import array
 import sys
 
 def readgeo(inpf):
