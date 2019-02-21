@@ -1,1 +1,0 @@
-/home/busemey2/projects/reset_autogen_naming/reset_naming.py
