@@ -20,6 +20,7 @@ def main():
   #plot_bands('unpolarized/fort.25',erange,spin=0,figname='../plots/fu4/bands_unp')
   #plot_bands('checkerboard_broy/fort.25',erange,spin=1,figname='../plots/fu4/bands_che')
   #plot_bands('collinear/fort.25',erange,spin=1,figname='../plots/fu4/bands_col')
+  print('No default usage')
 
 def plot_bands(loc,lims,spin,red=(0,0),figname=None):
   ''' Plots bands from loc.
@@ -27,6 +28,7 @@ def plot_bands(loc,lims,spin,red=(0,0),figname=None):
     loc (str): path to fort.25 file.
     lims (tuples): Energy limits for plot.
     spin (int): 0=all (unpolarized), 1=first half (spin up), 2=second half (spin down).
+    red (tuple): range of bands to color red.
     figname (str): root name for file to export plot into.
   Returns:
     fig,ax: Figure and axes object with plot.
