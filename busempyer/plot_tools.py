@@ -309,18 +309,18 @@ class CategoryPlot:
     self.plotargs={}
 
     if cmap is None:
-      unique_colors=self.fulldf[color].sort_values().unique()
-      nc=unique_colors.shape[0]
-      self.cmap=dict(zip(unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
+      self.unique_colors=self.fulldf[color].unique()
+      nc=self.unique_colors.shape[0]
+      self.cmap=dict(zip(self.unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
     self.cmap['categoryplotdummy']='none'
     
     if mmap is None:
-      unique_marks=self.fulldf[mark].sort_values().unique()
-      nm=unique_marks.shape[0]
-      self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
-      self.mmap=dict(zip(unique_marks,((1+nm//len(pm))*pm)[:nm]))
+      self.unique_marks=self.fulldf[mark].unique()
+      nm=self.unique_marks.shape[0]
+      self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
+      self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
     self.mmap['categoryplotdummy']='s'
@@ -360,7 +360,7 @@ class CategoryPlot:
     '''
 
     self.plotargs=plotargs
-    for lab,axdf in self.fulldf.groupby([self.row,self.col]):
+    for lab,axdf in self.fulldf.groupby([self.row,self.col],sort=False):
       row,col=lab
       ax=self.axes[self.rowmap[row],self.colmap[col]]
 
@@ -414,8 +414,10 @@ class CategoryPlot:
 
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
-    for lab,df in axdf.groupby([self.mark,self.color]):
+    print(axdf.iloc[-10:])
+    for lab,df in axdf.groupby([self.mark,self.color],sort=False):
       mark,color=lab
+      print(lab)
 
       # Handle missing marks and colors.
       if mark not in self.mmap:
@@ -462,8 +464,6 @@ class CategoryPlot:
     elif type(ax) == tuple:
       ax=self.axes[ax]
 
-    unique_colors=self.fulldf[self.color].sort_values().unique()
-    unique_marks=self.fulldf[self.mark].sort_values().unique()
 
     # Legend's marks should be fully visible.
     safeargs=copy(self.plotargs)
@@ -479,7 +479,7 @@ class CategoryPlot:
             linestyle='',
             marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
-          ) for unique in unique_colors
+          ) for unique in self.unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
     elif self.color=='categoryplotdummy': 
@@ -487,7 +487,7 @@ class CategoryPlot:
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),
             **legargs
-          ) for unique in unique_marks
+          ) for unique in self.unique_marks
         ]
       leg=ax.legend(handles=prox,**args)
     elif self.color==self.mark:
@@ -495,7 +495,7 @@ class CategoryPlot:
             linestyle='',
             marker=self.mmap[unique],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
-          ) for unique in unique_colors
+          ) for unique in self.unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
     else:
@@ -505,13 +505,13 @@ class CategoryPlot:
             linestyle='',
             marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
-          ) for unique in unique_colors
+          ) for unique in self.unique_colors
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,
             **safeargs
-          ) for unique in unique_marks
+          ) for unique in self.unique_marks
         ]
       prox=cprox,mprox
       mlegend=ax.legend(handles=mprox,**(args[1]))
