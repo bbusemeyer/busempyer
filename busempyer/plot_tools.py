@@ -414,10 +414,8 @@ class CategoryPlot:
 
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
-    print(axdf.iloc[-10:])
     for lab,df in axdf.groupby([self.mark,self.color],sort=False):
       mark,color=lab
-      print(lab)
 
       # Handle missing marks and colors.
       if mark not in self.mmap:
