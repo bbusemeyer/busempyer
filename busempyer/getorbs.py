@@ -3,7 +3,8 @@
 from pickle import load
 
 def main():
-  from_conv('conv.pkl','crys_0.orb',range(1,45))
+  out = from_conv('conv.pkl','crys_0.orb',range(1,45))
+  print(out)
 
 def from_conv(convmgr,orbfile,orbitals):
   conv = load(open(convmgr,'rb'))
@@ -13,10 +14,12 @@ def from_conv(convmgr,orbfile,orbitals):
   outlines = [
       'method { plot',
       '  resolution 0.1',
-      '  plotorbitals { ' + ' '.join(map(str,orbitals)) + '}',
-    ] + ['  ' + line for line in orblines] + syslines
+      '  plotorbitals { ' + ' '.join(map(str,orbitals)) + '}'
+    ] + ['  ' + line for line in orblines] + [
+      '}'
+    ] + syslines
 
-  print('\n'.join(outlines))
+  return '\n'.join(outlines)
 
 if __name__ == "__main__":
   main()
