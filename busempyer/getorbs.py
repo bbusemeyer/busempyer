@@ -7,6 +7,14 @@ def main():
   print(out)
 
 def from_conv(convmgr,orbfile,orbitals):
+  ''' Make a plot input file using a ConverterManager. 
+  Args: 
+    convmgr (str): path to converter pickle.
+    orbfile (str): path to orbfile.
+    orbitals (array-like): orbitals to plot. NOTE THIS IS 1-BASED INDEXING!!
+  Returns:
+    str: input file for QWalk.
+  '''
   conv = load(open(convmgr,'rb'))
   orblines = conv.orbitals[0].export_qwalk_orbitals(orbfile).split('\n')
   syslines = conv.system.export_qwalk_sys().split('\n')
