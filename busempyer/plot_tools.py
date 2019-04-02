@@ -267,7 +267,8 @@ class CategoryPlot:
   def __init__(self,df,
       row='categoryplotdummy',col='categoryplotdummy',
       color='categoryplotdummy',mark='categoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False):
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,
+      default_mark='s'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
@@ -323,7 +324,7 @@ class CategoryPlot:
       self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
-    self.mmap['categoryplotdummy']='s'
+    self.mmap['categoryplotdummy']=default_mark
 
     self.labmap=lambda x:safemap(labmap,x)
 
