@@ -1,11 +1,65 @@
+''' Convenience tools for plotting.'''
 import numpy as np
-from inspect import getargspec
-from scipy.optimize import curve_fit
 import os
 from copy import deepcopy as copy
 import matplotlib.pyplot as plt
 
 ### Matplotlib tools.
+
+notes = """
+Things I commonly have to look up:
+  For reference: all the marker choices for matplotlib:
+   "."         point
+   ","         pixel
+   "o"         circle
+   "v"         triangle_down
+   "^"         triangle_up
+   "<"         triangle_left
+   ">"         triangle_right
+   "1"         tri_down
+   "2"         tri_up
+   "3"         tri_left
+   "4"         tri_right
+   "8"         octagon
+   "s"         square
+   "p"         pentagon
+   "*"         star
+   "h"         hexagon1
+   "H"         hexagon2
+   "+"         plus
+   "x"         x
+   "D"         diamond
+   "d"         thin_diamond
+   "|"         vline
+   "_"         hline
+   TICKLEFT    tickleft
+   TICKRIGHT   tickright
+   TICKUP      tickup
+   TICKDOWN    tickdown
+   CARETLEFT   caretleft
+   CARETRIGHT  caretright
+   CARETUP     caretup
+   CARETDOWN   caretdown
+   "None"      nothing
+   None        nothing
+   " "         nothing
+   ""          nothing
+
+Favorite colors to use from pc:
+  't':    '#1b9e77', # Teal.
+  'do':   '#d95f02', # Dark orange.
+  'g' :   '#66a61e', # Green.
+  'pink': '#e7298a', # Dark pink.
+  'dy':   '#e6ab02', # Dark yellow/gold.
+  'dgray':'#666666', # Dark gray.
+  'tan' :' #b15928', # Cowhide tan.
+  'lp':   '#7570b3', # light purple.
+
+
+Color maps:
+  Good ``uniform'' sequential: viridis,plasma.
+  Good diverging: Spectral,seismic,bwr,BrBG
+"""
 
 # Nicer colors for plotting from colorbrewer2.org.
 # Common colors are first letter only, prefix with l or d means light or dark.
@@ -86,75 +140,37 @@ def gen_spectrum(start,end,numpoints):
   spectrum=[gen_hex(spectrum[i,:]) for i in range(numpoints)]
   return spectrum
 
+def make_plotargs(**kwargs):
+  ''' Make a nice set of defaults for plot aesthetics.
+  Args: 
+    kwargs: additional arguments to modify defaults.
+  '''
+  # Defaults.
+  myplotdef={
+      'mew':0.5,
+      'mec':'k',
+      'ms':5,
+      'lw':1
+    }
+  for arg in kwargs:
+    myplotdef[arg] = kwargs[arg]
+  return myplotdef
 
-# My own plotting defaults.
-myplotdef={
-    'mew':0.5,
-    'mec':'k',
-    'ms':5,
-    'lw':1
-  }
-myerrdef={
-    'capthick':1,
-    'capsize':2,
-    'ecolor':'k',
-    'fmt':'none'
-  }
-
-notes = """
-Things I commonly have to look up:
-  For reference: all the marker choices for matplotlib:
-   "."         point
-   ","         pixel
-   "o"         circle
-   "v"         triangle_down
-   "^"         triangle_up
-   "<"         triangle_left
-   ">"         triangle_right
-   "1"         tri_down
-   "2"         tri_up
-   "3"         tri_left
-   "4"         tri_right
-   "8"         octagon
-   "s"         square
-   "p"         pentagon
-   "*"         star
-   "h"         hexagon1
-   "H"         hexagon2
-   "+"         plus
-   "x"         x
-   "D"         diamond
-   "d"         thin_diamond
-   "|"         vline
-   "_"         hline
-   TICKLEFT    tickleft
-   TICKRIGHT   tickright
-   TICKUP      tickup
-   TICKDOWN    tickdown
-   CARETLEFT   caretleft
-   CARETRIGHT  caretright
-   CARETUP     caretup
-   CARETDOWN   caretdown
-   "None"      nothing
-   None        nothing
-   " "         nothing
-   ""          nothing
-
-Favorite colors to use from pc:
-  't':    '#1b9e77', # Teal.
-  'do':   '#d95f02', # Dark orange.
-  'g' :   '#66a61e', # Green.
-  'pink': '#e7298a', # Dark pink.
-  'dy':   '#e6ab02', # Dark yellow/gold.
-  'dgray':'#666666', # Dark gray.
-  'tan' :' #b15928', # Cowhide tan.
-  'lp':   '#7570b3', # light purple.
-
-
-Color maps:
-  Good ``uniform'' sequential: viridis,plasma.
-  Good diverging: Spectral,seismic,bwr,BrBG
-"""
+def make_errargs(**kwargs):
+  ''' Make a nice set of defaults for plot aesthetics.
+  Args: 
+    kwargs: additional arguments to modify defaults.
+  '''
+  # Defaults.
+  myerrdef={
+      'capthick':1,
+      'capsize':2,
+      'ecolor':'k',
+      'fmt':'none'
+    }
+  for arg in kwargs:
+    myerrdef[arg] = kwargs[arg]
+  return myerrdef
 
 def matplotlib_header(usetex=True,family='serif'):
   import seaborn as sns
@@ -249,9 +265,10 @@ def safemap(di,key):
 # The mother of all plotting tools.
 class CategoryPlot: 
   def __init__(self,df,
-      row='catagoryplotdummy',col='catagoryplotdummy',
-      color='catagoryplotdummy',mark='catagoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,squeeze=False):
+      row='categoryplotdummy',col='categoryplotdummy',
+      color='categoryplotdummy',mark='categoryplotdummy',
+      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,
+      default_mark='s'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
@@ -269,23 +286,22 @@ class CategoryPlot:
         col: columns will differ by this quantity (default to one column).
         color: colors will differ by this quantity (default to one color).
         mark: markers will differ by this quantity (default to one marker).
-        labmap: labels of data values are mapped using labmap first.
+        labmap: labels of data values are mapped using labmap first. Not in map means leave as-is.
         cmap: data values are mapped to these colors (default to ps['dark8']).
         mmap: data values are mapped to these markers (default to pm).
         sharex: x-axes are set to same limits.
         sharey: y-axes are set to same limits.
-        squeeze: minimize the dimension of self.axes.
     '''
 
 
 
-    if 'catagoryplotdummy' in df.columns:
-      print("CategoryPlot: Warning, I'm not going to use the 'catagoryplotdummy' column!")
+    if 'categoryplotdummy' in df.columns:
+      print("CategoryPlot: Warning, I'm not going to use the 'categoryplotdummy' column!")
 
 
     assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
     self.fulldf=df
-    self.fulldf['catagoryplotdummy']='catagoryplotdummy'
+    self.fulldf['categoryplotdummy']='categoryplotdummy'
     self.row=row
     self.col=col
     self.color=color
@@ -294,21 +310,21 @@ class CategoryPlot:
     self.plotargs={}
 
     if cmap is None:
-      unique_colors=self.fulldf[color].sort_values().unique()
-      nc=unique_colors.shape[0]
-      self.cmap=dict(zip(unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
+      self.unique_colors=self.fulldf[color].unique()
+      nc=self.unique_colors.shape[0]
+      self.cmap=dict(zip(self.unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
-    self.cmap['catagoryplotdummy']='none'
+    self.cmap['categoryplotdummy']='none'
     
     if mmap is None:
-      unique_marks=self.fulldf[mark].sort_values().unique()
-      nm=unique_marks.shape[0]
-      self.mmap=dict(zip(unique_marks,pm[:unique_marks.shape[0]]))
-      self.mmap=dict(zip(unique_marks,((1+nm//len(pm))*pm)[:nm]))
+      self.unique_marks=self.fulldf[mark].unique()
+      nm=self.unique_marks.shape[0]
+      self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
+      self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
     else: 
       self.mmap=mmap
-    self.mmap['catagoryplotdummy']='s'
+    self.mmap['categoryplotdummy']=default_mark
 
     self.labmap=lambda x:safemap(labmap,x)
 
@@ -322,12 +338,84 @@ class CategoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
+  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
+      labrow=None,labcol=None,labloc=(0.7,0.9),
+      fill=True,line=False,
+      xscale='linear',yscale='linear'):
+    '''
+    Plot some freakin' data. Jeez how complicated is this object?!
+
+    Args:
+      xvar (str): column name for x-axis.
+      yvar (str): column name for y-axis.
+      evar (str): optional column name for errorbars.
+      plotargs (dict): additonal options for matplotlib plot.
+      errargs (dict): additional options for matplotlib errorbar.
+      labrow (None or str): Label rows automatically; specify location as 'title', 'axes', or 'figure'.
+      labcol (None or str): Label columns automatically; specify location as 'title', 'axes', or 'figure'.
+      labloc (tuple): Location of annotation for labrow/labcol in axes fraction.
+      fill (bool): whether points are filled or empty of color.
+      line (bool): whether to draw a line between all points.
+      xscale (str): 'linear' or 'log'; scale of the x axis.
+      yscale (str): 'lienar' or 'log'; scale of the y axis.
+    '''
+
+    self.plotargs=plotargs
+    for lab,axdf in self.fulldf.groupby([self.row,self.col],sort=False):
+      row,col=lab
+      ax=self.axes[self.rowmap[row],self.colmap[col]]
+
+      # This will handle work pertaining to a single Axis.
+      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line,xscale,yscale)
+
+      # Handle locations of labels for row and col variables.
+      labtitle = []
+      labannotate = []
+      if labrow=='axes':
+        self.axes[self.rowmap[row],0].set_ylabel(self.labmap(row))
+      elif labrow=='title': 
+        labtitle.append("{}: {}".format(self.row,self.labmap(row)))
+      elif labrow=='figure':
+        labannotate.append("{}: {}".format(self.row,self.labmap(row)))
+      if labcol=='axes':
+        self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
+      elif labcol=='title': 
+        labtitle.append("{}: {}".format(self.col,self.labmap(col)))
+      elif labcol=='figure':
+        labannotate.append("{}: {}".format(self.col,self.labmap(col)))
+      if len(labtitle):
+        ax.set_title('\n'.join(labtitle))
+      if len(labannotate):
+        print('\n'.join(labannotate))
+        ax.annotate('\n'.join(labannotate),labloc,xycoords='axes fraction')
+
+      # I'm a 90's baby.
+      self.fig.tight_layout()
+
   def subplot(self,ax,xvar,yvar,evar=None,axdf=None,plotargs={},errargs={},
-      fill=True,line=False):
-    ''' Plot a subplot that considers only color and marking catagories.'''
+      fill=True,line=False,xscale='linear',yscale='linear'):
+    ''' See plot. args are the same, but for only one plot in the grid.
+    Additonal Args:
+    ax (Axes): Axes instance to make a plot on.
+    '''
+
+    if xscale=='linear':
+      if yscale=='linear':
+        method=ax.plot
+      elif yscale=='log':
+        method=ax.semilogy
+      else: raise ValueError("yscale should be linear or log, not %s"%yscale)
+    elif xscale=='log':
+      if yscale=='linear':
+        method=ax.semilogx
+      elif yscale=='log':
+        method=ax.loglog
+      else: raise ValueError("yscale should be linear or log, not %s"%yscale)
+    else: raise ValueError("xscale should be linear or log, not %s"%xscale)
+
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
-    for lab,df in axdf.groupby([self.mark,self.color]):
+    for lab,df in axdf.groupby([self.mark,self.color],sort=False):
       mark,color=lab
 
       # Handle missing marks and colors.
@@ -339,107 +427,90 @@ class CategoryPlot:
         self.cmap[color]='k'
 
       if line:
-        ax.plot(df[xvar],df[yvar],'-',
+        method(df[xvar],df[yvar],'-',
             color=self.cmap[color],**plotargs)
 
       if evar is not None:
         ax.errorbar(df[xvar],df[yvar],df[evar],**errargs)
 
       if fill:
-        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+        method(df[xvar],df[yvar],self.mmap[mark],
             color=self.cmap[color],**plotargs)
       else:
         if 'mew' not in self.plotargs: self.plotargs['mew']=1
         if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
-        ax.plot(df[xvar],df[yvar],self.mmap[mark],
+        method(df[xvar],df[yvar],self.mmap[mark],
             color='none',
             mec=self.cmap[color],**self.plotargs)
         if 'mec' in self.plotargs: self.plotargs['mec']=save
 
-  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
-      labrow=False,labcol=False,labloc='title',fill=True,line=False,
-      ax=None):
-    ''' plotargs is passed to plt.plot. lab* controls automatic labeling of
-    row-and col-seperated plots. '''
-
-    self.plotargs=plotargs
-    for lab,axdf in self.fulldf.groupby([self.row,self.col]):
-      row,col=lab
-      annotation=[]
-      ax=self.axes[self.rowmap[row],self.colmap[col]]
-
-      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line)
-
-      if labrow: annotation+=["{}: {}".format(self.row,self.labmap(row))]
-      if labcol: annotation+=["{}: {}".format(self.col,self.labmap(col))]
-      if labloc=='title':
-        ax.set_title('\n'.join(annotation))
-      else:
-        ax.annotate('\n'.join(annotation),labloc,xycoords='axes fraction')
-
-      self.fig.tight_layout()
-
   def add_legend(self,ax=None,labmap={},args={}):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
-    handles. If there are two legends, the args should be a list."""
-    if ax is None: ax=self.axes[0,0]
+    handles. If there are two legends, the args should be a list.
+    Args:
+      ax (Axes, tuple, or None): Different options:
+        Axes--use this Axes instance to place the legend. 
+        tuple--use self.axes[ax] to place the legend.
+        None--use self.axes[0,0] to place the legend.
+      labmap (dict): map categories to labels that will appear in legend.
+      args (dict): other options for matplotlib's legend call. 
+        If thre are two legends (when mark and color are different descrimiators for the data),
+        this should be a tuple, one for mark and one for color).
+    """
+    if ax is None: 
+      ax=self.axes[0,0]
+    elif type(ax) == tuple:
+      ax=self.axes[ax]
 
-    unique_colors=self.fulldf[self.color].sort_values().unique()
-    unique_marks=self.fulldf[self.mark].sort_values().unique()
 
+    # Legend's marks should be fully visible.
     safeargs=copy(self.plotargs)
     if 'mew' in self.plotargs:
       safeargs.pop('mew')
 
+    legargs = copy(self.plotargs)
+    legargs['alpha'] = 1.0
+
     # Minimize needed labels:
-    if self.mark=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_colors,unique_colors))
+    if self.mark=='categoryplotdummy': 
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_colors
+            marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
+            **legargs
+          ) for unique in self.unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
-    elif self.color=='catagoryplotdummy': 
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
+    elif self.color=='categoryplotdummy': 
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_marks
+            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),
+            **legargs
+          ) for unique in self.unique_marks
         ]
       leg=ax.legend(handles=prox,**args)
     elif self.color==self.mark:
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
       prox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_colors
+            marker=self.mmap[unique],color=self.cmap[unique],label=self.labmap(unique),
+            **legargs
+          ) for unique in self.unique_colors
         ]
       leg=ax.legend(handles=prox,**args)
     else:
       if type(args)==dict:
         args=[args,args]
-      if labmap=={}:
-        labmap=dict(zip(unique_marks,unique_marks))
-        labmap.update(dict(zip(unique_colors,unique_colors)))
       cprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap['catagoryplotdummy'],color=self.cmap[unique],label=labmap[unique],
-            **self.plotargs
-          ) for unique in unique_colors
+            marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
+            **legargs
+          ) for unique in self.unique_colors
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['catagoryplotdummy'],label=labmap[unique],mew=1.0,
+            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,
             **safeargs
-          ) for unique in unique_marks
+          ) for unique in self.unique_marks
         ]
       prox=cprox,mprox
       mlegend=ax.legend(handles=mprox,**(args[1]))
@@ -449,445 +520,31 @@ class CategoryPlot:
       leg[0]._legend_box.align='left'
     return leg
 
-### Fitting tools.
+  def axvline(self,*args,**kwargs):
+    ''' Add a vline to all axes in the set.'''
+    for ax in self.axes.ravel():
+      ax.axvline(*args,**kwargs)
 
-class FitFunc:
-  """
-  Define a function that can be fit to and plotted with.
-  """
-  def __init__(self,form,jacobian=None,pnames=[]):
-    self.form = form
-    self.jac  = jacobian
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
+  def axhline(self,*args,**kwargs):
+    ''' Add a hline to all axes in the set.'''
+    for ax in self.axes.ravel():
+      ax.axhline(*args,**kwargs)
 
-  def fit(self,xvals,yvals,evals=None,guess=(),handle_nans=True,**kwargs):
-    """
-    Use xvals and yvals +/- evals to fit params with initial values p0.
+  def set_xlabel(self,label,**kwargs):
+    ''' Label all bottom axes.
+    Args:
+      label (str): what do you think?!
+      kwargs: options to Axes.set_xlabel.
+    '''
+    for ax in self.axes[-1,:]:
+      ax.set_xlabel(label,kwargs)
 
-    evals == None means don't use errorbars.
-    guess == () means guess all 1.0 for the parameters (usually bad!)
-    kwargs passed to curve_fit()
-    handle_nans automatically drops tuples that have nan in any of xvals, yvals,
-      or evals.
-    """
-    if handle_nans:
-      drop = np.isnan(xvals)
-      drop = drop | np.isnan(yvals)
-      if evals is not None:
-        drop = drop | np.isnan(evals)
-      xvals = np.array(xvals)[~drop]
-      yvals = np.array(yvals)[~drop]
-      if evals is not None:
-        evals = np.array(evals)[~drop]
-    if guess == ():
-      guess = self._set_default_parms(xvals,yvals,evals)
-    if (evals is None) or (np.isnan(evals).any()):
-      fit = curve_fit(self.form,
-        xvals,yvals,
-        p0=guess,**kwargs)
-    else:
-      fit = curve_fit(self.form,
-        xvals,yvals,sigma=evals,
-        absolute_sigma=True,
-        p0=guess,**kwargs)
-    self.parm = np.array(guess)
-    self.perr = np.array(guess)
-    for pi,p in enumerate(guess):
-      self.parm[pi] = fit[0][pi]
-      self.perr[pi] = fit[1][pi][pi]**.5
-    self.cov  = fit[1]
-    if len(self.parm) == len(self.pnms):
-      self.pmap = dict(zip(self.pnms,self.parm))
-      self.emap = dict(zip(self.pnms,self.perr))
+  def set_ylabel(self,label,**kwargs):
+    ''' Label all left axes.
+    Args:
+      label (str): what do you think?!
+      kwargs: options to Axes.set_xlabel.
+    '''
+    for ax in self.axes[:,0]:
+      ax.set_ylabel(label,kwargs)
 
-  def eval(self,x):
-    """
-    Evaluate fitted function at point x.
-    """
-    if self.parm is None: return None
-    else:
-      return self.form(x,*self.parm)
-
-  def eval_error(self,x):
-    """
-    Error from evaluating fitted function at point x.
-    """
-    if (self.parm is None) or (self.perr is None) or (self.jac is None): return None
-    else:
-      return np.dot( self.jac(x,*self.parm).T,
-                     np.dot(self.cov,
-                            self.jac(x,*self.parm)))**.5
-
-  def get_parm(self,key="print"):
-    if key=="print":
-      print("What did you want? Available keys:")
-      return ', '.join(self.pmap.keys())
-    elif self.pmap != {}:
-      return self.pmap[key]
-    else:
-      print("You must set pnames to use get_parm().")
-      print("Alternatively, use self.parm.")
-      return None
-
-  def get_parm_err(self,key="print"):
-    if key=="print":
-      print("What did you want? Available keys:")
-      return ', '.join(self.pmap.keys())
-    elif self.pmap != {}:
-      return self.emap[key]
-    else:
-      print("You must set pnames to use get_parm().")
-      print("Alternatively, use self.perr.")
-      return None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    # Better things possible for more specific functions.
-    return np.ones(len(getargspec(self.form)[0])-1)
-
-class LinearFit(FitFunc):
-  """
-  FitFunc of form c*x + y0
-  """
-  def __init__(self,pnames=['slope','yint']):
-    def form(x,c,y0):
-      return c*x + y0
-    def jac(x,c,y0):
-      return np.array([x,1.0]).T
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    return (slope(xvals,yvals), yvals[abs(xvals).argmin()])
-
-class LinearFit_xcross(FitFunc):
-  """
-  FitFunc of form c*(x - x0)
-  """
-  def __init__(self,pnames=['slope','xint']):
-    def form(x,c,x0):
-      return c*(x - x0)
-    def jac(x,c,y0):
-      return np.array([x,-c]).T
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    return (slope(xvals,yvals), xvals[abs(yvals).argmin()])
-
-class QuadraticFit(FitFunc):
-  """
-  FitFunc of form c*(x - xm)**2 + yc
-  """
-  def __init__(self,pnames=['quadratic','xmin','ycrit']):
-    def form(x,c,xm,yc):
-      return c*(x - xm)**2 + yc
-    def jac(x,c,xm,yc):
-      return np.array([(x-xm)**2,2*c*(x-xm),1]).T
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class CubicFit(FitFunc):
-  """
-  FitFunc of form a*(x - xm)**3 + b*(x - xm)**2 + yc
-  """
-  def __init__(self,pnames=['cubic','quadratic','xmin','ycrit']):
-    def form(x,a,b,xm,yc):
-      return a*(x - xm)**3 + b*(x - xm)**2 + yc
-    def jac(x,a,b,xm,yc):
-      return np.array([(x-xm)**3,(x-xm)**2,-3*a*(x-xm)**2-2*b*(x-xm),1]).T
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    # These will work well for cubics that are close to parabolic, with samples
-    # centered around the min or max.
-    if yvals[yvals.shape[0]//2] > yvals[0]:
-      return (1.0, -1.0, xvals.mean(), yvals.max())
-    elif yvals[yvals.shape[0]//2] < yvals[0]:
-      return (1.0, 1.0, xvals.mean(), yvals.min())
-    else: # It's something flat-ish?
-      return (0.0, 0.0, xvals.mean(), yvals.min())
-
-class CubicFit_fixmin(FitFunc):
-  """
-  FitFunc of form a*(x - xm)**3 + b*(x - xm)**2 + yc
-  """
-  def __init__(self,xm,pnames=['cubic','quadratic','ycrit']):
-    def form(x,a,b,yc):
-      return a*(x - xm)**3 + b*(x - xm)**2 + yc
-    def jac(x,a,b,yc):
-      return None # implement me!
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class CubicFit_zeros(FitFunc):
-  """
-  FitFunc of form a(x-x1)(x-x2)(x-x3)
-  """
-  def __init__(self,pnames=['cubic','zero1','zero2','zero3']):
-    def form(x,a,x1,x2,x3):
-      return a*(x-x1)*(x-x2)*(x-x3)
-    def jac(x,a,b,yc):
-      return None # implement me!
-    self.form = form
-    self.jac  = jac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class NormedGaussianFit(FitFunc):
-  """
-  FitFunc of form (2 pi sigma)**-0.5 exp(-(x-mu)**2/2sigma**2)
-  """
-  def __init__(self,pnames=['mean','std']):
-    def form(x,mu,sigma):
-      return (2.*np.pi*sigma)**-0.5 * np.exp(-(x-mu)**2/2./sigma**2)
-    def jac(x,mu,sigma):
-      return None 
-    self.form = form
-    self.jac  = None # implement me!
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    return (np.mean(xvals),np.std(xvals))
-
-class GaussianFit(FitFunc):
-  """
-  FitFunc of form A/(2 pi sigma)**0.5 exp(-(x-mu)**2/2sigma**2)
-  """
-  def __init__(self,pnames=['mean','std','amp']):
-    def form(x,mu,sigma,A):
-      return A/(2.*np.pi*sigma)**0.5 * np.exp(-(x-mu)**2/2./sigma**2)
-    def jac(x,mu,sigma):
-      return None 
-    self.form = form
-    self.jac  = None # implement me!
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    return (np.mean(xvals),np.std(xvals),max(yvals)-min(yvals))
-
-class EOSFit(FitFunc):
-  """
-  Anton-Shmidt (DOI: 10.1016/S0966-9795(97)00017-4) Equation of state E(V):
-  P(V) = -b(V/V0)^n log(V/V0)
-  => E(V) = bV0/(n+1) (V/V0)^(n+1) (ln(V/V0) - 1/(n+1)) + Einf
-  """
-  def __init__(self,pnames=['bulk_mod','eq_vol','n','Einf']):
-    def energy(V,b,V0,n,Einf):
-      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
-    def pressure(V,b,V0,n):
-      return -b*(V/V0)**n  * np.log(V/V0)
-
-    self.form = energy
-    self.derv = pressure
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-  def eval_derv(self,x):
-    """
-    Evaluate derivative function at point x.
-    """
-    if self.parm is None: return None
-    else:
-      return self.derv(x,*self.parm[:-1])
-
-  def _set_default_parms(self,xvals,yvals,evals):
-    # Should be good if you're only after positive pressures.
-    HaA3_GPa = 4359.74434
-    maxyidx = yvals.argmax()
-    return (
-        1.0/HaA3_GPa,   # b: rough scale for bulk modulus.
-        xvals[maxyidx], # V0: Volume at ambient pressure.
-        -2.0,           # n: suggested by Anton et al.
-        yvals[maxyidx]  # Einf: rough energy scale near V0.
-      )
-
-class EOSFit_fixV0(EOSFit):
-  def __init__(self,V0,pnames=['bulk_mod','n','Einf']):
-    def energy(V,b,n,Einf):
-      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
-    def pressure(V,b,n):
-      return -b*(V/V0)**n  * np.log(V/V0)
-
-    self.form = energy
-    self.derv = pressure
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class EOSFit_fixn(EOSFit):
-  def __init__(self,n,pnames=['bulk_mod','V0','Einf']):
-    def energy(V,b,V0,Einf):
-      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
-    def pressure(V,b,V0):
-      return -b*(V/V0)**n  * np.log(V/V0)
-
-    self.form = energy
-    self.derv = pressure
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class EOSFit_fixV0_fixn(EOSFit):
-  def __init__(self,V0,n,pnames=['bulk_mod','Einf']):
-    def energy(V,b,Einf):
-      return b*V0/(n+1) * (V/V0)**(n+1) * (np.log(V/V0) - 1/(n+1)) + Einf
-    def pressure(V,b):
-      return -b*(V/V0)**n  * np.log(V/V0)
-
-    self.form = energy
-    self.derv = pressure
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-class MorseFit(FitFunc):
-  """
-  Morse potential for model of bonding.
-  V(r) = Deq(1 - exp(-a(r-req)))^2 + V(req)
-
-  Suggested guesses: 
-  Deq  = max(V) - min(V)
-  req  = argmin(V)
-  a    ~ 0.05
-  Vreq = min(V)
-  """
-  def __init__(self,pnames=['depth','exp_coef','eq_radius','eq_potential']):
-    def pot(r,Deq,a,req,Vreq):
-      return Deq*(1. - np.exp(-a*(r-req)))**2 + Vreq
-    self.form = pot
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-  def _set_default_parms(self,xvals,yvals,evals):
-    # Should be good if you're only after positive pressures.
-    minr = yvals.argmin()
-    return (
-        yvals[-1] - yvals[minr],# Depth = Asytote - min.
-        xvals[minr],            # Position of minimum.
-        0.05,                   # Emperical suggestion.
-        yvals[minr]             # Bottom of potential.
-      )
-
-class LogFit(FitFunc):
-  ''' 
-  Logarithmic fit of the form:
-
-  y=y0 + b log(x0-x)
-
-  Note that if x0=0 for you, then you should just use the linear fit!
-  '''
-  def __init__(self,pnames=['intercept','slope','shift']):
-    def logform(x,y0,b,x0):
-      return y0 + b*np.log(x0-x)
-    def logjac(x,y0,b,x0):
-      return np.array((1,np.log(x0-x),-b/(x0-x)))
-    self.form = logform
-    self.jac  = logjac
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-  def _set_default_parms(self,xvals,yvals,evals):
-    ''' Start by assuming the shift is zero. '''
-    return (yvals[abs(xvals).argmin()],slope(np.log(xvals),yvals),0)
-
-# Its been a while and I'm not sure how this is different. Delete?
-class MorseFitpp(FitFunc):
-  """
-  Morse potential for model of bonding.
-  V(r) = Deq(1 - exp(-a(r-req)))^2 + V(req)
-
-  Suggested guesses: 
-  Deq  = max(V) - min(V)
-  req  = argmin(V)
-  a    ~ 0.05
-  Vreq = min(V)
-  """
-  def __init__(self,pnames=['depth','exp_coef','eq_radius','eq_potential']):
-    def pot(r,Deq,a,req,Vreq):
-      return Deq*(1. - np.exp(-a*(r-req)**3))**2 + Vreq
-    self.form = pot
-    self.jac  = None # Haven't bothered yet.
-    self.pnms = pnames
-    self.pmap = {}
-    self.emap = {}
-    self.parm = None
-    self.perr = None
-    self.cov  = None
-
-if __name__=='__main__':
-  spec=gen_spectrum('#010203','#faafef',10)
-  print(spec)

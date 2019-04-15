@@ -1,6 +1,6 @@
 import numpy as np
 
-class RandomScheduler:
+class Scheduler:
   def __init__(self,first_date,presenters,avoid=[]):
     # Options.
     self.avoid=avoid
@@ -28,21 +28,20 @@ class RandomScheduler:
       while self.next_date in self.avoid:
         self._step_date()
 
-  def shuffle_people(self):
+  def shuffle(self):
     """ Exports a suggested schedule. New for every call."""
     np.random.shuffle(self.presenters)
+
+  def export(self):
     for date,presenter in zip(self.dates,self.presenters):
       print("{}   {}".format(date,presenter))
 
 if __name__=='__main__':
-  avoid = []
+  avoid = [["Jan.", 21]]
   presenters = [
-      'Alex','Christian','Kiel','Li','Mick','Shubhang','Will','Yueqing'
+      'Will','Brian','Shivesh','João','Kiel','XioLei','Yueqing','Mick','Chong','Alex','Paul'
     ]
-  first_date = ["June",1]
-  sched=RandomScheduler(first_date,presenters,avoid)
+  first_date = ["Jan.",14]
+  sched=Scheduler(first_date,presenters,avoid)
   sched.find_dates()
-  print("Here's a few potential schedules:")
-  for i in range(10):
-    print()
-    sched.shuffle_people()
+  sched.export()
