@@ -5,15 +5,18 @@ def make_lowdin():
   orbs = conv.orbitals[0]
   sys = conv.system
 
+  #orbs.basis['H'] = [b for b in orbs.basis['H'] if b['angular'].lower() in ('s','p')]
+  orbs.basis['H'] = orbs.basis['H'][:2]
+
   orblines = make_minorb(orbs,sys)
-  orbfn = 'lowdin.orb'
+  orbfn = 'lowdin_in.orb'
   nmo = len(orblines)-2
   with open(orbfn,'w') as outf:
     outf.write('\n'.join(orblines))
 
   outlines = [
       'method { lowdin',
-      '  resolution 0.01',
+      '  resolution 0.05',
       '  orbitals { ',
       '    blas_mo',
       '    orbfile {}'.format(orbfn),
