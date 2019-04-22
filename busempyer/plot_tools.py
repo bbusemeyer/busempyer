@@ -548,3 +548,19 @@ class CategoryPlot:
     for ax in self.axes[:,0]:
       ax.set_ylabel(label,kwargs)
 
+  def set_xlim(self,*args):
+    ''' Set xlim of all plots.
+    Args:
+      kwargs: options to Axes.set_xlim.
+    '''
+    for ax in self.axes.ravel():
+      ax.set_xlim(args)
+
+  def set_ylim(self,*args):
+    ''' Set ylim of all plots.
+    Args:
+      kwargs: options to Axes.set_ylim.
+    '''
+    for ax in self.axes.ravel():
+      ax.set_ylim(args)
+
