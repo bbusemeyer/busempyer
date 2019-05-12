@@ -6,7 +6,7 @@ def make_lowdin():
   sys = conv.system
 
   #orbs.basis['H'] = [b for b in orbs.basis['H'] if b['angular'].lower() in ('s','p')]
-  orbs.basis['H'] = orbs.basis['H'][:2]
+  #orbs.basis['H'] = orbs.basis['H']
 
   orblines = make_minorb(orbs,sys)
   orbfn = 'lowdin_in.orb'
