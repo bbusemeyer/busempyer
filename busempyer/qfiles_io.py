@@ -6,7 +6,7 @@ import json
 
 # Reads a qwalk input section.
 def read_section(inp,key,pos):
-  res = my.Ldict()
+  res = Ldict()
   while inp[pos] != '}':
     if isinstance(inp[pos],float):           # If it's a number.
       while isinstance(inp[pos],float):
@@ -15,12 +15,12 @@ def read_section(inp,key,pos):
         pos += 1
     elif inp[pos] == '{':                    # Else if it's demarking a section,
       if isinstance(inp[pos+1],str):         # which could have keywords,
-        label = inp[pos+1].lower()
-        pos += 2
+        #label = inp[pos+1].lower()
+        pos += 1
         #print 'Reading section',key,label
         val,pos = read_section(inp,key,pos)
-        if label != False:
-          val['label'] = label
+        #if label != False:
+        #  val['label'] = label
         res.append(key,val)
       else:                                  # or just numbers.
         pos += 1
@@ -259,7 +259,7 @@ def gen_optimize(dftfn,time='02:00:00'):
   fc += ['fi']
   fc += ['~/bin/separate_jastrow {root}_0.opt.wfout > {root}_0.opt.jast2'.format(root=root)]
 
-  return my.gen_qsub(exe,stdout=out,loc=loc,
+  return gen_qsub(exe,stdout=out,loc=loc,
                   name=loc+' gen_optimize',
                   time=time,
                   nn=2,np=12,
