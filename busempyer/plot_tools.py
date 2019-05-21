@@ -338,7 +338,7 @@ class CategoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
-  def plot(self,xvar,yvar,evar=None,plotargs={},errargs={},
+  def plot(self,xvar,yvar,yevar=None,xevar=None,plotargs={},errargs={},
       labrow=None,labcol=None,labloc=(0.7,0.9),
       fill=True,line=False,
       xscale='linear',yscale='linear'):
@@ -348,7 +348,8 @@ class CategoryPlot:
     Args:
       xvar (str): column name for x-axis.
       yvar (str): column name for y-axis.
-      evar (str): optional column name for errorbars.
+      yevar (str): optional column name for errorbars.
+      xevar (str): optional column name for errorbars.
       plotargs (dict): additonal options for matplotlib plot.
       errargs (dict): additional options for matplotlib errorbar.
       labrow (None or str): Label rows automatically; specify location as 'title', 'axes', or 'figure'.
@@ -366,7 +367,7 @@ class CategoryPlot:
       ax=self.axes[self.rowmap[row],self.colmap[col]]
 
       # This will handle work pertaining to a single Axis.
-      self.subplot(ax,xvar,yvar,evar,axdf,plotargs,errargs,fill,line,xscale,yscale)
+      self.subplot(ax,xvar,yvar,yevar,xevar,axdf,plotargs,errargs,fill,line,xscale,yscale)
 
       # Handle locations of labels for row and col variables.
       labtitle = []
@@ -392,7 +393,7 @@ class CategoryPlot:
       # I'm a 90's baby.
       self.fig.tight_layout()
 
-  def subplot(self,ax,xvar,yvar,evar=None,axdf=None,plotargs={},errargs={},
+  def subplot(self,ax,xvar,yvar,yevar=None,xevar=None,axdf=None,plotargs={},errargs={},
       fill=True,line=False,xscale='linear',yscale='linear'):
     ''' See plot. args are the same, but for only one plot in the grid.
     Additonal Args:
@@ -430,8 +431,13 @@ class CategoryPlot:
         method(df[xvar],df[yvar],'-',
             color=self.cmap[color],**plotargs)
 
-      if evar is not None:
-        ax.errorbar(df[xvar],df[yvar],df[evar],**errargs)
+      if yevar is not None:
+        if xevar is not None:
+          ax.errorbar(df[xvar],df[yvar],df[yevar],df[xevar],**errargs)
+        else:
+          ax.errorbar(df[xvar],df[yvar],df[yevar],**errargs)
+      elif xevar is not None:
+        ax.errorbar(df[xvar],df[yvar],xerr=df[xevar],**errargs)
 
       if fill:
         method(df[xvar],df[yvar],self.mmap[mark],
