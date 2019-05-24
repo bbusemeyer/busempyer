@@ -442,3 +442,5 @@ class MorseFitpp(FitFunc):
     self.parm = None
     self.perr = None
     self.cov  = None
+
+def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])

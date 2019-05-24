@@ -224,8 +224,6 @@ def fix_lims(ax_inp,factor=0.04,do_x=True,do_y=True):
     if xs != 0 and do_x: ax.set_xlim(minx-xs,maxx+xs)
     if ys != 0 and do_y: ax.set_ylim(miny-ys,maxy+ys)
 
-def slope(x,y): return (y[-1]-y[0])/(x[-1]-x[0])
-
 def fix_xticks(ax,**kwargs):
   ''' Convenience function for thin_ticks.'''
   ax.set_xticks(thin_ticks(ax.get_xticks(),kwargs))
