@@ -376,6 +376,7 @@ class CategoryPlot:
         labtitle.append("{}: {}".format(self.row,self.labmap(row)))
       elif labrow=='figure':
         labannotate.append("{}: {}".format(self.row,self.labmap(row)))
+      elif labrow is None: pass
       else:
         raise NotImplementedError("Invalid labrow. Options are 'axes','title','figure'.")
       if labcol=='axes':
@@ -384,6 +385,7 @@ class CategoryPlot:
         labtitle.append("{}: {}".format(self.col,self.labmap(col)))
       elif labcol=='figure':
         labannotate.append("{}: {}".format(self.col,self.labmap(col)))
+      elif labcol is None: pass
       else:
         raise NotImplementedError("Invalid labcol. Options are 'axes','title','figure'.")
       if len(labtitle):
