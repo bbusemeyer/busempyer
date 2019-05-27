@@ -391,7 +391,6 @@ class CategoryPlot:
       if len(labtitle):
         ax.set_title('\n'.join(labtitle))
       if len(labannotate):
-        print('\n'.join(labannotate))
         ax.annotate('\n'.join(labannotate),labloc,xycoords='axes fraction')
 
       # I'm a 90's baby.
