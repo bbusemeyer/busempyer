@@ -179,7 +179,7 @@ def matplotlib_header(usetex=True,family='serif'):
   plt.rc('text',usetex=usetex)
   plt.rc('font',style='normal')
   plt.rc('font',family=family)
-  plt.rc('font',serif='Computer Modern')
+  #plt.rc('font',serif='Computer Modern')
   plt.rc('text',usetex=True)
   ticksize = 4
   plt.rc('xtick.major',size=ticksize)
