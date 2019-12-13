@@ -41,6 +41,8 @@ def read_xml(inpxml):
   results['magabs'] = float(qeoutput.find('magnetization').find('absolute').text)
   results['energy'] = float(qeoutput.find('total_energy').find('etot').text)
 
+  results['converged'] = 'true'==qeoutput.find('convergence_info').find('scf_conv').find('convergence_achieved').text
+
   # Only here if there is smearing and metallic, or something.
   if qeoutput.find('band_structure').find('fermi_energy') is not None:
     results['ef'] = float(qeoutput.find('band_structure').find('fermi_energy').text)
@@ -51,6 +53,12 @@ def read_xml(inpxml):
   results['timing'] = float(root.find('timing_info').find('total').find('wall').text)
 
   return results
+
+def read_relax_pos(inpxml):
+  ''' Read QE XML file into python dict.'''
+  tree = parse(inpxml)
+  positions = tree.getroot().find('output').find('atomic_structure').find('atomic_positions').findall('atom')
+  return numpy.array([pos.text.split(' ') for pos in positions],dtype=float)
 
 def read_kpts(inpxml):
   ''' Read QE XML file into python dict.'''

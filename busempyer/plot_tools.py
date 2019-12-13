@@ -1,6 +1,5 @@
 ''' Convenience tools for plotting.'''
 import numpy as np
-import os
 from copy import deepcopy as copy
 import matplotlib.pyplot as plt
 
@@ -72,7 +71,7 @@ pc = {
     'r' :'#e31a1c', # Red
     'lo':'#fdbf6f', # Light orange/peach.
     'o' :'#ff7f00', # Orange.
-    'lp':'#cab2d6', # Light purple/fushia.
+    'f':'#cab2d6', # Light purple/fushia.
     'p' :'#6a3d9a', # Purple.
     'lt':'#ffff99', # Light tan
     'tan' :'#b15928', # Cowhide tan.
@@ -266,7 +265,7 @@ class CategoryPlot:
       row='categoryplotdummy',col='categoryplotdummy',
       color='categoryplotdummy',mark='categoryplotdummy',
       labmap={},cmap=None,mmap=None,sharex=False,sharey=False,
-      default_mark='s'):
+      default_mark='o'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
