@@ -88,7 +88,8 @@ pc = {
     'db':    '#377eb8', # Dark blue.
     'y':     '#ffff33', # Yellow.
     'brown': '#a65628', 
-    'gray':  '#999999'
+    'gray':  '#999999',
+    'grey':  '#999999'
   }
 
 # Sets of colors to automatically choose from.

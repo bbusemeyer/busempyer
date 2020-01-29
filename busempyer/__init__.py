@@ -6,6 +6,8 @@ from busempyer import mython
 from busempyer import plot_tools
 from busempyer import qefiles_io
 from busempyer import qfiles_io
+from busempyer import afqmc_tools
+from busempyer import plotrace
 
 __all__ = [
     'cifparser',
@@ -16,4 +18,8 @@ __all__ = [
     'plot_tools',
     'qefiles_io',
     'qfiles_io',
+    'afqmc_tools',
+    'mython',
+    'find_connect',
+    'plotrace',
   ]

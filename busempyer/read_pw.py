@@ -41,7 +41,9 @@ def read_xml(inpxml):
   results['magabs'] = float(qeoutput.find('magnetization').find('absolute').text)
   results['energy'] = float(qeoutput.find('total_energy').find('etot').text)
 
+  # The convergence indicator seems pretty confused in QE, seems better to compare accuracy to input setting.
   results['converged'] = 'true'==qeoutput.find('convergence_info').find('scf_conv').find('convergence_achieved').text
+  results['scf_error'] = float(qeoutput.find('convergence_info').find('scf_conv').find('scf_error').text)
 
   # Only here if there is smearing and metallic, or something.
   if qeoutput.find('band_structure').find('fermi_energy') is not None:
