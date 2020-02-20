@@ -265,6 +265,7 @@ class CategoryPlot:
   def __init__(self,df,
       row='categoryplotdummy',col='categoryplotdummy',
       color='categoryplotdummy',mark='categoryplotdummy',
+      connect='categoryplotdummy',
       labmap={},cmap=None,mmap=None,sharex=False,sharey=False,
       default_mark='o'):
     '''
@@ -284,6 +285,7 @@ class CategoryPlot:
         col: columns will differ by this quantity (default to one column).
         color: colors will differ by this quantity (default to one color).
         mark: markers will differ by this quantity (default to one marker).
+        connect: no difference in points style, but if line=True, lines are connected when this value matches.
         labmap: labels of data values are mapped using labmap first. Not in map means leave as-is.
         cmap: data values are mapped to these colors (default to ps['dark8']).
         mmap: data values are mapped to these markers (default to pm).
@@ -304,6 +306,7 @@ class CategoryPlot:
     self.col=col
     self.color=color
     self.mark=mark
+    self.connect=connect
     self.labmap=labmap
     self.plotargs={}
 
@@ -336,7 +339,7 @@ class CategoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
-  def plot(self,xvar,yvar,yevar=None,xevar=None,plotargs={},errargs={},
+  def plot(self,xvar,yvar,yevar=None,xevar=None,plotargs={},errargs={},lineargs={},
       labrow=None,labcol=None,labloc=(0.7,0.9),
       fill=True,line=False,
       xscale='linear',yscale='linear'):
@@ -365,7 +368,7 @@ class CategoryPlot:
       ax=self.axes[self.rowmap[row],self.colmap[col]]
 
       # This will handle work pertaining to a single Axis.
-      self.subplot(ax,xvar,yvar,yevar,xevar,axdf,plotargs,errargs,fill,line,xscale,yscale)
+      self.subplot(ax,xvar,yvar,yevar,xevar,axdf,plotargs,errargs,lineargs,fill,line,xscale,yscale)
 
       # Handle locations of labels for row and col variables.
       labtitle = []
@@ -396,7 +399,7 @@ class CategoryPlot:
       # I'm a 90's baby.
       self.fig.tight_layout()
 
-  def subplot(self,ax,xvar,yvar,yevar=None,xevar=None,axdf=None,plotargs={},errargs={},
+  def subplot(self,ax,xvar,yvar,yevar=None,xevar=None,axdf=None,plotargs={},errargs={},lineargs={},
       fill=True,line=False,xscale='linear',yscale='linear'):
     ''' See plot. args are the same, but for only one plot in the grid.
     Additonal Args:
@@ -419,8 +422,8 @@ class CategoryPlot:
 
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
-    for lab,df in axdf.groupby([self.mark,self.color],sort=False):
-      mark,color=lab
+    for lab,df in axdf.groupby([self.mark,self.color,self.connect],sort=False):
+      mark,color,connect=lab
 
       # Handle missing marks and colors.
       if mark not in self.mmap:
@@ -432,7 +435,7 @@ class CategoryPlot:
 
       if line:
         method(df[xvar],df[yvar],'-',
-            color=self.cmap[color],**plotargs)
+            color=self.cmap[color],**lineargs)
 
       if yevar is not None:
         if xevar is not None:

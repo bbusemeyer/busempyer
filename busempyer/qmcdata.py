@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-''' Make a quick plot to check the trace of a QMC simulation, with some CLI '''
+''' Analysis for QMC trace.'''
 from numpy import asarray,arange,isnan,loadtxt,array_split
 from busempyer.plot_tools import matplotlib_header,make_plotargs as pargs, pc
 from matplotlib.pyplot import subplots
@@ -54,8 +54,8 @@ def interface():
 def plotrace(energy,itime=None,warmup=None,drop_outliers=False,preblock=1,figname="trace"):
   energy = asarray(energy)
 
-  if preblock > 1:
-    energy = asarray((a.mean() for a in array_split(energy, preblock)))
+  if 1 < preblock < energy.shape[0]:
+    energy = asarray([a.mean() for a in array_split(energy, preblock)])
 
   if itime is None:
     itime = arange(energy.shape[0])
@@ -76,8 +76,7 @@ def plotrace(energy,itime=None,warmup=None,drop_outliers=False,preblock=1,fignam
   logging.info("Block data.")
   logging.info(blockdata)
   
-  blocks = ekeep[ekeep.shape[0]%blockdata.ndata:].reshape(blockdata.ndata,ekeep.shape[0]//blockdata.ndata)
-  blocks = blocks.mean(axis=1)
+  blocks = asarray([a.mean() for a in array_split(ekeep,blockdata.ndata)]) #ekeep[ekeep.shape[0]%blockdata.ndata:].reshape(blockdata.ndata,ekeep.shape[0]//blockdata.ndata)
 
   if drop_outliers:
     outliers = abs(ekeep - energy.mean()) > 10*energy.std()
@@ -85,7 +84,7 @@ def plotrace(energy,itime=None,warmup=None,drop_outliers=False,preblock=1,fignam
     itime = itime[~outliers]
     energy = energy[~outliers]
 
-  blockitime = (itkeep.shape[0])//blocks.shape[0]
+  blockitime = int(round(itkeep.shape[0]/blocks.shape[0]))
   blockitime = itkeep[blockitime//2::blockitime]
 
   fig,ax = subplots(1,2,gridspec_kw={'width_ratios': [3, 1]},sharey=True)
@@ -118,8 +117,11 @@ def estimate_warmup(energy):
   blocks = energy[energy.shape[0]%(2*blockdata.ndata):].reshape((2*blockdata.ndata),energy.shape[0]//(2*blockdata.ndata))
   blocks = blocks.mean(axis=1)
 
+  signflags = [False,False]
   for bi,block in enumerate(blocks):
-    if block < blockdata.mean: break
+    signflags[0] |= block >= blockdata.mean
+    signflags[1] |= block <= blockdata.mean
+    if signflags[0] and signflags[1]: break
 
   return energy.shape[0]//(blockdata.ndata*2) * bi
 
