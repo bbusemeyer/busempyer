@@ -310,16 +310,16 @@ class CategoryPlot:
     self.labmap=labmap
     self.plotargs={}
 
+    self.unique_colors=self.fulldf[color].unique()
     if cmap is None:
-      self.unique_colors=self.fulldf[color].unique()
       nc=self.unique_colors.shape[0]
       self.cmap=dict(zip(self.unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
     else: 
       self.cmap=cmap
     self.cmap['categoryplotdummy']='none'
     
+    self.unique_marks=self.fulldf[mark].unique()
     if mmap is None:
-      self.unique_marks=self.fulldf[mark].unique()
       nm=self.unique_marks.shape[0]
       self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
       self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
