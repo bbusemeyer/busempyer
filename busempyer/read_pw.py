@@ -13,13 +13,16 @@ def read_xml(inpxml):
   qeoutput = root.find('output')
 
   results = {}
-  results['nelec']  = 63*4+5
   results['ecutwfc'] = float(qeinput.find('basis').find('ecutwfc').text)
   results['ecutrho'] = float(qeinput.find('basis').find('ecutrho').text)
   results['spin_polarized'] = qeinput.find('spin').find('lsda').text == 'true'
 
   try: results['degauss'] = float(qeinput.find('bands').find('smearing').attrib['degauss'])
   except AttributeError: results['degauss'] = None
+
+  # Structural properties (final if there was a relaxation).
+  results['structure'] = read_positions(inpxml)
+  results['cell'] = numpy.array([avec.text.split() for avec in qeoutput.find('atomic_structure').find('cell')],dtype=float)
 
   # Reading kpoints.
   kibz = qeinput.find('k_points_IBZ').find('monkhorst_pack')
@@ -50,17 +53,23 @@ def read_xml(inpxml):
     results['ef'] = float(qeoutput.find('band_structure').find('fermi_energy').text)
   else:
     results['ef'] = 0.0
-  evalroots  = qeoutput.find('band_structure').find('ks_energies').findall('eigenvalues')
-  results['bands']  = numpy.array([evalroot.text.split() for evalroot in evalroots],dtype=float) - results['ef']
+  bandstructure = qeoutput.find('band_structure')
+  results['nelec'] = int(float(bandstructure.find('nelec').text))
+  kptroots  = bandstructure.findall('ks_energies')
+  results['kpoints'] = [numpy.array(kptroot.find('k_point').text.split(),dtype=float) for kptroot in kptroots]
+  results['bands']  = numpy.array([kptroot.find('eigenvalues').text.split() for kptroot in kptroots],dtype=float) - results['ef']
   results['timing'] = float(root.find('timing_info').find('total').find('wall').text)
 
   return results
 
-def read_relax_pos(inpxml):
+def read_positions(inpxml):
   ''' Read QE XML file into python dict.'''
   tree = parse(inpxml)
   positions = tree.getroot().find('output').find('atomic_structure').find('atomic_positions').findall('atom')
-  return numpy.array([pos.text.split(' ') for pos in positions],dtype=float)
+  return {
+      'positions':numpy.array([pos.text.split(' ') for pos in positions],dtype=float),
+      'species':[pos.attrib['name'] for pos in positions]
+    }
 
 def read_kpts(inpxml):
   ''' Read QE XML file into python dict.'''

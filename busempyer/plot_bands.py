@@ -1,3 +1,4 @@
+''' A code fro plotting bands from CRYSTAL.'''
 from matplotlib.pyplot import subplots
 from numpy import arange
 from busempyer.read_bands import read_fort25
