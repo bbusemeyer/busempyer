@@ -531,6 +531,8 @@ class CategoryPlot:
       leg=[ax.legend(handles=cprox,**args[0]),mlegend]
       leg[0]._legend_box.align='left'
     return leg
+  
+  ### Overloaded axes routines (apply to all axes in set). ###
 
   def axvline(self,*args,**kwargs):
     ''' Add a vline to all axes in the set.'''
@@ -575,4 +577,3 @@ class CategoryPlot:
     '''
     for ax in self.axes.ravel():
       ax.set_ylim(args)
-
