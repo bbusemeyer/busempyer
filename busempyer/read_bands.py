@@ -1,3 +1,4 @@
+''' A program for reading CRYSTAL bands.'''
 import numpy as np
 
 def read_band_section(inp,line):
