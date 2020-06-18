@@ -1,16 +1,20 @@
+# If this code is slow, I think some simple improvements can be made to greatly increase speed.
+# For example, allocate all memory at the start of the function.
+
 import sys
 import numpy as np
 from numpy.linalg import det
-from scipy.interpolate import griddata
 from scipy.signal import butter, lfilter
 from copy import deepcopy
+ANG = 1/1.889725989 
 
 #####################################
+# Holy shit this function is inefficient.
 def read_cube(inpf,qwalk_patch=False):
   if type(inpf)==str: inpf = open(inpf,'r')
   cube={}
-  cube['comment']=inpf.readline()
-  cube['type']=inpf.readline()
+  cube['comment']=inpf.readline().replace('\n','')
+  cube['type']=inpf.readline().replace('\n','')
   spl=inpf.readline().split()
   #cube['natoms']=int(spl[0])
   cube['natoms']=round(float(spl[0]))
@@ -38,7 +42,6 @@ def read_cube(inpf,qwalk_patch=False):
     if len(spl) < 1:
       break
     vector.extend(map(float,spl))
-  nread=len(vector)
   count=0
   for x in range(0,cube['ints'][0]):
     for y in range(0,cube['ints'][1]):
@@ -57,22 +60,22 @@ def read_cube(inpf,qwalk_patch=False):
 #####################################
 def write_cube(cube, outf):
   if type(outf)==str: outf = open(outf,'w')
-  outf.write(cube['comment'])
-  outf.write(cube['type'])
+  outf.write(cube['comment']+'\n')
+  outf.write(cube['type']+'\n')
   outf.write(str(cube['natoms'])+" {} {} {}".format(*cube['origin']))
   outf.write("\n")
   for i in range(0,3):
     outf.write("%i "%cube['ints'][i])
-    outf.write(" %g %g %g \n"%(cube['latvec'][i,0],cube['latvec'][i,1],cube['latvec'][i,2]))
+    outf.write(" % 20.16e % 20.16e % 20.16e \n"%(cube['latvec'][i,0],cube['latvec'][i,1],cube['latvec'][i,2]))
   natoms=cube['natoms']
   for i in range(0,natoms):
     outf.write("%s 0.0 "%cube['atomname'][i])
-    outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
+    outf.write(" % 20.16e % 20.16e % 20.16e \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
   count=0
   for x in range(0,cube['ints'][0]):
     for y in range(0,cube['ints'][1]):
       for z in range(0,cube['ints'][2]):
-        outf.write("%g "%cube['data'][x,y,z])
+        outf.write("% 20.16e "%cube['data'][x,y,z])
         count+=1
         if count%5==0:
           outf.write('\n')
@@ -86,19 +89,19 @@ def write_xsf(cube,outf):
   natoms=cube['natoms']
   for i in range(0,3):
     npts=cube['ints'][i]
-    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0],npts*cube['latvec'][i,1],npts*cube['latvec'][i,2]))
+    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0]*ANG,npts*cube['latvec'][i,1]*ANG,npts*cube['latvec'][i,2]*ANG))
   outf.write("PRIMCOORD\n")
   outf.write("%i 1\n"%natoms)
   for i in range(0,natoms):
     outf.write("%s "%cube['atomname'][i])
-    outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0],cube['atomxyz'][i,1],cube['atomxyz'][i,2]))
+    outf.write(" %g %g %g \n"%(cube['atomxyz'][i,0]*ANG,cube['atomxyz'][i,1]*ANG,cube['atomxyz'][i,2]*ANG))
   outf.write("BEGIN_BLOCK_DATAGRID_3D\n cube_file_conversion \n")
   outf.write("BEGIN_DATAGRID_3D\n")
   outf.write("%i %i %i\n"%(cube['ints'][0],cube['ints'][1],cube['ints'][2]))
   outf.write("0.0 0.0 0.0\n")
   for i in range(0,3):
     npts=cube['ints'][i]
-    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0],npts*cube['latvec'][i,1],npts*cube['latvec'][i,2]))
+    outf.write(" %g %g %g \n"%(npts*cube['latvec'][i,0]*ANG,npts*cube['latvec'][i,1]*ANG,npts*cube['latvec'][i,2]*ANG))
   
   count=0
   for z in range(0,cube['ints'][2]):
@@ -359,7 +362,6 @@ def interp_cube(cube, pos, res=(10,10), method='nearest', atrad=0.0):
   return {'points':(X,Y), 'data':Z, 'acoor':np.array(acoor), 'adist':np.array(adist)}
 
 if __name__=="__main__":
-  import sys
 
   implemented = ['add','sub','xsf','integrate_abs']
 
