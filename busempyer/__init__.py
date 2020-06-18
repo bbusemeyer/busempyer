@@ -1,4 +1,5 @@
 from busempyer import find_connect
+from busempyer import ptable
 from busempyer import cifparser
 from busempyer import cryfiles_io
 from busempyer import cubetools
@@ -22,4 +23,5 @@ __all__ = [
     'mython',
     'find_connect',
     'qmcdata',
+    'ptable',
   ]
