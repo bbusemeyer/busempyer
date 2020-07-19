@@ -1,6 +1,7 @@
 ''' Misc tools for interfacing with AFQMCLab.'''
 import pyblock, numpy, os
 from pandas import DataFrame
+from busempyer.qmcdata import estimate_warmup
 
 def main():
   print("No default actions.")
@@ -23,6 +24,7 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
   if loc[-1]!='/': loc+='/'
 
   if not os.path.exists(f"{loc}HNum.dat"):
+    print("No results.")
     return {}
 
   edf = DataFrame([l.split() for l in open(f"{loc}HNum.dat",'r').readlines()],
@@ -33,16 +35,12 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
       columns=['beta'],dtype=float))
   edf['beta'] = edf['beta'].round(10)
   assert edf['beta'].shape == edf['beta'].unique().shape, "Multiple betas: did you make a dirty restart?"
+  # Note: these lines requires population to be large enough:
   safe_energy = edf['energy'].sum() / edf['weight'].sum()
   edf['energy'] = edf['energy'] / edf['weight']
 
   if warmup is None:
-    start,count = 0,0
-    for start in range(edf.shape[0]):
-      if edf.loc[start,'energy'] < safe_energy:
-        count += 1
-        if count >= 5: break
-    warmup = start
+    warmup = estimate_warmup(edf['energy'].values)
 
   blockenergy = pyblock.blocking.reblock(edf.iloc[warmup:]['energy'].values)
   optimal = pyblock.blocking.find_optimal_block(edf.shape[0]-warmup,blockenergy)[0]
@@ -72,6 +70,14 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
     results['trace'] = edf['energy'].values.tolist()
 
   return results 
+
+class Hamiltonian:
+  ''' Experimental class for containing the parts needed for a calculation.'''
+  def __init__(self,onebody,twobody,nelec,constant=0.0):
+    self.onebody = onebody
+    self.twobody = twobody
+    self.nelec = nelec
+    self.constant = constant
 
 if __name__=='__main__':
   main()

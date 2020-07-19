@@ -1,7 +1,6 @@
 import subprocess as sub
 import numpy as np
 import scipy.linalg as lin
-from base64 import b64encode,b64decode
 from json import JSONEncoder
 from os import getcwd,rename
 from datetime import datetime

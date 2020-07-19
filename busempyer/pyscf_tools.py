@@ -13,7 +13,7 @@ def load_cellcalc(chkfile,mf=KRHF,mfargs=None,dfargs=None):
   '''
   from pyscf.pbc.lib.chkfile import load_cell, load
   if mfargs is None: mfargs = {}
-  if dfargs is None: mfargs = {}
+  if dfargs is None: dfargs = {}
 
   cell = load_cell(chkfile)
   mf = mf(cell,**mfargs).density_fit()
