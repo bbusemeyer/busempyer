@@ -6,13 +6,12 @@ from matplotlib.pyplot import subplots
 from busempyer.qmcdata import estimate_warmup
 from h5py import File
 from pyblock.blocking import find_optimal_block,reblock
+from busempyer.afqmc_tools import read_raw_afqmc
 from os.path import exists
 import logging
 matplotlib_header()
 
 def interface():
-  # This is broken now because of circular dependence.
-  from busempyer.afqmc_tools import read_afqmc
   logging.basicConfig(level=logging.INFO)
   ''' Will try to figure out which code you're trying to plot based on the information given.'''
   from argparse import ArgumentParser
@@ -34,8 +33,8 @@ def interface():
   # Case AFQMCLab
   if args.tracedata is None:
     assert exists('HNum.dat'), "Use -t to specify data, or else this code looks for HNum and den.dat for AFQMCLab."
-    data = read_afqmc(return_trace=True)
-    trace = data['trace']
+    data,_ = read_raw_afqmc()
+    trace = data['energy']
     itime = data['beta']
   # Case PyQMC.
   elif 'h5' in args.tracedata: 

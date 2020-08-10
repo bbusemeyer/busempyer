@@ -38,9 +38,10 @@ def load_cellcalc(chkfile,mf=KRHF,mfargs=None,dfargs=None):
   if dfargs is None: dfargs = {}
 
   cell = load_cell(chkfile)
-  mf = mf(cell,**mfargs).density_fit()
+  mf = mf(cell).density_fit()
+  mf.__dict__.update(mfargs)
   mf.__dict__.update(load(chkfile,'scf'))
-  mf.with_df.__dict__.update(**dfargs)
+  mf.with_df.__dict__.update(dfargs)
 
   return cell,mf
 

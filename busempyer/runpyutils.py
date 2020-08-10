@@ -1,5 +1,5 @@
 ''' Some standard routines for PySCF IO and queue interaction.'''
-import os, yaml, shutil, ccq_sub_py
+import os, json, shutil, ccq_sub_py
 from pyscf.gto import Mole
 from pyscf.pbc.gto import Cell
 from pyscf.pbc.lib.chkfile import save_cell
@@ -33,15 +33,16 @@ def runcalc(loc,cell,mfargs={},qsubargs={'time':'6:00:00','queue':'gen'},guess=N
   if loc[-1] != '/': loc+='/'
   cwd = os.getcwd()
 
-  if os.path.exists(f"{loc}{SCFNAME}.py") or os.path.exists(f"{loc}{SCFNAME}.yaml"):
+  if os.path.exists(f"{loc}{SCFNAME}.py") or os.path.exists(f"{loc}{SCFNAME}.json"):
     print("Already started.")
-    #yaml.dump(meta,stream=open(f"{loc}meta.yaml",'w'))
+    #json.dump(meta,open(f"{loc}meta.json",'w'))
     return False
 
   if not os.path.exists(loc): os.mkdir(loc)
 
   print(f"Preparing calculation in {loc}{SCFNAME}...")
 
+  cell.build()
   if type(cell) == Cell:
     save_cell(cell,f"{loc}{SCFNAME}.chk")
   elif type(cell) == Mole:
@@ -49,8 +50,8 @@ def runcalc(loc,cell,mfargs={},qsubargs={'time':'6:00:00','queue':'gen'},guess=N
   else:
     raise AssertionError("Struture type not recognized.")
 
-  yaml.dump(mfargs,stream=open(f"{loc}{SCFNAME}.yaml",'w'))
-  yaml.dump(meta,stream=open(f"{loc}meta.yaml",'w'))
+  json.dump(mfargs,open(f"{loc}{SCFNAME}.json",'w'),indent='  ')
+  json.dump(meta,open(f"{loc}meta.json",'w'),indent='  ')
 
   if dfints is not None:
     shutil.copyfile(dfints,f"{loc}{SCFNAME}_gdf.h5")
@@ -74,19 +75,19 @@ def readcalc(loc):
   results['loc'] = loc
 
   root = loc+SCFNAME
-  scfyaml = root+'.yaml'
+  scfjson = root+'.json'
   scfchk  = root+'.chk'
-  meta    = loc+'meta.yaml'
+  meta    = loc+'meta.json'
   stdout  = root+'.py.out'
 
-  if os.path.exists(scfyaml):
-    results.update(yaml.safe_load(open(scfyaml,'r')))
+  if os.path.exists(scfjson):
+    results.update(json.load(open(scfjson,'r')))
 
   if os.path.exists(meta):
-    results['meta'] = yaml.safe_load(open(meta,'r'))
+    results['meta'] = json.load(open(meta,'r'))
 
-  if os.path.exists(scfyaml):
-    results.update(yaml.safe_load(open(scfyaml,'r')))
+  if os.path.exists(scfjson):
+    results.update(json.load(open(scfjson,'r')))
 
   if os.path.exists(scfchk):
     struct = load_mol(scfchk)
@@ -95,6 +96,10 @@ def readcalc(loc):
     results['spin'] = struct.spin
     if 'exp_to_discard' in struct.__dict__: results['exp_to_discard'] = struct.exp_to_discard
     else:                                   results['exp_to_discard'] = None
+    if 'dimension' in struct.__dict__: results['dimension'] = int(struct.dimension)
+    else:                              results['dimension'] = 0
+    if 'a' in struct.__dict__: results['lattice'] = struct.a
+    else:                      results['lattice'] = None
     results['atoms'] = [struct.atom_symbol(i) for i in range(struct.natm)]
     results['nelec'] = struct.tot_electrons()
     results['verbose'] = struct.verbose
