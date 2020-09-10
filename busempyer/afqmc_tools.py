@@ -2,6 +2,7 @@
 import pyblock, numpy, os
 from pandas import DataFrame
 from busempyer.qmcdata import estimate_warmup
+from h5py import File
 
 def main():
   print("No default actions.")
@@ -98,15 +99,44 @@ def read_measure_afqmc(loc='./'):
       columns=('energy','imenergy'),dtype=float)
   edf = edf.join(DataFrame([l.split() for l in open(f"{loc}den.dat",'r').readlines()],
       columns=('weight','imweight'),dtype=float))
-  return edf
+  energy = float([l.split() for l in open(f"{loc}HNum.dat",'r').readlines()][0][0])
+  weight = float([l.split() for l in open(f"{loc}den.dat",'r').readlines()][0][0])
+  energy /= weight
+  return { # Format matches result from read_afqmc for full AFQMC run.
+      'warmup': None,
+      'safe_energy': energy,
+      'energy': energy,
+      'stdev': 0.0,
+      'error': 0.0,
+      'blockbeta': [],
+      'blockdata': []
+    }
 
 class Hamiltonian:
-  ''' Experimental class for containing the parts needed for a calculation.'''
-  def __init__(self,onebody,twobody,nelec,constant=0.0):
+  ''' Class for containing the Hamiltonian parts needed for a calculation.'''
+  def __init__(self,onebody=None,twobody=None,nelec=None,constant=0.0):
     self.onebody = onebody
     self.twobody = twobody
     self.nelec = nelec
     self.constant = constant
+
+  def to_hdf(self,hdf):
+    ''' Export data as HDF5 file.'''
+    with File(hdf,'w') as outf:
+      outf.create_dataset("onebody",data=self.onebody)
+      outf.create_dataset("twobody",data=self.twobody)
+      outf.create_dataset("constant",data=self.constant)
+      outf.create_dataset("nelec",data=self.nelec)
+
+  def from_hdf(self,hdf):
+    ''' Import data from HDF5 file.'''
+    with File(hdf,'r') as inpf:
+      self.onebody = inpf['onebody'][()]
+      self.twobody = inpf['twobody'][()]
+      self.nelec   = inpf['nelec'][()]
+      self.constant = inpf['constant'][()]
+    
+    return self
 
 if __name__=='__main__':
   main()

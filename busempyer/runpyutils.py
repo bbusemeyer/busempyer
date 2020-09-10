@@ -20,7 +20,15 @@ def make_cell(atomase,**cellargs):
 
   return cell
 
-def runcalc(loc,cell,mfargs={},qsubargs={'time':'6:00:00','queue':'gen'},guess=None,dfints=None,meta={}): 
+def runcalc(loc,cell,
+    mfargs={},
+    qsubargs={'time':'6:00:00','queue':'gen'},
+    guess=None,
+    dfints=None,
+    meta={},
+    overwrite_meta=False,
+    run_anyways=False
+    ): 
   ''' Deposit run input into a location and run.
   Args:
     loc (str): directory for pyscf.
@@ -33,9 +41,10 @@ def runcalc(loc,cell,mfargs={},qsubargs={'time':'6:00:00','queue':'gen'},guess=N
   if loc[-1] != '/': loc+='/'
   cwd = os.getcwd()
 
-  if os.path.exists(f"{loc}{SCFNAME}.py") or os.path.exists(f"{loc}{SCFNAME}.json"):
+  if (os.path.exists(f"{loc}{SCFNAME}.py") or os.path.exists(f"{loc}{SCFNAME}.json")) and not run_anyways:
     print("Already started.")
-    #json.dump(meta,open(f"{loc}meta.json",'w'))
+    if overwrite_meta:
+      json.dump(meta,open(f"{loc}meta.json",'w'))
     return False
 
   if not os.path.exists(loc): os.mkdir(loc)
