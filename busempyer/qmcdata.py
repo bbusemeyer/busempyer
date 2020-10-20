@@ -11,7 +11,11 @@ def estimate_warmup(energy):
   safe = energy[energy.shape[0]//2:]
 
   safeblocks = reblock(safe)
-  bo = find_optimal_block(safe.shape[0],safeblocks)[0]
+  try:
+    bo = find_optimal_block(safe.shape[0],safeblocks)[0]
+  except IndexError:
+    print("\n !!! Error in blocking: maybe there is too little statistics. !!! ")
+    return -1
   if isnan(bo): 
     print("\n !!! Insufficient data for warm-up estimation! I will return -1 as a flag for this error. !!!")
     return -1
