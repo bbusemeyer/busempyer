@@ -77,6 +77,21 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
 
   return results 
 
+def test_blocking(loc="./",warmup=None):
+  ''' Check blocking routine in various ways.'''
+  from json import dumps
+  results = read_afqmc(loc,warmup)
+  print(dumps(results,indent='  '))
+
+  edf,safe_energy = read_raw_afqmc(loc)
+  edf = edf.iloc[results['warmup']:]
+
+  from pyqmc.reblock import optimally_reblocked
+  pyqmc_results = optimally_reblocked(edf[['energy']])
+  print(pyqmc_results)
+
+
+
 def read_raw_afqmc(loc="./"):
   edf = DataFrame([l.split() for l in open(f"{loc}HNum.dat",'r').readlines()],
       columns=('energy','imenergy'),dtype=float)
