@@ -155,7 +155,6 @@ def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',assume_zero=((0,
 def make_grid(voxel=eye(3),npoints=(10,10,10),skip=((0,0),(0,0),(0,0))):
   ''' Make a grid at npoints multiples of voxvecs.'''
   size = ((npoints[0]-sum(skip[0])),(npoints[1]-sum(skip[1])),(npoints[2]-sum(skip[2])))
-  print(size)
   grid = empty((size[0],size[1],size[2],3))
 
   for i in range(size[0]):

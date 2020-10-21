@@ -11,10 +11,11 @@ class Scheduler:
     self.months = ["Jan.","Feb.","March","April","May","June","July","August","Sept.","Oct.","Nov.","Dec."]
     self.day_month = [31, 28,    31,     30,     31,   30,    31,    31,      30,     31,    30,    31]
     self.midx=self.months.index(first_date[0])
+    self.talk_interval = 7
     self.dates=[]
 
   def _step_date(self):
-    self.next_date[1] += 7
+    self.next_date[1] += self.talk_interval
     if self.next_date[1] > self.day_month[self.midx]:
       self.next_date[1] -= self.day_month[self.midx]
       self.midx += 1
