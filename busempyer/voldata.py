@@ -146,6 +146,7 @@ def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',assume_zero=((0,
   nonzero = tuple([npoints[i]-sum(assume_zero[i]) for i in range(3)])
   data_on_grid = pad(
       data_on_grid.reshape(nonzero),
+      mode='constant',
       pad_width=assume_zero,
       constant_values=0.0
     )

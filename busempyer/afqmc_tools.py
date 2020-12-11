@@ -90,8 +90,6 @@ def test_blocking(loc="./",warmup=None):
   pyqmc_results = optimally_reblocked(edf[['energy']])
   print(pyqmc_results)
 
-
-
 def read_raw_afqmc(loc="./"):
   edf = DataFrame([l.split() for l in open(f"{loc}HNum.dat",'r').readlines()],
       columns=('energy','imenergy'),dtype=float)

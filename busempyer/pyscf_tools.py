@@ -1,12 +1,12 @@
 '''Common convenience codes for PySCF.'''
-from pyscf.scf import RHF
-from pyscf.pbc.scf import KRHF
+from pyscf.scf import ROHF
+from pyscf.pbc.scf import KROHF
 
-def load_molcalc(chkfile,mf=RHF,mfargs=None,dfargs=None):
+def load_molcalc(chkfile,mf=ROHF,mfargs=None,dfargs=None):
   ''' Load a cell and MF object from a chkfile.
   Args:
     chkfile: path to chkfile.
-    mf: Mean-field object to use. Default is KRHF.
+    mf: Mean-field object to use. Default is KROHF.
     mfargs: Any internals to mf that aren't in the chkfile, for example, exxdiv, xc, etc.
       They are overwritten by args in chkfile that overlap.
   Returns:
@@ -23,11 +23,11 @@ def load_molcalc(chkfile,mf=RHF,mfargs=None,dfargs=None):
 
   return mol,mf
 
-def load_cellcalc(chkfile,mf=KRHF,mfargs=None,dfargs=None):
+def load_cellcalc(chkfile,mf=KROHF,mfargs=None,dfargs=None):
   ''' Load a cell and MF object from a chkfile.
   Args:
     chkfile: path to chkfile.
-    mf: Mean-field object to use. Default is KRHF.
+    mf: Mean-field object to use. Default is KROHF.
     mfargs: Any internals to mf that aren't in the chkfile, for example, exxdiv, xc, etc.
       They are overwritten by args in chkfile that overlap.
   Returns:

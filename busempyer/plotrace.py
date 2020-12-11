@@ -89,11 +89,13 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
     itime = itime[~outliers]
     trace = trace[~outliers]
 
-  blockitime = int(round(itkeep.shape[0]/blocks.shape[0]))
-  blockitime = itkeep[blockitime//2::blockitime]
+  #blockitime = int(round(itkeep.shape[0]/blocks.shape[0]))
+  blockitime = itkeep.shape[0]//blocks.shape[0]
+  blockitime = itkeep[blockitime//2::blockitime][:blocks.shape[0]]
 
   fig,ax = subplots(1,2,gridspec_kw={'width_ratios': [3, 1]},sharey=True)
   ax[0].plot(itime,trace,'.',color=pc['g'],alpha=0.3,**pargs())
+  #print(blockitime, blocks)
   ax[0].plot(blockitime,blocks,'.',color=pc['r'],**pargs())
   ax[0].axvline(warmtime,color=pc['grey'],lw=1)
   ax[0].axhline(blockdata.mean,color=pc['grey'],lw=1)
