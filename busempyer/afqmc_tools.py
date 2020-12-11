@@ -1,7 +1,7 @@
 ''' Misc tools for interfacing with AFQMCLab.'''
-import pyblock, numpy, os
+import os
 from pandas import DataFrame
-from busempyer.qmcdata import estimate_warmup
+from busempyer.qmcdata import estimate_warmup,block_data
 from h5py import File
 
 def main():
@@ -48,27 +48,17 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
         'blockdata': None
       }
 
-  blockenergy = pyblock.blocking.reblock(edf.iloc[warmup:]['energy'].values)
-  optimal = pyblock.blocking.find_optimal_block(edf.shape[0]-warmup,blockenergy)[0]
-  get = optimal if not numpy.isnan(optimal) else 0
-  if get==0: print("Warning: no optimal block found, errorbars will be inaccurate.")
-  ndata = blockenergy[get].ndata
-  earr = edf.iloc[warmup:]['energy'].values
-  earr = earr[earr.shape[0]%ndata:].reshape(ndata,earr.shape[0]//ndata)
-  blockdf = DataFrame({
-      'energy':earr.mean(axis=1),
-      'stdev':earr.std(axis=1),
-    })
+  blockdata = block_data(edf.iloc[warmup:]['energy'].values)
 
-  blocknbeta = (edf.shape[0]-warmup)//blockdf.shape[0]
+  blocknbeta = (edf.shape[0]-warmup)//blockdata.shape[0]
   results =  {
       'warmup':       warmup,
       'safe_energy':  safe_energy,
-      'energy':       blockdf['energy'].mean(),
-      'stdev':        blockdf['energy'].std(),
-      'error':        blockdf['energy'].std()/blockdf.shape[0]**0.5,
+      'energy':       blockdata['energy'].mean(),
+      'stdev':        blockdata['energy'].std(),
+      'error':        blockdata['energy'].std()/blockdata.shape[0]**0.5,
       'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
-      'blockdata':    blockdf['energy'].values.tolist(),
+      'blockdata':    blockdata['energy'].values.tolist(),
     }
 
   if return_trace:
