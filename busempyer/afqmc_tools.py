@@ -54,11 +54,11 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
   results =  {
       'warmup':       warmup,
       'safe_energy':  safe_energy,
-      'energy':       blockdata['energy'].mean(),
-      'stdev':        blockdata['energy'].std(),
-      'error':        blockdata['energy'].std()/blockdata.shape[0]**0.5,
+      'energy':       blockdata['value'].mean(),
+      'stdev':        blockdata['value'].std(),
+      'error':        blockdata['value'].std()/blockdata.shape[0]**0.5,
       'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
-      'blockdata':    blockdata['energy'].values.tolist(),
+      'blockdata':    blockdata['value'].values.tolist(),
     }
 
   if return_trace:
