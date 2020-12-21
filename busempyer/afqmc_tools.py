@@ -7,6 +7,15 @@ from h5py import File
 def main():
   print("No default actions.")
 
+def read_afqmc_param(fn):
+  afparams = {}
+  for line in open(fn).read().split('\n'):
+    words = line.split()
+    if len(words) != 2: continue
+    afparams[words[0]] = words[1]
+
+  return afparams
+
 def dump_afqmc_param(**opts):
   ''' dump opts to afqmc_param for AFQMCLab.'''
   outlines = [f"{key} {opts[key]}" for key in opts]
