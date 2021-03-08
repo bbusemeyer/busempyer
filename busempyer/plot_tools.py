@@ -471,11 +471,12 @@ class CategoryPlot:
             mec=self.cmap[color],**self.plotargs)
         if save is not None: self.plotargs['mec']=save
 
-  def add_legend(self,ax=None,labmap={},args={},side=False):
+  def add_legend(self,variable,ax=None,labmap={},args={},side=False):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
     handles. If there are two legends, the args should be a list.
     Args:
+      variable (str): DataFrame column to make the legend for.
       ax (Axes, tuple, or None): Different options:
         Axes--use this Axes instance to place the legend. 
         tuple--use self.axes[ax] to place the legend.
@@ -492,13 +493,8 @@ class CategoryPlot:
 
 
     # Legend's marks should be fully visible.
-    safeargs=copy(self.plotargs)
-    if 'mew' in self.plotargs:
-      safeargs.pop('mew')
-    if 'mec' in self.plotargs:
-      safeargs.pop('mec')
-
-    legargs = copy(self.plotargs)
+    legargs=copy(self.plotargs)
+    print(legargs)
     legargs['alpha'] = 1.0
 
     if side:
@@ -507,55 +503,53 @@ class CategoryPlot:
           self.fig.get_size_inches()[1]
         )
 
-    # Minimize needed labels:
-    if self.mark=='categoryplotdummy': 
+    # To avoid complexities, lets just assume that fill doesn't need a legend if color or mark will do.
+    if variable == self.fill and variable != self.color and variable != self.mark:
+      print(self.unique_fills)
+      print(self.fmap)
+      safeargs = legargs.copy()
+      del safeargs['mec']
+      prox = [plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[self.unique_marks[0]],color='none',mec=self.cmap[self.unique_colors[0]],
+            label=self.labmap(self.unique_fills[1] if self.fmap[self.unique_fills[0]] else self.unique_fills[0]),
+            **safeargs,
+          ),
+          plt.Line2D([],[],
+            linestyle='',
+            marker=self.mmap[self.unique_marks[0]],color=self.cmap[self.unique_colors[0]],
+            label=self.labmap(self.unique_fills[0] if self.fmap[self.unique_fills[0]] else self.unique_fills[1]),
+            **legargs,
+          )
+        ]
+
+    if variable != self.mark and variable == self.color:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in self.unique_colors
         ]
-      leg=ax.legend(handles=prox,**args)
-    elif self.color=='categoryplotdummy': 
+    elif variable == self.mark and variable != self.color:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),
             **legargs
           ) for unique in self.unique_marks
         ]
-      leg=ax.legend(handles=prox,**args)
-    elif self.color==self.mark:
+    elif variable == self.mark and variable == self.color:
       prox=[plt.Line2D([],[],
             linestyle='',
             marker=self.mmap[unique],color=self.cmap[unique],label=self.labmap(unique),
             **legargs
           ) for unique in self.unique_colors
         ]
-      leg=ax.legend(handles=prox,**args)
     else:
-      if type(args)==dict:
-        args=[args,args]
-      cprox=[plt.Line2D([],[],
-            linestyle='',
-            marker=self.mmap['categoryplotdummy'],color=self.cmap[unique],label=self.labmap(unique),
-            **legargs
-          ) for unique in self.unique_colors
-        ]
-      mprox=[plt.Line2D([],[],
-            linestyle='',
-            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,mec='k',
-            **safeargs
-          ) for unique in self.unique_marks
-        ]
-      prox=cprox,mprox
-      mlegend=ax.legend(handles=mprox,**(args[1]))
-      mlegend._legend_box.align='left'
-      ax.add_artist(mlegend)
-      leg=[ax.legend(handles=cprox,**args[0]),mlegend]
-      leg[0]._legend_box.align='left'
+      print("\nCategoryPlot legend not added because the variable is not differentiated in the plot.")
 
-    return leg
-  
+    leg=ax.legend(handles=prox,**args)
+    ax.add_artist(leg) # To ensure it doesn't get overwritten by another legend.
+
   ### Overloaded axes routines (apply to all axes in set). ###
 
   def axvline(self,*args,**kwargs):
