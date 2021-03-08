@@ -7,6 +7,15 @@ from h5py import File
 def main():
   print("No default actions.")
 
+def read_afqmc_param(fn):
+  afparams = {}
+  for line in open(fn).read().split('\n'):
+    words = line.split()
+    if len(words) != 2: continue
+    afparams[words[0]] = words[1]
+
+  return afparams
+
 def dump_afqmc_param(**opts):
   ''' dump opts to afqmc_param for AFQMCLab.'''
   outlines = [f"{key} {opts[key]}" for key in opts]
@@ -54,11 +63,11 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
   results =  {
       'warmup':       warmup,
       'safe_energy':  safe_energy,
-      'energy':       blockdata['energy'].mean(),
-      'stdev':        blockdata['energy'].std(),
-      'error':        blockdata['energy'].std()/blockdata.shape[0]**0.5,
+      'energy':       blockdata['value'].mean(),
+      'stdev':        blockdata['value'].std(),
+      'error':        blockdata['value'].std()/blockdata.shape[0]**0.5,
       'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
-      'blockdata':    blockdata['energy'].values.tolist(),
+      'blockdata':    blockdata['value'].values.tolist(),
     }
 
   if return_trace:
