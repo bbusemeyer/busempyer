@@ -494,7 +494,6 @@ class CategoryPlot:
 
     # Legend's marks should be fully visible.
     legargs=copy(self.plotargs)
-    print(legargs)
     legargs['alpha'] = 1.0
 
     if side:
@@ -505,8 +504,6 @@ class CategoryPlot:
 
     # To avoid complexities, lets just assume that fill doesn't need a legend if color or mark will do.
     if variable == self.fill and variable != self.color and variable != self.mark:
-      print(self.unique_fills)
-      print(self.fmap)
       safeargs = legargs.copy()
       del safeargs['mec']
       prox = [plt.Line2D([],[],
@@ -546,9 +543,12 @@ class CategoryPlot:
         ]
     else:
       print("\nCategoryPlot legend not added because the variable is not differentiated in the plot.")
+      return 
 
     leg=ax.legend(handles=prox,**args)
     ax.add_artist(leg) # To ensure it doesn't get overwritten by another legend.
+
+    return
 
   ### Overloaded axes routines (apply to all axes in set). ###
 
