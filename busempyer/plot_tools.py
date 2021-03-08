@@ -120,6 +120,11 @@ pm = ["o",
     "x",
 ]
 
+def assign_features(elements,features):
+  ''' Cyclically assign features to elements.'''
+  n = elements.shape[0]
+  return dict(zip(elements,((1+n//len(features))*features)[:n]))
+
 def gen_rgb(hexstr):
   ''' Make a tuple of RGB values from a hex string. '''
   hstr=hexstr.lstrip('#')
@@ -265,8 +270,8 @@ class CategoryPlot:
   def __init__(self,df,
       row='categoryplotdummy',col='categoryplotdummy',
       color='categoryplotdummy',mark='categoryplotdummy',
-      connect='categoryplotdummy',
-      labmap={},cmap=None,mmap=None,sharex=False,sharey=False,
+      fill='categoryplotdummy', connect='categoryplotdummy',
+      labmap={},cmap=None,mmap=None,fmap=None,sharex=False,sharey=False,
       default_mark='o'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
@@ -285,19 +290,18 @@ class CategoryPlot:
         col: columns will differ by this quantity (default to one column).
         color: colors will differ by this quantity (default to one color).
         mark: markers will differ by this quantity (default to one marker).
+        fill: markers will be filled or not depending on this quantity.
         connect: no difference in points style, but if line=True, lines are connected when this value matches.
         labmap: labels of data values are mapped using labmap first. Not in map means leave as-is.
         cmap: data values are mapped to these colors (default to ps['dark8']).
         mmap: data values are mapped to these markers (default to pm).
+        fmap: data values are mapped to filled or not this way.
         sharex: x-axes are set to same limits.
         sharey: y-axes are set to same limits.
     '''
 
-
-
     if 'categoryplotdummy' in df.columns:
       print("CategoryPlot: Warning, I'm not going to use the 'categoryplotdummy' column!")
-
 
     assert df.shape[0]>0 and df.shape[1]>0, "Empty dataframe!"
     self.fulldf=df
@@ -306,26 +310,35 @@ class CategoryPlot:
     self.col=col
     self.color=color
     self.mark=mark
+    self.fill=fill
     self.connect=connect
     self.labmap=labmap
     self.plotargs={}
 
     self.unique_colors=self.fulldf[color].unique()
     if cmap is None:
-      nc=self.unique_colors.shape[0]
-      self.cmap=dict(zip(self.unique_colors,( (1+nc//(len(ps['dark8'])+len(ps['cb12'])))*(ps['dark8']+ps['cb12']) )[:nc]))
+      self.cmap = assign_features(self.unique_colors,ps['dark8']+ps['cb12'])
     else: 
       self.cmap=cmap
     self.cmap['categoryplotdummy']='none'
     
     self.unique_marks=self.fulldf[mark].unique()
     if mmap is None:
-      nm=self.unique_marks.shape[0]
-      self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
-      self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
+      #nm=self.unique_marks.shape[0]
+      #self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
+      #self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
+      self.mmap = assign_features(self.unique_marks,pm)
     else: 
       self.mmap=mmap
     self.mmap['categoryplotdummy']=default_mark
+
+    self.unique_fills=self.fulldf[fill].unique()
+    assert self.unique_fills.shape[0]<3, f"Fill is a binary quantity, so can have at most two. These are fill values: {self.unique_fills}"
+    if fmap is None:
+      self.fmap=dict(zip(self.unique_fills,[True,False][:self.unique_fills.shape[0]]))
+    else:
+      self.fmap = fmap
+    self.fmap['categoryplotdummy'] = True
 
     self.labmap=lambda x:safemap(labmap,x)
 
@@ -356,7 +369,7 @@ class CategoryPlot:
       labrow (None or str): Label rows automatically; specify location as 'title', 'axes', or 'figure'.
       labcol (None or str): Label columns automatically; specify location as 'title', 'axes', or 'figure'.
       labloc (tuple): Location of annotation for labrow/labcol in axes fraction.
-      fill (bool): whether points are filled or empty of color.
+      fill (bool): whether all points are filled or empty of color, overidden by CategoryPlot fill option.
       line (bool): whether to draw a line between all points.
       xscale (str): 'linear' or 'log'; scale of the x axis.
       yscale (str): 'lienar' or 'log'; scale of the y axis.
@@ -405,6 +418,7 @@ class CategoryPlot:
     Additonal Args:
     ax (Axes): Axes instance to make a plot on.
     '''
+    self.fmap['categoryplotdummy'] = fill
 
     if xscale=='linear':
       if yscale=='linear':
@@ -422,8 +436,8 @@ class CategoryPlot:
 
     self.plotargs=plotargs
     if axdf is None: axdf=self.fulldf
-    for lab,df in axdf.groupby([self.mark,self.color,self.connect],sort=False):
-      mark,color,connect=lab
+    for lab,df in axdf.groupby([self.mark,self.color,self.fill,self.connect],sort=False):
+      mark,color,fill,connect=lab
 
       # Handle missing marks and colors.
       if mark not in self.mmap:
@@ -445,18 +459,19 @@ class CategoryPlot:
       elif xevar is not None:
         ax.errorbar(df[xvar],df[yvar],xerr=df[xevar],**errargs)
 
-      if fill:
+      if self.fmap[fill]:
         method(df[xvar],df[yvar],self.mmap[mark],
             color=self.cmap[color],**plotargs)
       else:
         if 'mew' not in self.plotargs: self.plotargs['mew']=1
-        if 'mec' in self.plotargs: save=self.plotargs.pop('mec')
+        if 'mec' in self.plotargs:  save=self.plotargs.pop('mec')
+        else:                       save = None
         method(df[xvar],df[yvar],self.mmap[mark],
             color='none',
             mec=self.cmap[color],**self.plotargs)
-        if 'mec' in self.plotargs: self.plotargs['mec']=save
+        if save is not None: self.plotargs['mec']=save
 
-  def add_legend(self,ax=None,labmap={},args={}):
+  def add_legend(self,ax=None,labmap={},args={},side=False):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
     handles. If there are two legends, the args should be a list.
@@ -480,9 +495,17 @@ class CategoryPlot:
     safeargs=copy(self.plotargs)
     if 'mew' in self.plotargs:
       safeargs.pop('mew')
+    if 'mec' in self.plotargs:
+      safeargs.pop('mec')
 
     legargs = copy(self.plotargs)
     legargs['alpha'] = 1.0
+
+    if side:
+      self.fig.set_size_inches(
+          self.fig.get_size_inches()[0]+0.5,
+          self.fig.get_size_inches()[1]
+        )
 
     # Minimize needed labels:
     if self.mark=='categoryplotdummy': 
@@ -520,7 +543,7 @@ class CategoryPlot:
         ]
       mprox=[plt.Line2D([],[],
             linestyle='',
-            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,
+            marker=self.mmap[unique],color=self.cmap['categoryplotdummy'],label=self.labmap(unique),mew=1.0,mec='k',
             **safeargs
           ) for unique in self.unique_marks
         ]
@@ -530,6 +553,7 @@ class CategoryPlot:
       ax.add_artist(mlegend)
       leg=[ax.legend(handles=cprox,**args[0]),mlegend]
       leg[0]._legend_box.align='left'
+
     return leg
   
   ### Overloaded axes routines (apply to all axes in set). ###
@@ -577,3 +601,14 @@ class CategoryPlot:
     '''
     for ax in self.axes.ravel():
       ax.set_ylim(args)
+
+  def standard_export(self,figname,verbose=True,dpi=400):
+    ''' The usual way of exporting the plot.
+    This produces figname+".pdf" and figname+".png" on disk.
+    '''
+    if verbose:
+      print(f"Saving {figname}")
+    self.fig.tight_layout()
+    self.fig.savefig(figname+".pdf")
+    self.fig.savefig(figname+".png",dpi=dpi)
+
