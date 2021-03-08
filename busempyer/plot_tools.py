@@ -486,6 +486,8 @@ class CategoryPlot:
         If thre are two legends (when mark and color are different descrimiators for the data),
         this should be a tuple, one for mark and one for color).
     """
+    prox = []
+
     if ax is None: 
       ax=self.axes[0,0]
     elif type(ax) == tuple:
@@ -541,14 +543,12 @@ class CategoryPlot:
             **legargs
           ) for unique in self.unique_colors
         ]
+
+    if len(prox):
+      leg=ax.legend(handles=prox,**args)
+      ax.add_artist(leg) # To ensure it doesn't get overwritten by another legend.
     else:
       print("\nCategoryPlot legend not added because the variable is not differentiated in the plot.")
-      return 
-
-    leg=ax.legend(handles=prox,**args)
-    ax.add_artist(leg) # To ensure it doesn't get overwritten by another legend.
-
-    return
 
   ### Overloaded axes routines (apply to all axes in set). ###
 
