@@ -3,6 +3,7 @@ import os
 from pandas import DataFrame
 from busempyer.qmcdata import estimate_warmup,block_data
 from h5py import File
+from numpy import arange
 
 def main():
   print("No default actions.")
@@ -97,7 +98,10 @@ def read_raw_afqmc(loc="./"):
   edf = edf.join(DataFrame([l.split() for l in open(f"{loc}beta.dat",'r').readlines()],
       columns=['beta'],dtype=float))
   edf['beta'] = edf['beta'].round(10)
-  assert edf['beta'].shape == edf['beta'].unique().shape, "Multiple betas: did you make a dirty restart?"
+  if edf['beta'].shape != edf['beta'].unique().shape: 
+    print("\nWARN (read_raw_afqmc): Repeating betas, hopefully this is a restart. \nFixing betas to be monotonic.")
+    dbeta = edf.at[1,'beta'] - edf.at[0,'beta']
+    edf['beta'] = arange(edf.at[0,'beta'], dbeta*edf.shape[0] + edf.at[0,'beta'], dbeta)
 
   # Note: these lines requires population to be large enough:
   safe_energy = edf['energy'].sum() / edf['weight'].sum()

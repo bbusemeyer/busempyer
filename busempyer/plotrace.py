@@ -60,6 +60,9 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
 
   if warmup is None:
     warmup = estimate_warmup(trace)
+    if warmup < 0: 
+      print("\nWarmup guess failed. Trying no warmup for debug purposes.")
+      warmup = 0
 
   if itime is None:
     itime = arange(trace.shape[0])
