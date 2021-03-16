@@ -314,6 +314,7 @@ class CategoryPlot:
     self.connect=connect
     self.labmap=labmap
     self.plotargs={}
+    self.side = False
 
     self.unique_colors=self.fulldf[color].unique()
     if cmap is None:
@@ -471,7 +472,7 @@ class CategoryPlot:
             mec=self.cmap[color],**self.plotargs)
         if save is not None: self.plotargs['mec']=save
 
-  def add_legend(self,variable,ax=None,labmap={},args={},side=False):
+  def add_legend(self,variable,ax=None,labmap={},args={},side=0.0):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
     handles. If there are two legends, the args should be a list.
@@ -499,10 +500,7 @@ class CategoryPlot:
     legargs['alpha'] = 1.0
 
     if side:
-      self.fig.set_size_inches(
-          self.fig.get_size_inches()[0]+0.5,
-          self.fig.get_size_inches()[1]
-        )
+      self.side = max((side,self.side))
 
     # To avoid complexities, lets just assume that fill doesn't need a legend if color or mark will do.
     if variable == self.fill and variable != self.color and variable != self.mark:
@@ -603,6 +601,15 @@ class CategoryPlot:
     if verbose:
       print(f"Saving {figname}")
     self.fig.tight_layout()
+
+    if self.side:
+      size = self.fig.get_size_inches()
+      self.fig.set_size_inches(
+          size[0]+self.side,
+          size[1]
+        )
+      self.fig.subplots_adjust(right=size[0]/(size[0]+self.side))
+
     self.fig.savefig(figname+".pdf")
     self.fig.savefig(figname+".png",dpi=dpi)
 
