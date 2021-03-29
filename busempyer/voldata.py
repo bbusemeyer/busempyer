@@ -1,5 +1,6 @@
 ''' Collection of tools for reading and formatting 3d data.'''
 from numpy import array,asarray,diag,zeros,empty,dot,eye,pad
+from numpy.linalg import inv
 from pyscf.pbc.dft.numint import eval_rho
 ANG = 1/1.889725989 
 
@@ -59,10 +60,15 @@ class VolData:
 
     self.origin = asarray(origin)
     self.voxel = self.latvecs/npoints[:,None]
-    self.positions = [(cell.atom_symbol(i),cell.atom_coord(i)) for i in range(cell.natm)]
+    cart = array([cell.atom_coord(i) for i in range(cell.natm)]).T
+    if sum(self.origin) > 1e-10:
+      cart = _set_nonzero_origin(cart, self.latvecs, self.origin)
+    self.positions = [(cell.atom_symbol(i),cart[:,i]) for i in range(cell.natm)]
+
     self.data = compute_pyscf_points(cell,self.voxel,npoints,coeff_or_dm,dtype,self.origin,assume_zero,verbose=self.verbose)
 
     return self
+
 
   # See XSF format specs on "general grids" for extra printing of 0-index elements.
   def write_xsf(self,outf):
@@ -161,6 +167,7 @@ def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',origin=(0.0,0.0,
   
   return data_on_grid
 
+# Its stikes me that this may not be as efficient as it could be?
 def make_grid(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(0,0))):
   ''' Make a grid at npoints multiples of voxvecs.'''
   size = ((npoints[0]-sum(skip[0])),(npoints[1]-sum(skip[1])),(npoints[2]-sum(skip[2])))
@@ -174,6 +181,13 @@ def make_grid(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(
         grid[i,j,k,:] = (k+skip[2][0]+origin[2]*npoints[2])%npoints[2] * voxel[2] + ijpart
 
   return grid.reshape(size[0]*size[1]*size[2],3)
+
+
+def _set_nonzero_origin(cart, latvecs, origin):
+  frac = inv(latvecs) @ cart
+  frac = (frac + origin[:,None])%1.0
+
+  return latvecs @ frac 
 
 if __name__=='__main__':
   main()
