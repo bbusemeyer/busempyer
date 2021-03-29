@@ -29,7 +29,7 @@ class VolData:
       voxel (array-like): 3x3 array defines edges of the voxel.
       positions (list): [('element',x,y,z) for atom in atoms].
       latvecs (array-like): 3x3 array defines the periodicity.
-      origin (array-like): Define the origin of the plot in fractional coordinates. 
+      origin (array-like): Origin of data appears here in plotted data.
       meta (dict): Any special information to store.
       verbose (bool): Print progress for larger jobs.
     '''
