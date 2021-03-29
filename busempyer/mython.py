@@ -61,14 +61,14 @@ class Ldict(dict):
     else:
       dict.__setitem__(self,key,value)
 
-def display_nested_dict(nested,indent=""):
+def format_nested_dict(nested,indent=""):
   """ Display all keys in a nested dictionary. 
   Don't use indent if calling on root."""
   outstr = ""
   for key in nested.keys():
     outstr += "{0}{1}\n".format(indent,key)
     if type(nested[key])==dict:
-      outstr += display_nested_dict(nested[key],indent="  "+indent)
+      outstr += format_nested_dict(nested[key],indent="  "+indent)
   return outstr
 
 # Source (simplified by me):
