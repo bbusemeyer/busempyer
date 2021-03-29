@@ -28,7 +28,7 @@ class VolData:
       voxel (array-like): 3x3 array defines edges of the voxel.
       positions (list): [('element',x,y,z) for atom in atoms].
       latvecs (array-like): 3x3 array defines the periodicity.
-      origin (array-like): Define the origin of the plot.
+      origin (array-like): Define the origin of the plot in fractional coordinates. 
       meta (dict): Any special information to store.
       verbose (bool): Print progress for larger jobs.
     '''
@@ -36,7 +36,7 @@ class VolData:
     self.voxel      = voxel if voxel is not None else diag(array(self.data.shape,dtype=float)**-1)
     self.positions  = positions if positions is not None else []
     self.latvecs    = latvecs
-    self.origin     = origin
+    self.origin     = asarray(origin)
     self.meta       = meta if meta is not None else {}
     self.verbose    = verbose
 
@@ -45,7 +45,7 @@ class VolData:
 
   # Can add from_cube from cubetools easily.
 
-  def from_pyscf(self,cell,coeff_or_dm,npoints,dtype='orbital',assume_zero=((0,0),(0,0),(0,0))):
+  def from_pyscf(self,cell,coeff_or_dm,npoints,dtype='orbital',origin=(0.0,0.0,0.0),assume_zero=((0,0),(0,0),(0,0))):
     ''' Load internal data from pyscf calculation.'''
     npoints = asarray(npoints)
     self.latvecs = asarray(cell.lattice_vectors())
@@ -57,10 +57,10 @@ class VolData:
         'type':     "{datatype} PySCF data.",
       }
 
-    self.origin = zeros(3)
+    self.origin = asarray(origin)
     self.voxel = self.latvecs/npoints[:,None]
     self.positions = [(cell.atom_symbol(i),cell.atom_coord(i)) for i in range(cell.natm)]
-    self.data = compute_pyscf_points(cell,self.voxel,npoints,coeff_or_dm,dtype,assume_zero,verbose=self.verbose)
+    self.data = compute_pyscf_points(cell,self.voxel,npoints,coeff_or_dm,dtype,self.origin,assume_zero,verbose=self.verbose)
 
     return self
 
@@ -121,17 +121,18 @@ def _write3d(data,outf,count):
 
   return count
 
-def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',assume_zero=((0,0),(0,0),(0,0)),verbose=False):
+def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',origin=(0.0,0.0,0.0),assume_zero=((0,0),(0,0),(0,0)),verbose=False):
   ''' Compare orbital values at points npoints multiples of latvecs'''
   from pyscf import lib
   from pyscf.pbc.gto import Cell
+  origin = asarray(origin)
 
   GTOval = 'GTOval'
   if isinstance(mol, Cell):
     GTOval = 'PBC' + GTOval
 
   # Compute density on the .cube grid
-  coords = make_grid(voxel,npoints,skip=assume_zero)
+  coords = make_grid(voxel,npoints,origin=origin,skip=assume_zero)
   ngrids = coords.shape[0]
 
   blksize = min(8000, ngrids)
@@ -160,17 +161,17 @@ def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',assume_zero=((0,
   
   return data_on_grid
 
-def make_grid(voxel=eye(3),npoints=(10,10,10),skip=((0,0),(0,0),(0,0))):
+def make_grid(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(0,0))):
   ''' Make a grid at npoints multiples of voxvecs.'''
   size = ((npoints[0]-sum(skip[0])),(npoints[1]-sum(skip[1])),(npoints[2]-sum(skip[2])))
   grid = empty((size[0],size[1],size[2],3))
 
   for i in range(size[0]):
-    ipart = (i+skip[0][0])*voxel[0]
+    ipart = (i+skip[0][0]+origin[0]*npoints[0])%npoints[0] * voxel[0]
     for j in range(size[1]):
-      ijpart = ipart + (j+skip[1][0])*voxel[1]
+      ijpart = (j+skip[1][0]+origin[1]*npoints[1])%npoints[1] * voxel[1] + ipart
       for k in range(size[2]):
-        grid[i,j,k,:] = (k+skip[2][0])*voxel[2] + ijpart
+        grid[i,j,k,:] = (k+skip[2][0]+origin[2]*npoints[2])%npoints[2] * voxel[2] + ijpart
 
   return grid.reshape(size[0]*size[1]*size[2],3)
 
