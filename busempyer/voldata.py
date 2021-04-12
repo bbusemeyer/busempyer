@@ -47,7 +47,16 @@ class VolData:
   # Can add from_cube from cubetools easily.
 
   def from_pyscf(self,cell,coeff_or_dm,npoints,dtype='orbital',origin=(0.0,0.0,0.0),assume_zero=((0,0),(0,0),(0,0))):
-    ''' Load internal data from pyscf calculation.'''
+    ''' Load internal data from pyscf calculation.
+    Args:
+      cell (Cell): PySCF Cell of the structure.
+      coeff_or_dm (array): should be orbital coeffs for dtype='orbital' or density matrix for dtype='density'.
+      dtype (str): either 'orbital' or 'density'.
+      npoints (tuple): number of points in grid along each lattice vector.
+      origin (tuple): where the origin of the data will appear in the plot (in fractional coordinates). 
+      assume_zero (tuple): these many points at the ends of each dimension of the grid are not computed, and set to zero.
+        This is useful for low-dimensional systems with large vacuums. 
+    '''
     npoints = asarray(npoints)
     self.latvecs = asarray(cell.lattice_vectors())
 
