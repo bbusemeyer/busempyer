@@ -317,32 +317,7 @@ class CategoryPlot:
     self.plotargs={}
     self.side = False
 
-    self.unique_colors=self.fulldf[color].unique()
-    if cmap is None:
-      self.cmap = assign_features(self.unique_colors,ps['dark8']+ps['cb12'])
-    else: 
-      self.cmap=cmap
-    self.cmap['categoryplotdummy']='none'
-    
-    self.unique_marks=self.fulldf[mark].unique()
-    if mmap is None:
-      #nm=self.unique_marks.shape[0]
-      #self.mmap=dict(zip(self.unique_marks,pm[:self.unique_marks.shape[0]]))
-      #self.mmap=dict(zip(self.unique_marks,((1+nm//len(pm))*pm)[:nm]))
-      self.mmap = assign_features(self.unique_marks,pm)
-    else: 
-      self.mmap=mmap
-    self.mmap['categoryplotdummy']=default_mark
-
-    self.unique_fills=self.fulldf[fill].unique()
-    assert self.unique_fills.shape[0]<3, f"Fill is a binary quantity, so can have at most two. These are fill values: {self.unique_fills}"
-    if fmap is None:
-      self.fmap=dict(zip(self.unique_fills,[True,False][:self.unique_fills.shape[0]]))
-    else:
-      self.fmap = fmap
-    self.fmap['categoryplotdummy'] = True
-
-    self.labmap=lambda x:safemap(labmap,x)
+    setup_plotenv_(self, df, color, mark, fill, labmap, cmap, mmap, fmap, default_mark)
 
     self.fig,self.axes=plt.subplots(
         self.fulldf[row].unique().shape[0],
@@ -613,4 +588,42 @@ class CategoryPlot:
 
     self.fig.savefig(figname+".pdf")
     self.fig.savefig(figname+".png",dpi=dpi)
+
+class ComparePlot(CategoryPlot):
+  ''' Class for comparing correlations between one column of data and every other. Also histogram the available data.
+  Inspired by Seaborn's pairplot, but less cluttered.'''
+  def __init__(self, df, color='categoryplotdummy', mark='categoryplotdummy'):
+    self.color=color
+    self.mark=mark
+    self.plotargs={}
+
+def setup_plotenv_(env, df, color, mark, fill, labmap={}, cmap=None, mmap=None, fmap=None, default_mark='o'):
+  ''' Some common setup operations.'''
+  env.unique_colors=df[color].unique()
+  if cmap is None:
+    env.cmap = assign_features(env.unique_colors,ps['dark8']+ps['cb12'])
+  else: 
+    env.cmap=cmap
+  env.cmap['categoryplotdummy']='none'
+  
+  env.unique_marks=df[mark].unique()
+  if mmap is None:
+    #nm=env.unique_marks.shape[0]
+    #env.mmap=dict(zip(env.unique_marks,pm[:env.unique_marks.shape[0]]))
+    #env.mmap=dict(zip(env.unique_marks,((1+nm//len(pm))*pm)[:nm]))
+    env.mmap = assign_features(env.unique_marks,pm)
+  else: 
+    env.mmap=mmap
+  env.mmap['categoryplotdummy']=default_mark
+
+  env.unique_fills=df[fill].unique()
+  assert env.unique_fills.shape[0]<3, f"Fill is a binary quantity, so can have at most two. These are fill values: {env.unique_fills}"
+  if fmap is None:
+    env.fmap=dict(zip(env.unique_fills,[True,False][:env.unique_fills.shape[0]]))
+  else:
+    env.fmap = fmap
+  env.fmap['categoryplotdummy'] = True
+
+  env.labmap=lambda x:safemap(labmap,x)
+  env.labmap=lambda x:safemap(labmap,x)
 
