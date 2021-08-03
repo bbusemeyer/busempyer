@@ -1,5 +1,5 @@
 ''' Collection of tools for reading and formatting 3d data.'''
-from numpy import array,asarray,diag,zeros,empty,dot,eye,pad
+from numpy import array, asarray, diag, zeros, empty, dot, eye, pad, cross
 from numpy.linalg import inv
 from pyscf.pbc.dft.numint import eval_rho
 ANG = 1/1.889725989 
@@ -78,7 +78,6 @@ class VolData:
 
     return self
 
-
   # See XSF format specs on "general grids" for extra printing of 0-index elements.
   def write_xsf(self,outf):
     ''' Write internal data into an XSF format.
@@ -126,6 +125,13 @@ class VolData:
     outf.write('\n')
     outf.write("END_DATAGRID_3D\n")
     outf.write("END_BLOCK_DATAGRID_3D\n")
+
+  def integrate(self, take_abs=False):
+    ''' Integrate the data by using a piecewise constant approximation.'''
+    voxel_volume = cross(self.voxel[0], self.voxel[1]) @ self.voxel[2]
+     
+    return self.data.sum()*voxel_volume \
+        if not take_abs else abs(self.data).sum()*voxel_volume
 
 def _write3d(data,outf,count):
   ''' data format for writing volume data.'''
@@ -190,7 +196,6 @@ def make_grid(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(
         grid[i,j,k,:] = (k+skip[2][0]+origin[2]*npoints[2])%npoints[2] * voxel[2] + ijpart
 
   return grid.reshape(size[0]*size[1]*size[2],3)
-
 
 def _set_nonzero_origin(cart, latvecs, origin):
   frac = inv(latvecs) @ cart
