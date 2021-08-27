@@ -5,11 +5,9 @@ from busempyer.afqmc_tools import read_afqmc_param, dump_afqmc_param
 def main():
   '''Command-line usage.'''
   from sys import argv
-  if len(argv)==1:
-    print("\nUsage: python restart_afqmc.py path/to/run/")
-    return
+  path = argv[1] if len(argv)>1 else './'
 
-  prep_restart(argv[-1])
+  prep_restart(path)
 
 def prep_restart(loc="./"):
   ''' Save the old afqmc_params and make a new one that restarts the job.'''

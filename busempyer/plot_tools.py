@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 
 ### Matplotlib tools.
 
-notes = """
-Things I commonly have to look up:
+notes = """ Things I commonly have to look up:
   For reference: all the marker choices for matplotlib:
    "."         point
    ","         pixel
@@ -272,7 +271,7 @@ class CategoryPlot:
       color='categoryplotdummy',mark='categoryplotdummy',
       fill='categoryplotdummy', connect='categoryplotdummy',
       labmap={},cmap=None,mmap=None,fmap=None,sharex=False,sharey=False,
-      default_mark='o'):
+      size_axes=(3.0,2.5), default_mark='o'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
@@ -298,6 +297,8 @@ class CategoryPlot:
         fmap: data values are mapped to filled or not this way.
         sharex: x-axes are set to same limits.
         sharey: y-axes are set to same limits.
+        size_axes: default size for each axes.
+        default_mark: if 'mark' isn't specified, what marker to use.
     '''
 
     if 'categoryplotdummy' in df.columns:
@@ -323,8 +324,8 @@ class CategoryPlot:
         self.fulldf[col].unique().shape[0],
         squeeze=False,sharex=sharex,sharey=sharey
       )
-    self.fig.set_size_inches(3*self.axes.shape[1]+0.5,
-                         2.5*self.axes.shape[0]+0.5)
+    self.fig.set_size_inches(size_axes[0]*self.axes.shape[1]+0.5,
+                         size_axes[1]*self.axes.shape[0]+0.5)
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
