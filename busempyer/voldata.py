@@ -22,10 +22,11 @@ def main():
 
 # TODO decide units.
 class VolData:
-  def __init__(self,data=None,voxel=None,positions=None,latvecs=None,origin=(0.0,0.0,0.0),meta=None,verbose=False):
+  def __init__(self,data=None,grid=None,voxel=None,positions=None,latvecs=None,origin=(0.0,0.0,0.0),meta=None,verbose=False):
     ''' Contains data and routines for exporting data for volumetric data formats.
     Args:
       data (array-like): 3-D data in a list.
+      grid (array-like): Coordinates in 3D space of the points. 
       voxel (array-like): 3x3 array defines edges of the voxel.
       positions (list): [('element',x,y,z) for atom in atoms].
       latvecs (array-like): 3x3 array defines the periodicity.
@@ -33,7 +34,8 @@ class VolData:
       meta (dict): Any special information to store.
       verbose (bool): Print progress for larger jobs.
     '''
-    self.data       = data if data is not None else zeros((2,2))
+    self.data       = data if data is not None else zeros((3,3,3))
+    self.grid       = grid
     self.voxel      = voxel if voxel is not None else diag(array(self.data.shape,dtype=float)**-1)
     self.positions  = positions if positions is not None else []
     self.latvecs    = latvecs
@@ -46,13 +48,14 @@ class VolData:
 
   # Can add from_cube from cubetools easily.
 
-  def from_pyscf(self,cell,coeff_or_dm,npoints,dtype='orbital',origin=(0.0,0.0,0.0),assume_zero=((0,0),(0,0),(0,0))):
+  def from_pyscf(self, cell, coeff_or_dm, npoints, dtype='orbital', origin=(0.0, 0.0, 0.0), assume_zero=((0, 0), (0, 0), (0, 0))):
     ''' Load internal data from pyscf calculation.
     Args:
       cell (Cell): PySCF Cell of the structure.
       coeff_or_dm (array): should be orbital coeffs for dtype='orbital' or density matrix for dtype='density'.
       dtype (str): either 'orbital' or 'density'.
       npoints (tuple): number of points in grid along each lattice vector.
+      keepgrid (bool): Keep the grid in memory for reference.
       origin (tuple): where the origin of the data will appear in the plot (in fractional coordinates). 
       assume_zero (tuple): these many points at the ends of each dimension of the grid are not computed, and set to zero.
         This is useful for low-dimensional systems with large vacuums. 
@@ -74,7 +77,7 @@ class VolData:
       cart = _set_nonzero_origin(cart, self.latvecs, self.origin)
     self.positions = [(cell.atom_symbol(i),cart[:,i]) for i in range(cell.natm)]
 
-    self.data = compute_pyscf_points(cell,self.voxel,npoints,coeff_or_dm,dtype,self.origin,assume_zero,verbose=self.verbose)
+    self.grid, self.data = compute_pyscf_points(cell,self.voxel,npoints,coeff_or_dm,dtype,self.origin,assume_zero,verbose=self.verbose)
 
     return self
 
@@ -126,12 +129,23 @@ class VolData:
     outf.write("END_DATAGRID_3D\n")
     outf.write("END_BLOCK_DATAGRID_3D\n")
 
-  def integrate(self, take_abs=False):
-    ''' Integrate the data by using a piecewise constant approximation.'''
+  def integrate(self, gridsel=None, transform=None):
+    ''' Integrate the data by using a piecewise constant approximation.
+    Args:
+      gridsel: boolean array of same shape as self.grid for selecting the points for plotting.
+      transform: call this on the data before integrating, e.g. abs(). 
+      '''
     voxel_volume = cross(self.voxel[0], self.voxel[1]) @ self.voxel[2]
+
+    data = self.data \
+        if gridsel is None else self.data.ravel()[gridsel]
      
-    return self.data.sum()*voxel_volume \
-        if not take_abs else abs(self.data).sum()*voxel_volume
+    return data.sum()*voxel_volume \
+        if transform is None else transform(data).sum()*voxel_volume
+
+  def subtract_(self, other):
+    ''' Subtract two VolData object's data and store in this data.'''
+    self.data -= other.data
 
 def _write3d(data,outf,count):
   ''' data format for writing volume data.'''
@@ -180,7 +194,7 @@ def compute_pyscf_points(mol,voxel,npoints,data,dtype='orbital',origin=(0.0,0.0,
       constant_values=0.0
     )
   
-  return data_on_grid
+  return coords, data_on_grid
 
 # Its stikes me that this may not be as efficient as it could be?
 def make_grid(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(0,0))):

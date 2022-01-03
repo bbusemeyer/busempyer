@@ -271,7 +271,7 @@ class CategoryPlot:
       color='categoryplotdummy',mark='categoryplotdummy',
       fill='categoryplotdummy', connect='categoryplotdummy',
       labmap={},cmap=None,mmap=None,fmap=None,sharex=False,sharey=False,
-      size_axes=(3.0,2.5), default_mark='o'):
+      size_axes=(3.0,2.5), default_color='none', default_mark='o'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
     and marker. Somewhat similar to what ggplot can handle (more elegantly).
@@ -317,7 +317,7 @@ class CategoryPlot:
     self.plotargs={}
     self.side = False
 
-    setup_plotenv_(self, df, color, mark, fill, labmap, cmap, mmap, fmap, default_mark)
+    setup_plotenv_(self, df, color, mark, fill, labmap, cmap, mmap, fmap, default_color, default_mark)
 
     self.fig,self.axes=plt.subplots(
         self.fulldf[row].unique().shape[0],
@@ -329,7 +329,7 @@ class CategoryPlot:
     self.rowmap=idxmap(df[row].unique())
     self.colmap=idxmap(df[col].unique())
 
-  def plot(self,xvar,yvar,yevar=None,xevar=None,plotargs={},errargs={},lineargs={},
+  def plot(self,xvar,yvar,yevar=None,xevar=None,plotargs=None,errargs=None,lineargs=None,
       labrow=None,labcol=None,labloc=(0.95,0.95),labhalign='right',labvalign='top',
       fill=True,line=False,
       xscale='linear',yscale='linear'):
@@ -352,7 +352,7 @@ class CategoryPlot:
       yscale (str): 'lienar' or 'log'; scale of the y axis.
     '''
 
-    self.plotargs=plotargs
+    self.plotargs = plotargs
     for lab,axdf in self.fulldf.groupby([self.row,self.col],sort=False):
       row,col=lab
       ax=self.axes[self.rowmap[row],self.colmap[col]]
@@ -375,9 +375,9 @@ class CategoryPlot:
       if labcol=='axes':
         self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
       elif labcol=='title': 
-        labtitle.append("{}: {}".format(self.col,self.labmap(col)))
+        labtitle.append("{}: {}".format(self.labmap(self.col),self.labmap(col)))
       elif labcol=='figure':
-        labannotate.append("{}: {}".format(self.col,self.labmap(col)))
+        labannotate.append("{}: {}".format(self.labmap(self.col),self.labmap(col)))
       elif labcol is None: pass
       else:
         raise NotImplementedError("Invalid labcol. Options are 'axes','title','figure'.")
@@ -389,7 +389,7 @@ class CategoryPlot:
       # I'm a 90's baby.
       self.fig.tight_layout()
 
-  def subplot(self,ax,xvar,yvar,yevar=None,xevar=None,axdf=None,plotargs={},errargs={},lineargs={},
+  def subplot(self,ax,xvar,yvar,yevar=None,xevar=None,axdf=None,plotargs=None,errargs=None,lineargs=None,
       fill=True,line=False,xscale='linear',yscale='linear'):
     ''' See plot. args are the same, but for only one plot in the grid.
     Additonal Args:
@@ -411,7 +411,9 @@ class CategoryPlot:
       else: raise ValueError("yscale should be linear or log, not %s"%yscale)
     else: raise ValueError("xscale should be linear or log, not %s"%xscale)
 
-    self.plotargs=plotargs
+    self.plotargs = make_plotargs(**plotargs) if plotargs is not None else make_plotargs()
+    self.errargs = make_errargs(**errargs) if errargs is not None else make_errargs()
+
     if axdf is None: axdf=self.fulldf
     for lab,df in axdf.groupby([self.mark,self.color,self.fill,self.connect],sort=False):
       mark,color,fill,connect=lab
@@ -430,15 +432,15 @@ class CategoryPlot:
 
       if yevar is not None:
         if xevar is not None:
-          ax.errorbar(df[xvar],df[yvar],df[yevar],df[xevar],**errargs)
+          ax.errorbar(df[xvar],df[yvar],df[yevar],df[xevar],**self.errargs)
         else:
-          ax.errorbar(df[xvar],df[yvar],df[yevar],**errargs)
+          ax.errorbar(df[xvar],df[yvar],df[yevar],**self.errargs)
       elif xevar is not None:
-        ax.errorbar(df[xvar],df[yvar],xerr=df[xevar],**errargs)
+        ax.errorbar(df[xvar],df[yvar],xerr=df[xevar],**self.errargs)
 
       if self.fmap[fill]:
         method(df[xvar],df[yvar],self.mmap[mark],
-            color=self.cmap[color],**plotargs)
+            color=self.cmap[color],**self.plotargs)
       else:
         if 'mew' not in self.plotargs: self.plotargs['mew']=1
         if 'mec' in self.plotargs:  save=self.plotargs.pop('mec')
@@ -597,14 +599,14 @@ class ComparePlot(CategoryPlot):
     self.mark=mark
     self.plotargs={}
 
-def setup_plotenv_(env, df, color, mark, fill, labmap={}, cmap=None, mmap=None, fmap=None, default_mark='o'):
+def setup_plotenv_(env, df, color, mark, fill, labmap={}, cmap=None, mmap=None, fmap=None, default_color='none', default_mark='o'):
   ''' Some common setup operations.'''
   env.unique_colors=df[color].unique()
   if cmap is None:
     env.cmap = assign_features(env.unique_colors,ps['dark8']+ps['cb12'])
   else: 
     env.cmap=cmap
-  env.cmap['categoryplotdummy']='none'
+  env.cmap['categoryplotdummy']=default_color
   
   env.unique_marks=df[mark].unique()
   if mmap is None:
