@@ -9,10 +9,9 @@ def main():
 
   prep_restart(path)
 
-def prep_restart(loc="./"):
+def prep_restart(loc=".", updates=None):
   ''' Save the old afqmc_params and make a new one that restarts the job.'''
-  if loc[-1] != '/': loc += '/'
-  params = read_afqmc_param(loc+"afqmc_param")
+  params = read_afqmc_param(loc+"/afqmc_param")
 
   params['initialWalkerFlag'] = "readAllWalkers"
   params['seed'] = -1
@@ -20,11 +19,13 @@ def prep_restart(loc="./"):
   params['backGroundInit'] = "readFromFile"
   params['ETAdjustMaxSize'] = 0
   params['ETAndBackGroundGrowthEstimateMaxSize'] = 0
+  if updates is not None:
+    params.update(updates)
   
-  with open(loc+"past.afqmc_param",'a') as outf:
-    with open(loc+"afqmc_param",'r') as inpf:
+  with open(loc+"/past.afqmc_param",'a') as outf:
+    with open(loc+"/afqmc_param",'r') as inpf:
       outf.write(inpf.read())
 
-  dump_afqmc_param(**params)
+  dump_afqmc_param(fn=loc+'/afqmc_param', **params)
 
 if __name__=='__main__': main()
