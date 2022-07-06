@@ -2,7 +2,6 @@
 from numpy import array, asarray, diag, zeros, empty, dot, eye, cross, meshgrid
 from numpy.linalg import inv
 from pyscf.pbc.dft.numint import eval_rho
-ANG = 1/1.889725989 
 
 def main():
   ''' Defines a command-line interface.'''
@@ -49,13 +48,13 @@ class VolData:
 
   # Can add from_cube from cubetools easily.
 
-  def load_from_cell_(self, cell, npoints, origin=(0.0,0.0,0.0)):
+  def load_from_cell_(self, cell, npoints, grid=None, origin=(0.0,0.0,0.0)):
     ''' Load cell geometry data, and make grid in that cell.'''
     self.npoints = asarray(npoints)
     self.latvecs = asarray(cell.lattice_vectors())
     self.voxel = self.latvecs/self.npoints[:,None]
     self.origin = asarray(origin)
-    self.grid = make_grid(self.voxel,self.npoints,origin=origin)
+    self.grid, fracoords = make_grid(self.voxel,self.npoints,origin=origin)
 
     cart = array([cell.atom_coord(i) for i in range(cell.natm)]).T
     if sum(self.origin) > 1e-10:
@@ -65,16 +64,17 @@ class VolData:
   def compute_pyscf_points_(self, mol, coeff_or_dm, dtype='orbital', verbose=False):
     self.data = compute_pyscf_points(mol, self.grid, coeff_or_dm, dtype, verbose).reshape(self.npoints)
 
-  def from_pyscf_(self, cell, coeff_or_dm, npoints, dtype='orbital', origin=(0.0,0.0,0.0)):
+  def from_pyscf(self, cell, coeff_or_dm, npoints, dtype='orbital', origin=(0.0,0.0,0.0)):
     ''' Convenience function to load and compute all data from a PySCF run.'''
 
     self.load_from_cell_(cell, npoints, origin)
-    self.data = compute_pyscf_points(cell, self.grid, coeff_or_dm, dtype, verbose=self.verbose).rehape(npoints)
+    self.data = compute_pyscf_points(cell, self.grid, coeff_or_dm, dtype, verbose=self.verbose).reshape(npoints)
 
     return self
 
   # See XSF format specs on "general grids" for extra printing of 0-index elements.
   def write_xsf(self,outf):
+    from ase.units import Bohr
     ''' Write internal data into an XSF format.
     Note: units of XSF are Angstrom!
     Currently requires periodic systems, but can easily be generalized to non-PBC
@@ -85,18 +85,18 @@ class VolData:
     outf.write("PRIMVEC\n")
     natoms=len(self.positions)
     for i in range(0,3):
-      outf.write("  {0: 20.16e} {1: 20.16e} {2: 20.16e}\n".format(*(self.latvecs[i,:]*ANG)))
+      outf.write("  {0: 20.16e} {1: 20.16e} {2: 20.16e}\n".format(*(self.latvecs[i,:]*Bohr)))
     outf.write("PRIMCOORD\n")
     outf.write("  %i 1\n"%natoms)
     for i in range(0,natoms):
       outf.write("  {sym} {0: 20.16e} {1: 20.16e} {2: 20.16e}\n"\
-          .format(*(self.positions[i][1]*ANG),sym=self.positions[i][0]))
+          .format(*(self.positions[i][1]*Bohr),sym=self.positions[i][0]))
     outf.write("BEGIN_BLOCK_DATAGRID_3D\n  from_VolData \n")
     outf.write("BEGIN_DATAGRID_3D\n")
     outf.write("  {0:10} {1:10} {2:10}\n".format(*[s+1 for s in self.data.shape]))
     outf.write("  0.0 0.0 0.0\n")
     for i in range(0,3):
-      outf.write("  {0: 20.16e} {1:20.16e} {2:20.16e}\n".format(*(self.data.shape[i]*self.voxel[i,:]*ANG)))
+      outf.write("  {0: 20.16e} {1:20.16e} {2:20.16e}\n".format(*(self.data.shape[i]*self.voxel[i,:]*Bohr)))
     
     count=0
     outf.write('  ')
@@ -178,12 +178,27 @@ def compute_pyscf_points(mol, grid, data, dtype='orbital', verbose=False):
 
   return data_on_grid
 
-def make_grid(voxel=eye(3), npoints=(10,10,10), origin=(0,0,0)):
-  fracgrid = asarray(meshgrid(range(npoints[0]), range(npoints[1]), range(npoints[2]), indexing='ij'))
-  fracgrid = fracgrid.reshape(fracgrid.shape[0], fracgrid.size//fracgrid.shape[0]).T
-  grid = fracgrid @ voxel
+def make_grid(voxel=eye(3), npoints=(10,10,10), origin=(0,0,0), ptshift=(0,0,0)):
+  ''' Make a grid of points defining a set of voxels.
+  Args:
+    voxel (array): defines the spaces between points.
+    npoints (tuple): the number of voxels repeated in each dimension.
+    origin (array-like): the corner of the volume defined by the first voxel. 
+    ptshift (tuple): Shift grid from the origin by this many voxels. For example, use npoints/2 for centering the origin.
+  Returns:
+    grid (array): Points of the grid in cartesian coordinates. 
+    voxgrid (array): Points of the grid in the basis of the voxel vectors.
+  '''
+ 
+  voxgrid = asarray(meshgrid(
+    range(-ptshift[0],npoints[0]-ptshift[0]), 
+    range(-ptshift[1],npoints[1]-ptshift[1]), 
+    range(-ptshift[2],npoints[2]-ptshift[2]), 
+    indexing='ij'))
+  voxgrid = voxgrid.reshape(voxgrid.shape[0], voxgrid.size//voxgrid.shape[0]).T
+  grid = voxgrid @ voxel + asarray(origin)
 
-  return grid
+  return grid, voxgrid
 
 # I think this is obsolete with make_grid.
 def make_grid_slow(voxel=eye(3),npoints=(10,10,10),origin=(0,0,0),skip=((0,0),(0,0),(0,0))):

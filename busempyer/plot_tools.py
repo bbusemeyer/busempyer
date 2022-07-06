@@ -270,7 +270,7 @@ class CategoryPlot:
       row='categoryplotdummy',col='categoryplotdummy',
       color='categoryplotdummy',mark='categoryplotdummy',
       fill='categoryplotdummy', connect='categoryplotdummy',
-      labmap={},cmap=None,mmap=None,fmap=None,sharex=False,sharey=False,
+      labmap={},cmap=None,mmap=None,fmap=None,sharex='col',sharey='row',
       size_axes=(3.0,2.5), default_color='none', default_mark='o'):
     '''
     Use a pandas DataFrame to make plots broken down by color, row, column,
