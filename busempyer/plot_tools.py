@@ -351,6 +351,8 @@ class CategoryPlot:
       xscale (str): 'linear' or 'log'; scale of the x axis.
       yscale (str): 'lienar' or 'log'; scale of the y axis.
     '''
+    if lineargs is None:
+      lineargs = {}
 
     self.plotargs = plotargs
     for lab,axdf in self.fulldf.groupby([self.row,self.col],sort=False):
