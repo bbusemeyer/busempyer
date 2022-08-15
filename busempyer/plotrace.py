@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-from numpy import asarray,arange,isnan,loadtxt,array_split
+from math import ceil
+from numpy import asarray,arange,loadtxt,array_split
 from busempyer.plot_tools import matplotlib_header,make_plotargs as pargs, pc
 from matplotlib.pyplot import subplots
-from busempyer.qmcdata import estimate_warmup
 from h5py import File
-from pyblock.blocking import find_optimal_block,reblock
 from busempyer.afqmc_tools import read_raw_afqmc
+from busempyer.qmcdata import estimate_warmup, reblock
 from os.path import exists
+from qharv.reel.forlib.stats import corr as compute_autocorr
 import logging
 matplotlib_header()
 
@@ -60,9 +61,8 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
 
   if warmup is None:
     warmup = estimate_warmup(trace)
-    if warmup < 0: 
-      print("\nWarmup guess failed. Trying no warmup for debug purposes.")
-      warmup = 0
+    if warmup < 0:
+      print("** Warmup impossible to estimate. I'm setting warmup to 0 for debugging purposes. **")
 
   if itime is None:
     itime = arange(trace.shape[0])
@@ -74,17 +74,8 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
   ekeep  = trace[warmup:]
   itkeep = itime[warmup:]
 
-  blockdata = reblock(ekeep)
-  optblock = find_optimal_block(ekeep.shape[0],blockdata)[0]
-  if isnan(optblock): 
-    logging.warning("No optimial block found! You are warned!") 
-    optblock = -1
-  blockdata = blockdata[optblock]
-
-  logging.info("Block data.")
-  logging.info(blockdata)
-  
-  blocks = asarray([a.mean() for a in array_split(ekeep,blockdata.ndata)]) #ekeep[ekeep.shape[0]%blockdata.ndata:].reshape(blockdata.ndata,ekeep.shape[0]//blockdata.ndata)
+  autotime = compute_autocorr(ekeep)
+  blocks = reblock(ekeep, ceil(autotime))
 
   if drop_outliers:
     outliers = abs(ekeep - trace.mean()) > 10*trace.std()
@@ -93,19 +84,22 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
     trace = trace[~outliers]
 
   #blockitime = int(round(itkeep.shape[0]/blocks.shape[0]))
-  blockitime = itkeep.shape[0]//blocks.shape[0]
-  blockitime = itkeep[blockitime//2::blockitime][:blocks.shape[0]]
+  blockitime = itkeep[::ceil(autotime)][:blocks.shape[0]]
+
+  mean = trace.mean()
+  #std  = trace.std(ddof=1)
+  #serr = std/trace.shape[0]*autotime
 
   fig,ax = subplots(1,2,gridspec_kw={'width_ratios': [3, 1]},sharey=True)
   ax[0].plot(itime,trace,'.',color=pc['g'],alpha=0.3,**pargs())
   #print(blockitime, blocks)
   ax[0].plot(blockitime,blocks,'.',color=pc['r'],**pargs())
   ax[0].axvline(warmtime,color=pc['grey'],lw=1)
-  ax[0].axhline(blockdata.mean,color=pc['grey'],lw=1)
-  for mult in range(-3,4):
-    ax[0].axhline(blockdata.mean + mult*blockdata.std_err,ls='--',color=pc['grey'],lw=0.5)
+  ax[0].axhline(mean,color=pc['grey'],lw=1)
+  #for mult in range(-3,4):
+    #ax[0].axhline(mean + mult*serr,ls='--',color=pc['grey'],lw=0.5)
   
-  ax[1].axhline(blockdata.mean,color=pc['grey'],lw=1)
+  ax[1].axhline(mean,color=pc['grey'],lw=1)
   ax[1].hist(ekeep,bins=50,orientation='horizontal',color=pc['g'])
 
   print(f"Saving {figname}")

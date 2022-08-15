@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 ''' Analysis for QMC trace.'''
 from pandas import DataFrame
+from math import ceil
 from numpy import isnan
-from pyblock.blocking import find_optimal_block,reblock
+from qharv.reel.forlib.stats import corr as compute_autocorr
 
 def main():
   print("No main functionality.")
@@ -11,29 +12,42 @@ def estimate_warmup(energy):
   ''' Estimate equillibration of data assuming that at least half the data is equillibrated.'''
   safe = energy[energy.shape[0]//2:]
 
-  safeblocks = reblock(safe)
   try:
-    bo = find_optimal_block(safe.shape[0],safeblocks)[0]
-  except IndexError:
-    print("\n !!! Error in blocking: maybe there is too little statistics. !!! ")
+    autotime = ceil(compute_autocorr(safe))
+  except ValueError:
+    print("Cannot compute warmup time, returning -1 as a flag.")
     return -1
-  if isnan(bo): 
-    print("\n !!! Insufficient data for warm-up estimation! I will return -1 as a flag for this error. !!!")
-    return -1
-  blockdata = safeblocks[bo]
-
-  blocks = energy[energy.shape[0]%(2*blockdata.ndata):].reshape((2*blockdata.ndata),energy.shape[0]//(2*blockdata.ndata))
-  blocks = blocks.mean(axis=1)
+  blocks = reblock(energy, autotime)
+  safemean = safe.mean()
 
   signflags = [False,False]
-  for bi,block in enumerate(blocks):
-    signflags[0] |= block >= blockdata.mean
-    signflags[1] |= block <= blockdata.mean
-    if signflags[0] and signflags[1]: break
+  for bix,block in enumerate(blocks):
+    if not signflags[0] and block >= safemean:  signflags[0] = True
+    if not signflags[1] and block <= safemean:  signflags[1] = True
+    if signflags[0] and signflags[1]:           break
 
-  return energy.shape[0]//(blockdata.ndata*2) * bi
+  return autotime * bix
 
-def block_data(data):
+def reblock(data, blocklen):
+  ''' Block-average data in chunks of blocklen (usually the autocorrelation time).'''
+  stubpos = -(data.shape[0]%blocklen)
+  if stubpos:
+    data = data[:stubpos]
+    stub = data[stubpos:]
+  else:
+    stub = None
+  data = data.reshape(-1,blocklen).mean(axis=1)
+
+  # What to do with stub? Seems a waste to throw it, why not average it with the final entry?
+  if stub is not None:
+    data[-1] = (data[-1] + stub.mean())/2
+
+  return data
+
+# Obsolete.
+def block_data_pyblock(data):
+  print("Warning: I've found this reblocking procedure to greatly overestimate the errors. Use block_data instead.")
+  from pyblock.blocking import find_optimal_block,reblock
   ''' Takes serially-correlated data and returns independent sampled data.'''
   blocked = reblock(data)
   optimal = find_optimal_block(len(data),blocked)[0]

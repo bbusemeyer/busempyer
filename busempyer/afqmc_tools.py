@@ -1,12 +1,26 @@
 ''' Misc tools for interfacing with AFQMCLab.'''
 import os
 from pandas import DataFrame
-from busempyer.qmcdata import estimate_warmup,block_data
+from busempyer.qmcdata import estimate_warmup
 from h5py import File
 from numpy import arange
+from qharv.reel.forlib.stats import corr as compute_autocorr
 
 def main():
-  print("No default actions.")
+  # Test Paul's autocorrelation calculation. 
+  data, safe = read_raw_afqmc("testdata/dt0.010_fc1.00_lec2.00_s0")
+  import sys
+  sys.path.append("/mnt/home/bbusemeyer/soft/harvest_qmcpack")
+  acortime = compute_autocorr(data['energy'].values)
+
+  from pyblock.blocking import find_optimal_block, reblock
+  # Compare to reblocking.
+  blocked = reblock(data['energy'].values)
+  print(blocked)
+  optimal = find_optimal_block(len(data),blocked)[0]
+  blockedtime = len(data)//blocked[optimal].ndata
+
+  print(f"Autocorrlation time: {acortime}\nBlocked time: {blockedtime}")
 
 def read_afqmc_param(fn):
   afparams = {}
@@ -45,31 +59,31 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
 
   if warmup is None:
     warmup = estimate_warmup(edf['energy'].values)
+    if warmup < 0:
+      print(f"\nInsufficient data detected in {loc+'HNum.dat'}.")
+      return {
+          'warmup': -1,
+          'safe_energy': safe_energy,
+          'energy': None,
+          'stdev': None,
+          'error': None,
+          #'blockbeta': None,
+          #'blockdata': None
+        }
 
-  if warmup < 0:
-    print(f"\nInsufficient data detected in {loc+'HNum.dat'}.")
-    return {
-        'warmup': -1,
-        'safe_energy': safe_energy,
-        'energy': None,
-        'stdev': None,
-        'error': None,
-        'blockbeta': None,
-        'blockdata': None
-      }
 
-  blockdata = block_data(edf.iloc[warmup:]['energy'].values)
+  warmdf = edf.iloc[warmup:]
+  autotime = compute_autocorr(warmdf['energy'].values)
 
-  blocknbeta = (edf.shape[0]-warmup)//blockdata.shape[0]
   results =  {
       'warmup':       warmup,
       'safe_energy':  safe_energy,
-      'energy':       blockdata['value'].mean(),
-      'stdev':        blockdata['value'].std(),
-      'error':        blockdata['value'].std()/blockdata.shape[0]**0.5,
-      'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
-      'blockdata':    blockdata['value'].values.tolist(),
+      'energy':       warmdf['energy'].mean(),
+      'stdev':        warmdf['energy'].std(),
+      #'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
+      #'blockdata':    blockdata['value'].values.tolist(),
     }
+  results['error'] = results['stdev']*(autotime/warmdf.shape[0])**0.5
 
   if return_trace:
     results['beta']  = edf['beta'].values.tolist()
@@ -91,6 +105,7 @@ def test_blocking(loc="./",warmup=None):
   print(pyqmc_results)
 
 def read_raw_afqmc(loc="./"):
+  if loc[-1] != '/': loc += '/'
   edf = DataFrame([l.split() for l in open(f"{loc}HNum.dat",'r').readlines()],
       columns=('energy','imenergy'),dtype=float)
   edf = edf.join(DataFrame([l.split() for l in open(f"{loc}den.dat",'r').readlines()],
@@ -119,13 +134,13 @@ def read_measure_afqmc(loc='./'):
   weight = float([l.split() for l in open(f"{loc}den.dat",'r').readlines()][0][0])
   energy /= weight
   return { # Format matches result from read_afqmc for full AFQMC run.
-      'warmup': None,
+      'warmup': 0,
       'safe_energy': energy,
       'energy': energy,
       'stdev': 0.0,
       'error': 0.0,
-      'blockbeta': [],
-      'blockdata': []
+      #'blockbeta': [],
+      #'blockdata': []
     }
 
 class Hamiltonian:
