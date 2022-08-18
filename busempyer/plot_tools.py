@@ -368,18 +368,18 @@ class CategoryPlot:
       if labrow=='axes':
         self.axes[self.rowmap[row],0].set_ylabel(self.labmap(row))
       elif labrow=='title': 
-        labtitle.append("{}: {}".format(self.row,self.labmap(row)))
+        labtitle.append(self.labmap(row))
       elif labrow=='figure':
-        labannotate.append("{}: {}".format(self.row,self.labmap(row)))
+        labannotate.append(self.labmap(row))
       elif labrow is None: pass
       else:
         raise NotImplementedError("Invalid labrow. Options are 'axes','title','figure'.")
       if labcol=='axes':
         self.axes[-1,self.colmap[col]].set_xlabel(self.labmap(col))
       elif labcol=='title': 
-        labtitle.append("{}: {}".format(self.labmap(self.col),self.labmap(col)))
+        labtitle.append(self.labmap(col))
       elif labcol=='figure':
-        labannotate.append("{}: {}".format(self.labmap(self.col),self.labmap(col)))
+        labannotate.append(self.labmap(col))
       elif labcol is None: pass
       else:
         raise NotImplementedError("Invalid labcol. Options are 'axes','title','figure'.")
@@ -452,7 +452,7 @@ class CategoryPlot:
             mec=self.cmap[color],**self.plotargs)
         if save is not None: self.plotargs['mec']=save
 
-  def add_legend(self,variable,ax=None,labmap={},args={},side=0.0):
+  def add_legend(self,variable,ax=None,args={},side=0.0):
     """ Make a legend for the markers and/or colors. labmap maps data to
     pretty labels. locargs is passed to axes.legend(). Returns prox for legend
     handles. If there are two legends, the args should be a list.
@@ -462,7 +462,6 @@ class CategoryPlot:
         Axes--use this Axes instance to place the legend. 
         tuple--use self.axes[ax] to place the legend.
         None--use self.axes[0,0] to place the legend.
-      labmap (dict): map categories to labels that will appear in legend.
       args (dict): other options for matplotlib's legend call. 
         If thre are two legends (when mark and color are different descrimiators for the data),
         this should be a tuple, one for mark and one for color).
@@ -574,21 +573,32 @@ class CategoryPlot:
     for ax in self.axes.ravel():
       ax.set_ylim(args)
 
-  def standard_export(self,figname,verbose=True,dpi=400):
+  def standard_export(self,figname,verbose=True,dpi=400,fix_width=None):
     ''' The usual way of exporting the plot.
-    This produces figname+".pdf" and figname+".png" on disk.
+    args:
+      figname (str): {figname}.pdf and {figname}.png will be produced.
+      verbose (bool): Print figname as you are saving it.
+      dpi (int): Dots per inch for the PNG export. 
+      fix_width (float): if not None, will ensure figure is of this set width, scaling as best it can.
     '''
     if verbose:
       print(f"Saving {figname}")
+
+    if fix_width:
+      self.fig.set_size_inches(fix_width, self.fig.get_size_inches()[1])
+
     self.fig.tight_layout()
 
     if self.side:
       size = self.fig.get_size_inches()
-      self.fig.set_size_inches(
-          size[0]+self.side,
-          size[1]
-        )
-      self.fig.subplots_adjust(right=size[0]/(size[0]+self.side))
+      if not fix_width:
+        self.fig.set_size_inches(
+            size[0]+self.side,
+            size[1]
+          )
+        self.fig.subplots_adjust(right=size[0]/(size[0]+self.side))
+      else:
+        self.fig.subplots_adjust(right=(size[0] - self.side)/size[0])
 
     self.fig.savefig(figname+".pdf")
     self.fig.savefig(figname+".png",dpi=dpi)
