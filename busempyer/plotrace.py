@@ -9,6 +9,7 @@ from busempyer.afqmc_tools import read_raw_afqmc
 from busempyer.qmcdata import estimate_warmup, reblock
 from os.path import exists
 from qharv.reel.forlib.stats import corr as compute_autocorr
+from ase.units import Ha
 import logging
 matplotlib_header()
 
@@ -39,7 +40,7 @@ def interface():
     itime = data['beta']
   # Case PyQMC.
   elif 'h5' in args.tracedata: 
-    hdf = File(args.tracedata)
+    hdf = File(args.tracedata,'r')
     trace = hdf[args.name][()]
     itime = None
   else:
@@ -86,9 +87,9 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
   #blockitime = int(round(itkeep.shape[0]/blocks.shape[0]))
   blockitime = itkeep[::ceil(autotime)][:blocks.shape[0]]
 
-  mean = trace.mean()
-  #std  = trace.std(ddof=1)
-  #serr = std/trace.shape[0]*autotime
+  mean = ekeep.mean()
+  std  = ekeep.std(ddof=1)
+  serr = std * (autotime / ekeep.shape[0])**0.5
 
   fig,ax = subplots(1,2,gridspec_kw={'width_ratios': [3, 1]},sharey=True)
   ax[0].plot(itime,trace,'.',color=pc['g'],alpha=0.3,**pargs())
@@ -101,6 +102,10 @@ def plotrace(trace,itime=None,warmup=None,drop_outliers=False,preblock=1,figname
   
   ax[1].axhline(mean,color=pc['grey'],lw=1)
   ax[1].hist(ekeep,bins=50,orientation='horizontal',color=pc['g'])
+
+
+  print(f"\nSTD: {std:0.6f} Ha, STERR: {serr:0.6f} Ha, Autocorrelation: {autotime}")
+  print(f"     {std*Ha:0.5f}  eV         {serr*Ha:0.5f}  eV")
 
   print(f"Saving {figname}")
   fig.set_size_inches(4,3)

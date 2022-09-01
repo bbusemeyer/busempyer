@@ -2,6 +2,7 @@
 import numpy as np
 from copy import deepcopy as copy
 import matplotlib.pyplot as plt
+from seaborn import despine
 
 ### Matplotlib tools.
 
@@ -63,17 +64,17 @@ Color maps:
 # Common colors are first letter only, prefix with l or d means light or dark.
 pc = {
     # 12-Class paired.
-    'lb':'#a6cee3', # Light blue.
     'b' :'#1f78b4', # Blue.
+    'r' :'#e31a1c', # Red
+    'o' :'#ff7f00', # Orange.
+    'p' :'#6a3d9a', # Purple.
+    'tan' :'#b15928', # Cowhide tan.
+    'lb':'#a6cee3', # Light blue.
     'lg':'#b2df8a', # Light green.
     'lr':'#fb9a99', # Light red.
-    'r' :'#e31a1c', # Red
     'lo':'#fdbf6f', # Light orange/peach.
-    'o' :'#ff7f00', # Orange.
     'f':'#cab2d6', # Light purple/fushia.
-    'p' :'#6a3d9a', # Purple.
     'lt':'#ffff99', # Light tan
-    'tan' :'#b15928', # Cowhide tan.
     # 8-Class dark.
     't':    '#1b9e77', # Teal.
     'do':   '#d95f02', # Dark orange.
@@ -94,8 +95,10 @@ pc = {
 # Sets of colors to automatically choose from.
 ps = {
     'dark8':['#0b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'],
-    'cb12':['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928']
+    'cb12':['#1f78b4','#e31a1c','#ff7f00','#6a3d9a','#b15928','#a6cee3','#b2df8a','#fb9a99','#fdbf6f','#cab2d6','#ffff99']
   }
+
+# Markers with fill.
 pm = ["o",
     "s",
     "D",
@@ -108,20 +111,25 @@ pm = ["o",
     ">",
     "H",
     "*",
-    ".",
-    ",",
-    "1",
-    "2",
-    "3",
-    "4",
-    "8",
-    "+",
-    "x",
 ]
+
+# Markers with no fill.
+pmnf = [
+  ".",
+  ",",
+  "1",
+  "2",
+  "3",
+  "4",
+  "8",
+  "+",
+  "x",
+]
+
 
 def assign_features(elements,features):
   ''' Cyclically assign features to elements.'''
-  n = elements.shape[0]
+  n = len(elements)
   return dict(zip(elements,((1+n//len(features))*features)[:n]))
 
 def gen_rgb(hexstr):
@@ -600,6 +608,7 @@ class CategoryPlot:
       else:
         self.fig.subplots_adjust(right=(size[0] - self.side)/size[0])
 
+    despine(self.fig)
     self.fig.savefig(figname+".pdf")
     self.fig.savefig(figname+".png",dpi=dpi)
 

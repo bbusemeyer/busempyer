@@ -19,7 +19,6 @@ def main():
 
   print(args)
 
-# TODO decide units.
 class VolData:
   def __init__(self,data=None,grid=None,voxel=None,positions=None,latvecs=None,origin=(0.0,0.0,0.0),meta=None,verbose=False):
     ''' Contains data and routines for exporting data for volumetric data formats.
@@ -39,7 +38,6 @@ class VolData:
     self.voxel      = voxel if voxel is not None else diag(array(self.data.shape,dtype=float)**-1)
     self.positions  = positions if positions is not None else []
     self.latvecs    = latvecs
-    self.origin     = asarray(origin)
     self.meta       = meta if meta is not None else {}
     self.verbose    = verbose
 
@@ -48,17 +46,27 @@ class VolData:
 
   # Can add from_cube from cubetools easily.
 
-  def load_from_cell_(self, cell, npoints, grid=None, origin=(0.0,0.0,0.0)):
-    ''' Load cell geometry data, and make grid in that cell.'''
+  def load_from_cell_(self, cell, npoints, zshift=0.0, zshrink=1.0):
+    ''' Load cell geometry data, and make grid in that cell.
+      Args:
+        cell (pyscf.pbc.gto.Cell): PySCF cell with lattice vectors and atomic cordinates and symbols.
+        npoints (tuple): Number of points along each lattice vector to grid up.
+        zshift (float): fractional shift in the z coordinates for 2-d case. 
+        zshrink (float): fractional shrinking of the z lattice vector for 2-d case. 
+        '''
     self.npoints = asarray(npoints)
     self.latvecs = asarray(cell.lattice_vectors())
+
     self.voxel = self.latvecs/self.npoints[:,None]
-    self.origin = asarray(origin)
-    self.grid, fracoords = make_grid(self.voxel,self.npoints,origin=origin)
+    self.voxel[2,2] *= zshrink
+    self.grid = make_grid(self.voxel,self.npoints)[0]
+    self.grid[:,2] += self.latvecs[2,2]*zshift
 
     cart = array([cell.atom_coord(i) for i in range(cell.natm)]).T
-    if sum(self.origin) > 1e-10:
-      cart = _set_nonzero_origin(cart, self.latvecs, self.origin)
+    cart[2,:] += self.latvecs[2,2]*zshift
+
+    self.latvecs[2,2] *= zshrink
+
     self.positions = [(cell.atom_symbol(i),cart[:,i]) for i in range(cell.natm)]
 
   def compute_pyscf_points_(self, mol, coeff_or_dm, dtype='orbital', verbose=False):
@@ -178,25 +186,22 @@ def compute_pyscf_points(mol, grid, data, dtype='orbital', verbose=False):
 
   return data_on_grid
 
-def make_grid(voxel=eye(3), npoints=(10,10,10), origin=(0,0,0), ptshift=(0,0,0)):
+def make_grid(voxel=eye(3), npoints=(10,10,10)):
   ''' Make a grid of points defining a set of voxels.
   Args:
     voxel (array): defines the spaces between points.
     npoints (tuple): the number of voxels repeated in each dimension.
-    origin (array-like): the corner of the volume defined by the first voxel. 
-    ptshift (tuple): Shift grid from the origin by this many voxels. For example, use npoints/2 for centering the origin.
   Returns:
     grid (array): Points of the grid in cartesian coordinates. 
     voxgrid (array): Points of the grid in the basis of the voxel vectors.
   '''
- 
   voxgrid = asarray(meshgrid(
-    range(-ptshift[0],npoints[0]-ptshift[0]), 
-    range(-ptshift[1],npoints[1]-ptshift[1]), 
-    range(-ptshift[2],npoints[2]-ptshift[2]), 
+    range(0,npoints[0]), 
+    range(0,npoints[1]), 
+    range(0,npoints[2]), 
     indexing='ij'))
   voxgrid = voxgrid.reshape(voxgrid.shape[0], voxgrid.size//voxgrid.shape[0]).T
-  grid = voxgrid @ voxel + asarray(origin)
+  grid = voxgrid @ voxel
 
   return grid, voxgrid
 

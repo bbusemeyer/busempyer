@@ -24,7 +24,7 @@ def main():
 
 def read_afqmc_param(fn):
   afparams = {}
-  for line in open(fn).read().split('\n'):
+  for line in open(fn,'r').read().split('\n'):
     words = line.split()
     if len(words) != 2: continue
     afparams[words[0]] = words[1]
@@ -67,6 +67,7 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
           'energy': None,
           'stdev': None,
           'error': None,
+          'autocortime': 0.0,
           #'blockbeta': None,
           #'blockdata': None
         }
@@ -80,6 +81,7 @@ def read_afqmc(loc='./',warmup=None,return_trace=False):
       'safe_energy':  safe_energy,
       'energy':       warmdf['energy'].mean(),
       'stdev':        warmdf['energy'].std(),
+      'autocortime':  autotime,
       #'blockbeta':    (edf.iloc[warmup:]['beta'].values[blocknbeta//2::blocknbeta]).tolist(),
       #'blockdata':    blockdata['value'].values.tolist(),
     }
